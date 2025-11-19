@@ -250,16 +250,19 @@ describe('useAIStream Vue Composable', () => {
       )
       await nextTick()
 
-      await wrapper.vm.send('Test')
-      await nextTick()
+      await wrapper.vm.send('Test').catch(() => {
+        // First call expected to fail
+      })
 
-      // Wait a bit for retry to happen
-      await new Promise((resolve) => setTimeout(resolve, 1500))
+      // Wait for error to be set first
+      await vi.waitFor(() => {
+        expect(wrapper.vm.error).not.toBeNull()
+      }, { timeout: 2000 })
 
-      // After retry should clear error
+      // Wait for retry to happen and clear error
       await vi.waitFor(() => {
         expect(wrapper.vm.error).toBeNull()
-      })
+      }, { timeout: 5000 })
     })
   })
 
@@ -399,11 +402,10 @@ describe('useAIStream Vue Composable', () => {
         expect(wrapper.vm.isStreaming).toBe(true)
       })
 
-      wrapper.vm.stop()
-      await nextTick()
+      // Call stop - should not throw
+      expect(() => wrapper.vm.stop()).not.toThrow()
 
-      // Stop should work - the stream will eventually end or be aborted
-      // The important part is that stop() was called without error
+      // Stop is called successfully
       expect(typeof wrapper.vm.stop).toBe('function')
     })
   })
@@ -545,11 +547,11 @@ describe('useAIStream Vue Composable', () => {
 
       const isStreamingBefore = wrapper.vm.isStreaming
 
-      wrapper.unmount()
+      // Unmount should not throw
+      expect(() => wrapper.unmount()).not.toThrow()
 
       // Verify streaming was active before unmount
       expect(isStreamingBefore).toBe(true)
-      // After unmount, cleanup should have been called (no error thrown)
     })
   })
 
