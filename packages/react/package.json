@@ -1,0 +1,66 @@
+{
+  "name": "@ainative/ai-kit",
+  "version": "0.0.1",
+  "description": "AI Kit - React adapter with hooks and components",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "react",
+    "hooks",
+    "streaming",
+    "ainative"
+  ],
+  "author": "AINative Studio",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AINative-Studio/ai-kit.git",
+    "directory": "packages/react"
+  },
+  "dependencies": {
+    "@ainative/ai-kit-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "react": "^18.0.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/react-hooks": "^8.0.1",
+    "@types/react": "^18.2.45",
+    "@types/node": "^20.10.0",
+    "react": "^18.2.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

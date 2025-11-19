@@ -1,0 +1,81 @@
+{
+  "name": "@ainative/ai-kit-core",
+  "version": "0.0.1",
+  "description": "Framework-agnostic core for AI Kit - streaming, agents, state management",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./streaming": {
+      "types": "./dist/streaming/index.d.ts",
+      "import": "./dist/streaming/index.mjs",
+      "require": "./dist/streaming/index.js"
+    },
+    "./agents": {
+      "types": "./dist/agents/index.d.ts",
+      "import": "./dist/agents/index.mjs",
+      "require": "./dist/agents/index.js"
+    },
+    "./state": {
+      "types": "./dist/state/index.d.ts",
+      "import": "./dist/state/index.mjs",
+      "require": "./dist/state/index.js"
+    },
+    "./observability": {
+      "types": "./dist/observability/index.d.ts",
+      "import": "./dist/observability/index.mjs",
+      "require": "./dist/observability/index.js"
+    },
+    "./safety": {
+      "types": "./dist/safety/index.d.ts",
+      "import": "./dist/safety/index.mjs",
+      "require": "./dist/safety/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "streaming",
+    "agents",
+    "openai",
+    "anthropic",
+    "ainative"
+  ],
+  "author": "AINative Studio",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AINative-Studio/ai-kit.git",
+    "directory": "packages/core"
+  },
+  "dependencies": {
+    "eventsource-parser": "^1.1.2",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
