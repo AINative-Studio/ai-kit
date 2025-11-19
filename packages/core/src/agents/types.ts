@@ -353,14 +353,16 @@ export interface ExecutionTrace {
 export type StreamEventType =
   | 'start'
   | 'step'
+  | 'thought'
   | 'tool_call'
   | 'tool_result'
   | 'text_chunk'
+  | 'final_answer'
   | 'complete'
   | 'error';
 
 /**
- * Streaming event
+ * Base streaming event
  */
 export interface StreamEvent {
   type: StreamEventType;
@@ -372,6 +374,175 @@ export interface StreamEvent {
  * Streaming callback handler
  */
 export type StreamCallback = (event: StreamEvent) => void | Promise<void>;
+
+/**
+ * Agent step event for streaming
+ */
+export interface AgentStepEvent {
+  /**
+   * Event type identifier
+   */
+  type: 'step';
+
+  /**
+   * Current step number
+   */
+  step: number;
+
+  /**
+   * Step timestamp
+   */
+  timestamp: string;
+
+  /**
+   * Step metadata
+   */
+  metadata?: {
+    messagesCount?: number;
+    pendingToolCalls?: number;
+  };
+}
+
+/**
+ * Thought event - agent's reasoning/thinking
+ */
+export interface ThoughtEvent {
+  /**
+   * Event type identifier
+   */
+  type: 'thought';
+
+  /**
+   * The thought/reasoning content
+   */
+  content: string;
+
+  /**
+   * Step number during which this thought occurred
+   */
+  step: number;
+
+  /**
+   * Event timestamp
+   */
+  timestamp: string;
+}
+
+/**
+ * Tool call event
+ */
+export interface ToolCallEvent {
+  /**
+   * Event type identifier
+   */
+  type: 'tool_call';
+
+  /**
+   * The tool call details
+   */
+  toolCall: ToolCall;
+
+  /**
+   * Step number
+   */
+  step: number;
+
+  /**
+   * Event timestamp
+   */
+  timestamp: string;
+}
+
+/**
+ * Tool result event
+ */
+export interface ToolResultEvent {
+  /**
+   * Event type identifier
+   */
+  type: 'tool_result';
+
+  /**
+   * The tool execution result
+   */
+  result: ToolResult;
+
+  /**
+   * Step number
+   */
+  step: number;
+
+  /**
+   * Event timestamp
+   */
+  timestamp: string;
+}
+
+/**
+ * Final answer event
+ */
+export interface FinalAnswerEvent {
+  /**
+   * Event type identifier
+   */
+  type: 'final_answer';
+
+  /**
+   * The final answer/response
+   */
+  answer: string;
+
+  /**
+   * Step number
+   */
+  step: number;
+
+  /**
+   * Event timestamp
+   */
+  timestamp: string;
+}
+
+/**
+ * Error event
+ */
+export interface ErrorEvent {
+  /**
+   * Event type identifier
+   */
+  type: 'error';
+
+  /**
+   * Error message
+   */
+  error: string;
+
+  /**
+   * Error code
+   */
+  code?: string;
+
+  /**
+   * Step number where error occurred
+   */
+  step?: number;
+
+  /**
+   * Event timestamp
+   */
+  timestamp: string;
+}
+
+/**
+ * Union type of all agent execution streaming events
+ */
+export type AgentExecutionEvent =
+  | AgentStepEvent
+  | ThoughtEvent
+  | ToolCallEvent
+  | ToolResultEvent
+  | FinalAnswerEvent
+  | ErrorEvent;
 
 // ============================================================================
 // Error Types
