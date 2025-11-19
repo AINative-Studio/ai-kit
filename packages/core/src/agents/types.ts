@@ -652,3 +652,222 @@ export type ToolResultType<T extends ToolDefinition> = T extends ToolDefinition<
  * Type-safe tool registry
  */
 export type ToolRegistry = Map<string, ToolDefinition>;
+
+// ============================================================================
+// Agent Swarm Types
+// ============================================================================
+
+/**
+ * Role of an agent in the swarm
+ */
+export type AgentRole = 'supervisor' | 'specialist';
+
+/**
+ * Specialist agent configuration for swarm
+ */
+export interface SpecialistAgent {
+  /**
+   * Unique identifier for the specialist
+   */
+  id: string;
+
+  /**
+   * Agent instance
+   */
+  agent: any; // Will be Agent type, avoiding circular dependency
+
+  /**
+   * Specialization area/domain
+   */
+  specialization: string;
+
+  /**
+   * Keywords/tags that trigger this specialist
+   */
+  keywords?: string[];
+
+  /**
+   * Priority when multiple specialists match (higher = preferred)
+   */
+  priority?: number;
+
+  /**
+   * Whether this specialist can handle multiple tasks concurrently
+   */
+  concurrent?: boolean;
+}
+
+/**
+ * Task routing decision
+ */
+export interface TaskRoutingDecision {
+  /**
+   * ID of the specialist agent to handle the task
+   */
+  specialistId: string;
+
+  /**
+   * Reason for routing to this specialist
+   */
+  reason: string;
+
+  /**
+   * Confidence score (0-1)
+   */
+  confidence: number;
+}
+
+/**
+ * Specialist execution result
+ */
+export interface SpecialistResult {
+  /**
+   * ID of the specialist that executed the task
+   */
+  specialistId: string;
+
+  /**
+   * Specialization area
+   */
+  specialization: string;
+
+  /**
+   * Response from the specialist
+   */
+  response: string;
+
+  /**
+   * Execution trace from the specialist
+   */
+  trace: ExecutionTrace;
+
+  /**
+   * Whether execution was successful
+   */
+  success: boolean;
+
+  /**
+   * Error if execution failed
+   */
+  error?: Error;
+
+  /**
+   * Execution metadata
+   */
+  metadata: {
+    startTime: string;
+    endTime: string;
+    durationMs: number;
+  };
+}
+
+/**
+ * Configuration for AgentSwarm
+ */
+export interface SwarmConfig {
+  /**
+   * Unique identifier for the swarm
+   */
+  id: string;
+
+  /**
+   * Human-readable name
+   */
+  name: string;
+
+  /**
+   * Description of the swarm's purpose
+   */
+  description?: string;
+
+  /**
+   * Supervisor agent that coordinates specialists
+   */
+  supervisor: any; // Will be Agent type, avoiding circular dependency
+
+  /**
+   * Specialist agents in the swarm
+   */
+  specialists: SpecialistAgent[];
+
+  /**
+   * Maximum number of concurrent specialist executions
+   */
+  maxConcurrent?: number;
+
+  /**
+   * Whether to enable parallel execution of independent tasks
+   */
+  parallelExecution?: boolean;
+
+  /**
+   * Timeout for specialist executions (milliseconds)
+   */
+  specialistTimeoutMs?: number;
+
+  /**
+   * Custom routing strategy
+   */
+  customRouter?: (
+    task: string,
+    specialists: SpecialistAgent[]
+  ) => Promise<TaskRoutingDecision>;
+
+  /**
+   * Custom result synthesizer
+   */
+  customSynthesizer?: (
+    results: SpecialistResult[]
+  ) => Promise<string>;
+
+  /**
+   * Custom metadata
+   */
+  metadata?: Record<string, unknown>;
+}
+
+/**
+ * Swarm execution result
+ */
+export interface SwarmResult {
+  /**
+   * Final synthesized response
+   */
+  response: string;
+
+  /**
+   * Results from individual specialists
+   */
+  specialistResults: SpecialistResult[];
+
+  /**
+   * Combined execution trace from all agents
+   */
+  combinedTrace: ExecutionTrace;
+
+  /**
+   * Supervisor's decision-making trace
+   */
+  supervisorTrace: ExecutionTrace;
+
+  /**
+   * Whether execution was successful
+   */
+  success: boolean;
+
+  /**
+   * Error if execution failed
+   */
+  error?: Error;
+
+  /**
+   * Execution statistics
+   */
+  stats: {
+    totalSpecialistsInvoked: number;
+    successfulSpecialists: number;
+    failedSpecialists: number;
+    totalDurationMs: number;
+    parallelExecutions: number;
+  };
+}

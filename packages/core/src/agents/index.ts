@@ -22,6 +22,10 @@ export type {
   StreamingExecutionResult,
 } from './StreamingAgentExecutor';
 
+// Agent Swarm
+export { AgentSwarm, createAgentSwarm } from './AgentSwarm';
+export type { SwarmEvents } from './AgentSwarm';
+
 // LLM providers
 export { LLMProvider } from './llm/LLMProvider';
 export type { ChatRequest, ChatResponse } from './llm/LLMProvider';

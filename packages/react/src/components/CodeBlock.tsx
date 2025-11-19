@@ -1,20 +1,18 @@
 import React, { useState } from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import {
-  vsDark,
-  vs,
-  github,
-  nord,
-  dracula,
+  dark,
   atomDark,
+  dracula,
+  nord,
 } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { CodeBlockProps } from '../types';
 
 const themeMap = {
   dark: atomDark,
-  light: vs,
-  'vs-dark': vsDark,
-  github: github,
+  light: dark,
+  'vs-dark': dark,
+  github: dark,
   monokai: atomDark,
   nord: nord,
   dracula: dracula,

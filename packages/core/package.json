@@ -26,6 +26,11 @@
       "import": "./dist/state/index.mjs",
       "require": "./dist/state/index.js"
     },
+    "./store": {
+      "types": "./dist/store/index.d.ts",
+      "import": "./dist/store/index.mjs",
+      "require": "./dist/store/index.js"
+    },
     "./observability": {
       "types": "./dist/observability/index.d.ts",
       "import": "./dist/observability/index.mjs",
@@ -67,10 +72,12 @@
   },
   "dependencies": {
     "eventsource-parser": "^1.1.2",
+    "ioredis": "^5.3.2",
     "zod": "^3.22.4"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
+    "@vitest/coverage-v8": "^1.0.0",
     "tsup": "^8.0.1",
     "typescript": "^5.3.0",
     "vitest": "^1.0.0"

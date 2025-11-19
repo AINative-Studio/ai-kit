@@ -8,3 +8,6 @@ export * from './types'
 
 // Streaming
 export * from './streaming'
+
+// Store
+export * from './store'
