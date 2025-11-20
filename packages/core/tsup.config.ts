@@ -6,6 +6,7 @@ export default defineConfig({
     'streaming/index': 'src/streaming/index.ts',
     'context/index': 'src/context/index.ts',
     'security/index': 'src/security/index.ts',
+    'zerodb/index': 'src/zerodb/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,

@@ -60,6 +60,26 @@
       "types": "./dist/security/index.d.ts",
       "import": "./dist/security/index.mjs",
       "require": "./dist/security/index.js"
+    },
+    "./session": {
+      "types": "./dist/session/index.d.ts",
+      "import": "./dist/session/index.mjs",
+      "require": "./dist/session/index.js"
+    },
+    "./auth": {
+      "types": "./dist/auth/index.d.ts",
+      "import": "./dist/auth/index.mjs",
+      "require": "./dist/auth/index.js"
+    },
+    "./zerodb": {
+      "types": "./dist/zerodb/index.d.ts",
+      "import": "./dist/zerodb/index.mjs",
+      "require": "./dist/zerodb/index.js"
+    },
+    "./design": {
+      "types": "./dist/design/index.d.ts",
+      "import": "./dist/design/index.mjs",
+      "require": "./dist/design/index.js"
     }
   },
   "files": [
