@@ -1,0 +1,45 @@
+{
+  "name": "@ainative/nextjs-chatbot",
+  "version": "1.0.0",
+  "description": "Production-ready Next.js AI chatbot with authentication and streaming",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "vitest",
+    "test:e2e": "playwright test",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ainative/ai-kit": "workspace:*",
+    "next": "14.2.18",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "next-auth": "^4.24.10",
+    "react-markdown": "^9.0.1",
+    "remark-gfm": "^4.0.0",
+    "prismjs": "^1.29.0",
+    "date-fns": "^3.0.0",
+    "zustand": "^4.5.0",
+    "clsx": "^2.1.0",
+    "lucide-react": "^0.460.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.3.1",
+    "@types/react-dom": "^18.3.0",
+    "@types/prismjs": "^1.26.0",
+    "@playwright/test": "^1.48.0",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.32",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.6.1",
+    "@testing-library/react": "^14.1.2",
+    "@testing-library/jest-dom": "^6.1.5",
+    "@vitejs/plugin-react": "^4.2.1",
+    "jsdom": "^27.2.0"
+  }
+}

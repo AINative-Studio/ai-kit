@@ -11,6 +11,30 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
     },
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    },
+    "./types/utils": {
+      "types": "./dist/types/utils.d.ts"
+    },
+    "./types/streaming": {
+      "types": "./dist/types/streaming.d.ts"
+    },
+    "./types/agents": {
+      "types": "./dist/types/agents.d.ts"
+    },
+    "./types/tools": {
+      "types": "./dist/types/tools.d.ts"
+    },
+    "./types/models": {
+      "types": "./dist/types/models.d.ts"
+    },
+    "./types/errors": {
+      "types": "./dist/types/errors.d.ts"
+    },
+    "./types/config": {
+      "types": "./dist/types/config.d.ts"
+    },
     "./streaming": {
       "types": "./dist/streaming/index.d.ts",
       "import": "./dist/streaming/index.mjs",

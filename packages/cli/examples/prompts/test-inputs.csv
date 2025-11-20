@@ -1,0 +1,9 @@
+input,category,priority
+"How do I reset my password?",account,high
+"I need a refund for my last order",billing,high
+"The app keeps crashing on my phone",technical,critical
+"When will my order arrive?",shipping,medium
+"How do I upgrade my plan?",billing,low
+"I can't log into my account",account,high
+"Your service is too expensive",billing,low
+"I love your product!",feedback,low

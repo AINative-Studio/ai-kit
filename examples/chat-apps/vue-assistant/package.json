@@ -1,0 +1,31 @@
+{
+  "name": "@ainative/vue-assistant",
+  "version": "1.0.0",
+  "description": "Vue 3 chat assistant with multi-agent support and voice input",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "lint": "eslint .",
+    "test": "vitest",
+    "type-check": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@ainative/ai-kit": "workspace:*",
+    "nuxt": "^3.13.0",
+    "vue": "^3.4.0",
+    "pinia": "^2.1.7",
+    "@pinia/nuxt": "^0.5.1",
+    "@vueuse/core": "^11.0.0",
+    "@vueuse/nuxt": "^11.0.0"
+  },
+  "devDependencies": {
+    "@nuxt/test-utils": "^3.13.0",
+    "@vue/test-utils": "^2.4.1",
+    "vitest": "^1.6.1",
+    "typescript": "^5.3.0"
+  }
+}

@@ -1,0 +1,54 @@
+name: Customer Support Response
+version: 1.0
+description: AI-powered customer support response generator
+
+prompts:
+  - id: v1-basic
+    content: |
+      You are a helpful customer support agent.
+
+      Respond to the following customer inquiry in a professional and friendly manner:
+
+      {{input}}
+    parameters:
+      temperature: 0.7
+      max_tokens: 500
+
+  - id: v2-enhanced
+    content: |
+      You are an expert customer support specialist with 10+ years of experience.
+
+      Your task is to provide helpful, empathetic, and actionable responses to customer inquiries.
+
+      Guidelines:
+      - Be warm and professional
+      - Acknowledge the customer's concern
+      - Provide clear, step-by-step solutions
+      - Offer to help further if needed
+
+      Customer inquiry:
+      {{input}}
+
+      Your response:
+    parameters:
+      temperature: 0.7
+      max_tokens: 500
+      top_p: 0.9
+
+test_cases:
+  - input: "How do I reset my password?"
+    expected_topics: ["password", "reset", "security"]
+    expected_keywords: ["email", "link", "account"]
+
+  - input: "I need a refund for my last order"
+    expected_topics: ["refund", "billing", "order"]
+    expected_keywords: ["process", "time", "account"]
+
+  - input: "The app keeps crashing on my phone"
+    expected_topics: ["technical", "bug", "mobile"]
+    expected_keywords: ["update", "reinstall", "version"]
+
+defaults:
+  model: gpt-4
+  temperature: 0.7
+  max_tokens: 500

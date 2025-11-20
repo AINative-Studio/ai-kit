@@ -1,0 +1,31 @@
+{
+  "name": "@ainative/svelte-minimal",
+  "version": "1.0.0",
+  "description": "Minimalist Svelte chat with SSR and accessibility features",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "check": "svelte-check --tsconfig ./tsconfig.json",
+    "test": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@ainative/ai-kit": "workspace:*",
+    "@sveltejs/kit": "^2.0.0",
+    "svelte": "^4.2.0"
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@playwright/test": "^1.48.0",
+    "@testing-library/svelte": "^4.0.5",
+    "svelte-check": "^3.6.0",
+    "tslib": "^2.6.0",
+    "typescript": "^5.3.0",
+    "vite": "^5.0.0",
+    "vitest": "^1.6.1"
+  }
+}

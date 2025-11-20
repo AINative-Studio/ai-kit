@@ -1,0 +1,36 @@
+{
+  "name": "research-assistant",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Research Assistant Agent - Multi-step research with web search and citation generation",
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "build": "next build",
+    "start": "next start -p 3001",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ainative/ai-kit": "workspace:*",
+    "@examples/shared": "workspace:*",
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "zod": "^3.22.4",
+    "cheerio": "^1.0.0-rc.12",
+    "pdf-lib": "^1.17.1",
+    "docx": "^8.5.0",
+    "marked": "^12.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.6.1",
+    "eslint": "^9.39.1",
+    "eslint-config-next": "^14.2.0"
+  }
+}

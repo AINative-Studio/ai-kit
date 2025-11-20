@@ -1,71 +1,29 @@
 /**
  * Core types for AI Kit
+ * Comprehensive type exports for all AI Kit functionality
  */
 
-export interface Message {
-  id: string
-  role: 'user' | 'assistant' | 'system'
-  content: string
-  timestamp: number
-}
+// Type utilities
+export * from './utils';
 
-export interface Usage {
-  promptTokens: number
-  completionTokens: number
-  totalTokens: number
-  estimatedCost?: number
-  latency?: number
-  model?: string
-  cacheHit?: boolean
-}
+// Streaming types
+export * from './streaming';
 
-export interface StreamConfig {
-  endpoint: string
-  model?: string
-  systemPrompt?: string
-  onToken?: (token: string) => void
-  onCost?: (usage: Usage) => void
-  onError?: (error: Error) => void
-  retry?: RetryConfig
-  cache?: boolean | CacheConfig
-  timeout?: number
-  headers?: Record<string, string>
-}
+// Agent types
+export * from './agents';
 
-export interface RetryConfig {
-  maxRetries?: number
-  backoff?: 'linear' | 'exponential'
-  initialDelay?: number
-  maxDelay?: number
-}
+// Tool types
+export * from './tools';
 
-export interface CacheConfig {
-  enabled: boolean
-  ttl?: number
-  storage?: 'memory' | 'redis'
-}
+// Model types
+export * from './models';
 
-export interface StreamResult {
-  messages: Message[]
-  isStreaming: boolean
-  error: Error | null
-  send: (content: string) => Promise<void>
-  reset: () => void
-  retry: () => Promise<void>
-  usage: Usage
-}
+// Error types
+export * from './errors';
 
-export interface StreamEvent {
-  type: 'token' | 'error' | 'done' | 'metadata'
-  data: any
-  timestamp: number
-}
+// Configuration types
+export * from './config';
 
-export type StreamTransport = 'sse' | 'websocket'
-
-export interface StreamOptions {
-  transport?: StreamTransport
-  reconnect?: boolean
-  maxReconnectAttempts?: number
-  reconnectDelay?: number
-}
+// Legacy type re-exports for backwards compatibility
+import type { Message, Usage, StreamConfig, StreamResult, StreamOptions } from './streaming';
+export type { Message, Usage, StreamConfig, StreamResult, StreamOptions };

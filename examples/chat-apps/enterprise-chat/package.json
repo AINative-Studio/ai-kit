@@ -1,0 +1,27 @@
+{
+  "name": "@ainative/enterprise-chat",
+  "version": "1.0.0",
+  "description": "Full-stack enterprise chat with PostgreSQL, Redis, and team features",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"pnpm:dev:*\"",
+    "dev:client": "cd packages/client && pnpm dev",
+    "dev:server": "cd packages/server && pnpm dev",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "db:migrate": "cd packages/server && pnpm db:migrate",
+    "db:seed": "cd packages/server && pnpm db:seed"
+  },
+  "dependencies": {
+    "@ainative/ai-kit": "workspace:*"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "turbo": "^1.11.0"
+  }
+}

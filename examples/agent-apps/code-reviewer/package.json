@@ -1,0 +1,43 @@
+{
+  "name": "code-reviewer",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Code Review Agent - Automated code review with security scanning and best practice checks",
+  "scripts": {
+    "dev": "next dev -p 3002",
+    "build": "next build",
+    "start": "next start -p 3002",
+    "cli": "tsx src/cli/index.ts",
+    "lint": "next lint",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ainative/ai-kit": "workspace:*",
+    "@examples/shared": "workspace:*",
+    "@octokit/rest": "^20.0.2",
+    "next": "^14.2.0",
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "zod": "^3.22.4",
+    "commander": "^11.1.0",
+    "chalk": "^5.3.0",
+    "ora": "^8.0.1",
+    "eslint": "^9.39.1",
+    "@typescript-eslint/parser": "^8.47.0",
+    "@typescript-eslint/eslint-plugin": "^8.47.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.6.1",
+    "eslint-config-next": "^14.2.0",
+    "tsx": "^4.20.6"
+  },
+  "bin": {
+    "code-reviewer": "./src/cli/index.ts"
+  }
+}

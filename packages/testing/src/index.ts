@@ -18,3 +18,6 @@ export * from './helpers';
 
 // Export matchers
 export * from './matchers';
+
+// Export test utilities
+export * from './test-utils';
