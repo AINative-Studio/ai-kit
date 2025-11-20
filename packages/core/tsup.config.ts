@@ -4,6 +4,7 @@ export default defineConfig({
   entry: {
     index: 'src/index.ts',
     'streaming/index': 'src/streaming/index.ts',
+    'context/index': 'src/context/index.ts',
   },
   format: ['cjs', 'esm'],
   dts: true,

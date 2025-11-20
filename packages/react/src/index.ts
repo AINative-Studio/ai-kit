@@ -5,6 +5,13 @@
 
 // Hooks
 export { useAIStream, type UseAIStreamResult } from './useAIStream'
+export { useConversation } from './hooks/useConversation'
+export type {
+  UseConversationOptions,
+  UseConversationReturn,
+  ConversationState,
+  ConversationActions,
+} from './hooks/types'
 
 // Components
 export { StreamingMessage } from './components/StreamingMessage'
