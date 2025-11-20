@@ -29,3 +29,6 @@ export * from './reporting'
 
 // Instrumentation
 export * from './instrumentation'
+
+// Security
+export * from './security'

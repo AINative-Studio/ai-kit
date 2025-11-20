@@ -55,6 +55,11 @@
       "types": "./dist/summarization/index.d.ts",
       "import": "./dist/summarization/index.mjs",
       "require": "./dist/summarization/index.js"
+    },
+    "./security": {
+      "types": "./dist/security/index.d.ts",
+      "import": "./dist/security/index.mjs",
+      "require": "./dist/security/index.js"
     }
   },
   "files": [
