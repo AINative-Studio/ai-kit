@@ -14,7 +14,7 @@ yarn add @ainative/ai-kit
 
 ## Documentation
 
-For full documentation, visit [https://ai-kit.ainative.studio](https://ai-kit.ainative.studio)
+For full documentation, visit [https://ainative.studio/ai-kit](https://ainative.studio/ai-kit)
 
 ## License
 
