@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-rlhf",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI Kit - AINative RLHF (Reinforcement Learning from Human Feedback) integration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

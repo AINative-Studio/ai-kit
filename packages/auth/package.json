@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-auth",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AI Kit - AINative authentication integration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

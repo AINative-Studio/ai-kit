@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-safety",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI Kit - Safety features: prompt injection detection, PII filtering, content moderation",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
