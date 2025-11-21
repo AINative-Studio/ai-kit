@@ -43,14 +43,14 @@ export class UserMemory {
   private store: MemoryStore
   private llmProvider?: LLMProvider
   private factExtractor?: FactExtractor
-  private autoExtract: boolean
+  private _autoExtract: boolean
   private detectContradictions: boolean
   private autoConsolidate: boolean
 
   constructor(config: UserMemoryConfig) {
     this.store = config.store
     this.llmProvider = config.llmProvider
-    this.autoExtract = config.autoExtract ?? false
+    this._autoExtract = config.autoExtract ?? false
     this.detectContradictions = config.detectContradictions ?? true
     this.autoConsolidate = config.autoConsolidate ?? false
 
@@ -381,7 +381,7 @@ Respond in JSON format:
     }
 
     // Consolidate each group
-    for (const [type, groupMemories] of memoryGroups) {
+    for (const [_type, groupMemories] of memoryGroups) {
       if (groupMemories.length < 2) {
         continue
       }
@@ -415,6 +415,11 @@ Respond in JSON format:
       for (let j = i + 1; j < memories.length; j++) {
         const mem1 = memories[i]
         const mem2 = memories[j]
+
+        // Skip if either memory is undefined
+        if (!mem1 || !mem2) {
+          continue
+        }
 
         // Use LLM to check if memories should be consolidated
         const shouldConsolidate = await this.shouldConsolidateMemories(

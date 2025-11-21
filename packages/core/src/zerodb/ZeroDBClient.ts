@@ -27,8 +27,6 @@ import {
   TransactionResult,
   HealthStatus,
   PoolStats,
-  RetryConfig,
-  ZeroDBEvents,
 } from './types'
 
 /**
@@ -234,19 +232,24 @@ export class ZeroDBClient extends EventEmitter implements IZeroDBClient {
       return await fn()
     } catch (error) {
       const isRetryable = this.isRetryableError(error)
-      const shouldRetry = attempt < this.config.retry.maxRetries && isRetryable
+      const maxRetries = this.config.retry.maxRetries ?? 3
+      const shouldRetry = attempt < maxRetries && isRetryable
 
       if (!shouldRetry) {
         throw error
       }
 
+      const initialDelay = this.config.retry.initialDelay ?? 1000
+      const backoffMultiplier = this.config.retry.backoffMultiplier ?? 2
+      const maxDelay = this.config.retry.maxDelay ?? 10000
+
       const delay = Math.min(
-        this.config.retry.initialDelay * Math.pow(this.config.retry.backoffMultiplier, attempt),
-        this.config.retry.maxDelay
+        initialDelay * Math.pow(backoffMultiplier, attempt),
+        maxDelay
       )
 
       if (this.config.debug) {
-        console.log(`[ZeroDB] Retrying after ${delay}ms (attempt ${attempt + 1}/${this.config.retry.maxRetries})`)
+        console.log(`[ZeroDB] Retrying after ${delay}ms (attempt ${attempt + 1}/${maxRetries})`)
       }
 
       await new Promise(resolve => setTimeout(resolve, delay))
@@ -257,11 +260,14 @@ export class ZeroDBClient extends EventEmitter implements IZeroDBClient {
   /**
    * Check if error is retryable
    */
-  private isRetryableError(error: any): boolean {
+  private isRetryableError(error: unknown): boolean {
     if (!error) return false
 
-    const errorCode = error.code || error.errno
-    return this.config.retry.retryableErrors.includes(errorCode)
+    const errorCode = (error as any)?.code || (error as any)?.errno
+    if (!errorCode) return false
+
+    const retryableErrors = this.config.retry.retryableErrors ?? ['ECONNRESET', 'ETIMEDOUT', 'ENOTFOUND']
+    return retryableErrors.includes(errorCode)
   }
 
   /**
@@ -412,7 +418,7 @@ export class ZeroDBClient extends EventEmitter implements IZeroDBClient {
    */
   async transaction<T>(
     callback: (client: IZeroDBClient) => Promise<T>,
-    options?: TransactionOptions
+    _options?: TransactionOptions
   ): Promise<T> {
     const txId = this.generateTransactionId()
     const previousTxId = this.transactionId
@@ -460,7 +466,7 @@ export class ZeroDBClient extends EventEmitter implements IZeroDBClient {
   async healthCheck(): Promise<HealthStatus> {
     try {
       const startTime = Date.now()
-      const result = await this.executeRequest<HealthStatus>('healthCheck', {})
+      await this.executeRequest<HealthStatus>('healthCheck', {})
       const responseTime = Date.now() - startTime
 
       return {

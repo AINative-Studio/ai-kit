@@ -33,7 +33,6 @@ type SessionEventListener = (payload: SessionEventPayload) => void
  */
 export class SessionManager {
   private store: SessionStore
-  private config: SessionConfig
   private defaultTTL: number
   private expirationStrategy: ExpirationStrategy
   private encryptData: boolean
@@ -45,7 +44,6 @@ export class SessionManager {
   private eventListeners: Map<SessionEvent, Set<SessionEventListener>>
 
   constructor(config: SessionConfig) {
-    this.config = config
     this.defaultTTL = config.ttl || 3600 // Default: 1 hour
     this.expirationStrategy = config.expirationStrategy || ExpirationStrategy.SLIDING
     this.encryptData = config.encryptData || false
@@ -119,8 +117,11 @@ export class SessionManager {
         // Delete oldest session
         const sessions = Array.from(userSessions.entries())
         sessions.sort((a, b) => a[1].createdAt - b[1].createdAt)
-        const oldestSessionId = sessions[0][0]
-        await this.delete(oldestSessionId)
+        const oldestSession = sessions[0]
+        if (oldestSession) {
+          const oldestSessionId = oldestSession[0]
+          await this.delete(oldestSessionId)
+        }
       }
     }
 

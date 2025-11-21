@@ -546,7 +546,7 @@ MIT License - see [LICENSE](../../LICENSE) for details.
 
 ## Support
 
-- Documentation: https://ainative.studio/ai-kit/docs/observability
+- Documentation: https://ainative.studio/ai-kit
 - Issues: https://github.com/AINative-Studio/ai-kit/issues
 - Discord: https://discord.gg/ainative-studio
 

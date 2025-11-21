@@ -11,8 +11,7 @@
  */
 
 import { ref, onMounted, onUnmounted } from 'vue'
-import type { Message, Conversation } from '@ainative/ai-kit-core'
-import type { UseConversationOptions, UseConversationReturn } from './types'
+import type { Message, UseConversationOptions, UseConversationReturn } from './types'
 
 /**
  * Vue 3 composable for managing conversations with persistent storage
@@ -25,7 +24,6 @@ export function useConversation(
     conversationId: initialConversationId,
     autoSave = true,
     autoSaveDelay = 1000,
-    pageSize = 50,
     autoLoad = true,
     ttl,
     metadata: customMetadata,
@@ -173,7 +171,7 @@ export function useConversation(
    */
   const deleteMessage = async (messageId: string): Promise<void> => {
     // Optimistic update
-    messages.value = messages.value.filter((m) => m.id !== messageId)
+    messages.value = messages.value.filter((m: Message) => m.id !== messageId)
 
     // Trigger auto-save
     triggerAutoSave()
@@ -187,7 +185,7 @@ export function useConversation(
     updates: Partial<Message>
   ): Promise<void> => {
     // Optimistic update
-    messages.value = messages.value.map((m) =>
+    messages.value = messages.value.map((m: Message) =>
       m.id === messageId ? { ...m, ...updates } : m
     )
 

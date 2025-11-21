@@ -46,6 +46,8 @@ export class ZeroDBStorage implements IStorageBackend {
 
     // Initialize ZeroDB connection and create tables if needed
     // In production, this would use the ZeroDB MCP server or SDK
+    // The config will be used to connect: await zerodb.connect(this.config)
+    void this.config; // Suppress unused warning - will be used in production
     this.initialized = true;
   }
 
@@ -62,6 +64,8 @@ export class ZeroDBStorage implements IStorageBackend {
     };
 
     // In production: await zerodb.table.insert(this.config.tableName, record)
+    void record; // Suppress unused warning - used in production
+    void record; // Suppress unused warning - used in production
   }
 
   async storeFeedback(feedback: Feedback): Promise<void> {
@@ -78,6 +82,7 @@ export class ZeroDBStorage implements IStorageBackend {
     };
 
     // In production: await zerodb.table.insert(this.config.tableName, record)
+    void record; // Suppress unused warning - used in production
   }
 
   async storeInteractionsBatch(interactions: InteractionLog[]): Promise<void> {
@@ -91,6 +96,7 @@ export class ZeroDBStorage implements IStorageBackend {
     }));
 
     // In production: await zerodb.table.insertBatch(this.config.tableName, records)
+    void records; // Suppress unused warning - used in production
   }
 
   async storeFeedbackBatch(feedback: Feedback[]): Promise<void> {
@@ -106,9 +112,10 @@ export class ZeroDBStorage implements IStorageBackend {
     }));
 
     // In production: await zerodb.table.insertBatch(this.config.tableName, records)
+    void records; // Suppress unused warning - used in production
   }
 
-  async getInteraction(id: string): Promise<InteractionLog | null> {
+  async getInteraction(_id: string): Promise<InteractionLog | null> {
     // Query ZeroDB for interaction by ID
     // In production:
     // const results = await zerodb.table.query(this.config.tableName, {
@@ -119,7 +126,7 @@ export class ZeroDBStorage implements IStorageBackend {
     return null;
   }
 
-  async getFeedback(id: string): Promise<Feedback | null> {
+  async getFeedback(_id: string): Promise<Feedback | null> {
     // Query ZeroDB for feedback by ID
     // In production:
     // const results = await zerodb.table.query(this.config.tableName, {
@@ -130,7 +137,7 @@ export class ZeroDBStorage implements IStorageBackend {
     return null;
   }
 
-  async getFeedbackForInteraction(interactionId: string): Promise<Feedback[]> {
+  async getFeedbackForInteraction(_interactionId: string): Promise<Feedback[]> {
     // Query ZeroDB for all feedback for an interaction
     // In production:
     // const results = await zerodb.table.query(this.config.tableName, {
@@ -141,7 +148,7 @@ export class ZeroDBStorage implements IStorageBackend {
     return [];
   }
 
-  async getInteractions(startTime: Date, endTime: Date, limit?: number): Promise<InteractionLog[]> {
+  async getInteractions(_startTime: Date, _endTime: Date, _limit?: number): Promise<InteractionLog[]> {
     // Query ZeroDB for interactions in time range
     // In production:
     // const results = await zerodb.table.query(this.config.tableName, {
@@ -156,7 +163,7 @@ export class ZeroDBStorage implements IStorageBackend {
     return [];
   }
 
-  async getFeedbackInRange(startTime: Date, endTime: Date, limit?: number): Promise<Feedback[]> {
+  async getFeedbackInRange(_startTime: Date, _endTime: Date, _limit?: number): Promise<Feedback[]> {
     // Query ZeroDB for feedback in time range
     // In production:
     // const results = await zerodb.table.query(this.config.tableName, {
@@ -209,8 +216,8 @@ export class ZeroDBStorage implements IStorageBackend {
 
       case ExportFormat.JSONL:
         const lines = [
-          ...interactions.map(i => JSON.stringify({ type: 'interaction', ...i })),
-          ...feedback.map(f => JSON.stringify({ type: 'feedback', ...f })),
+          ...interactions.map(i => JSON.stringify({ ...i, type: 'interaction' })),
+          ...feedback.map(f => JSON.stringify({ ...f, type: 'feedback' })),
         ];
         return lines.join('\n');
 
@@ -265,7 +272,7 @@ export class ZeroDBStorage implements IStorageBackend {
       const ratings = ratingFeedback.map(f => (f.data as RatingFeedbackData).rating);
       const sum = ratings.reduce((a, b) => a + b, 0);
       const sorted = ratings.sort((a, b) => a - b);
-      const median = sorted[Math.floor(sorted.length / 2)];
+      const median = sorted[Math.floor(sorted.length / 2)] ?? 0;
 
       const distribution: { [rating: number]: number } = {};
       ratings.forEach(r => {

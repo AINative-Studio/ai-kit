@@ -31,7 +31,7 @@ export class OpenAIProvider extends LLMProvider {
 
   constructor(config: OpenAIConfig) {
     super(config);
-    this.apiKey = config.apiKey || process.env.OPENAI_API_KEY || '';
+    this.apiKey = config.apiKey || process.env['OPENAI_API_KEY'] || '';
     this.baseUrl = config.baseUrl || 'https://api.openai.com/v1';
     this.model = config.model;
 
@@ -252,7 +252,7 @@ export class OpenAIProvider extends LLMProvider {
    */
   private parseToolCalls(toolCalls: any[]): ToolCall[] {
     return toolCalls.map((tc) => ({
-      id: tc.id || generateShortId('tool'),
+      id: tc.id || `tool-${generateShortId()}`,
       name: tc.function.name,
       parameters: JSON.parse(tc.function.arguments || '{}'),
     }));

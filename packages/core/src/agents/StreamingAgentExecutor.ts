@@ -9,7 +9,6 @@ import { Agent } from './Agent';
 import {
   AgentState,
   Message,
-  ToolCall,
   ToolResult,
   ExecutionTrace,
   TraceEvent,
@@ -364,7 +363,7 @@ export class StreamingAgentExecutor {
    * Execute LLM step and stream thoughts
    */
   private async *llmStreamStep(
-    config?: StreamingExecutionConfig
+    _config?: StreamingExecutionConfig
   ): AsyncGenerator<AgentExecutionEvent, void, undefined> {
     const startTime = Date.now();
 
@@ -468,7 +467,7 @@ export class StreamingAgentExecutor {
    * Execute pending tool calls and stream results
    */
   private async *executeToolCallsStreamStep(
-    config?: StreamingExecutionConfig
+    _config?: StreamingExecutionConfig
   ): AsyncGenerator<AgentExecutionEvent, void, undefined> {
     const toolCalls = this.state.pendingToolCalls;
     this.state.pendingToolCalls = [];

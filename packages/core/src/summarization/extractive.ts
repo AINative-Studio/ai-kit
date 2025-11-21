@@ -4,8 +4,24 @@
  * Extract key sentences from conversations without using LLMs
  */
 
-import { Message } from '../types';
+import { Message, MessageContent } from '../types';
 import { ExtractedSentence } from './types';
+
+/**
+ * Extract text content from a message
+ */
+function getTextContent(content: string | MessageContent | MessageContent[]): string {
+  if (typeof content === 'string') {
+    return content;
+  }
+  if (Array.isArray(content)) {
+    return content
+      .filter((c): c is MessageContent & { type: 'text' } => c.type === 'text')
+      .map((c) => c.data)
+      .join(' ');
+  }
+  return content.type === 'text' ? content.data : '';
+}
 
 /**
  * Simple word tokenizer
@@ -42,7 +58,7 @@ function calculateIDF(messages: Message[]): Map<string, number> {
 
   // Count document frequency
   for (const message of messages) {
-    const words = new Set(tokenize(message.content));
+    const words = new Set(tokenize(getTextContent(message.content)));
     for (const word of words) {
       docFrequency.set(word, (docFrequency.get(word) || 0) + 1);
     }
@@ -106,8 +122,10 @@ export function extractKeySentences(
   // Process each message
   for (let i = 0; i < messages.length; i++) {
     const message = messages[i];
-    const sentences = splitIntoSentences(message.content);
-    const words = tokenize(message.content);
+    if (!message) continue; // Skip if message is undefined (shouldn't happen)
+
+    const sentences = splitIntoSentences(getTextContent(message.content));
+    const words = tokenize(getTextContent(message.content));
     const tf = calculateTF(words);
 
     for (const sentence of sentences) {
@@ -176,7 +194,7 @@ export function createExtractiveSummary(
  * Calculate conversation diversity (vocabulary richness)
  */
 export function calculateDiversity(messages: Message[]): number {
-  const allWords = messages.flatMap((m) => tokenize(m.content));
+  const allWords = messages.flatMap((m) => tokenize(getTextContent(m.content)));
   const uniqueWords = new Set(allWords);
 
   if (allWords.length === 0) return 0;
@@ -192,7 +210,7 @@ export function extractKeywords(
   topN: number = 10
 ): string[] {
   const idf = calculateIDF(messages);
-  const allWords = messages.flatMap((m) => tokenize(m.content));
+  const allWords = messages.flatMap((m) => tokenize(getTextContent(m.content)));
   const tf = calculateTF(allWords);
 
   // Calculate TF-IDF for each word

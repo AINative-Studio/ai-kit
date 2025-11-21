@@ -239,6 +239,7 @@ Guidelines:
         )
         if (
           existingIndex !== -1 &&
+          unique[existingIndex] &&
           fact.confidence > unique[existingIndex].confidence
         ) {
           unique[existingIndex] = fact

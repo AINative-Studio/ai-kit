@@ -69,7 +69,7 @@ export class ZeroDBMemoryStore extends MemoryStore {
       filter: { id: memoryId },
     })
 
-    if (rows.length === 0) {
+    if (rows.length === 0 || !rows[0]) {
       return null
     }
 

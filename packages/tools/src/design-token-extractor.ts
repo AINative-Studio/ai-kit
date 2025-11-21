@@ -217,6 +217,7 @@ export class DesignTokenExtractor {
     // Generate color palette from base colors
     for (let i = 0; i < baseColors.length; i++) {
       const baseColor = baseColors[i]
+      if (!baseColor) continue
       const colorName = `color-${i + 1}`
 
       // Generate color variations (lighter/darker shades)
@@ -1284,13 +1285,16 @@ export class DesignTokenExtractor {
       let current = obj
 
       for (let i = 0; i < parts.length - 1; i++) {
-        if (!current[parts[i]]) {
-          current[parts[i]] = {}
+        const part = parts[i]
+        if (!part) continue
+        if (!current[part]) {
+          current[part] = {}
         }
-        current = current[parts[i]]
+        current = current[part]
       }
 
       const key = parts[parts.length - 1]
+      if (!key) continue
       current[key] = {
         value: token.value,
         type: token.type,
@@ -1423,13 +1427,16 @@ export class DesignTokenExtractor {
       let current = obj
 
       for (let i = 0; i < parts.length - 1; i++) {
-        if (!current[parts[i]]) {
-          current[parts[i]] = {}
+        const part = parts[i]
+        if (!part) continue
+        if (!current[part]) {
+          current[part] = {}
         }
-        current = current[parts[i]]
+        current = current[part]
       }
 
       const key = parts[parts.length - 1]
+      if (!key) continue
       current[key] = {
         value: token.value,
         type: token.type,
@@ -1545,6 +1552,7 @@ export class DesignTokenExtractor {
     let match
     while ((match = customPropRegex.exec(css)) !== null) {
       const [, name, value] = match
+      if (!name || !value) continue
       const token = this.createTokenFromCSSValue(name, value.trim())
       if (token) tokens.push(token)
     }
@@ -1552,8 +1560,8 @@ export class DesignTokenExtractor {
     // Extract color values
     const colorRegex = /(?:color|background(?:-color)?|border-color|fill|stroke)\s*:\s*([^;]+);/gi
     while ((match = colorRegex.exec(css)) !== null) {
-      const value = match[1].trim()
-      if (this.isColorValue(value)) {
+      const value = match[1]?.trim()
+      if (value && this.isColorValue(value)) {
         tokens.push({
           name: `color-${tokens.length + 1}`,
           value: this.parseColorValue(value),
@@ -1567,59 +1575,68 @@ export class DesignTokenExtractor {
     // Extract spacing values
     const spacingRegex = /(?:padding|margin|gap)\s*:\s*([^;]+);/gi
     while ((match = spacingRegex.exec(css)) !== null) {
-      const value = match[1].trim()
-      tokens.push({
-        name: `spacing-${tokens.length + 1}`,
-        value,
-        type: TokenType.SPACING,
-        category: TokenCategory.SPACING,
-        source: 'css',
-      })
+      const value = match[1]?.trim()
+      if (value) {
+        tokens.push({
+          name: `spacing-${tokens.length + 1}`,
+          value,
+          type: TokenType.SPACING,
+          category: TokenCategory.SPACING,
+          source: 'css',
+        })
+      }
     }
 
     // Extract font-family
     const fontRegex = /font-family\s*:\s*([^;]+);/gi
     while ((match = fontRegex.exec(css)) !== null) {
-      const value = match[1].trim().replace(/['"]/g, '')
-      tokens.push({
-        name: `font-family-${tokens.length + 1}`,
-        value,
-        type: TokenType.FONT_FAMILY,
-        category: TokenCategory.TYPOGRAPHY,
-        source: 'css',
-      })
+      const value = match[1]?.trim().replace(/['"]/g, '')
+      if (value) {
+        tokens.push({
+          name: `font-family-${tokens.length + 1}`,
+          value,
+          type: TokenType.FONT_FAMILY,
+          category: TokenCategory.TYPOGRAPHY,
+          source: 'css',
+        })
+      }
     }
 
     // Extract font-size
     const fontSizeRegex = /font-size\s*:\s*([^;]+);/gi
     while ((match = fontSizeRegex.exec(css)) !== null) {
-      const value = match[1].trim()
-      tokens.push({
-        name: `font-size-${tokens.length + 1}`,
-        value,
-        type: TokenType.FONT_SIZE,
-        category: TokenCategory.FONT_SIZE,
-        source: 'css',
-      })
+      const value = match[1]?.trim()
+      if (value) {
+        tokens.push({
+          name: `font-size-${tokens.length + 1}`,
+          value,
+          type: TokenType.FONT_SIZE,
+          category: TokenCategory.FONT_SIZE,
+          source: 'css',
+        })
+      }
     }
 
     // Extract border-radius
     const radiusRegex = /border-radius\s*:\s*([^;]+);/gi
     while ((match = radiusRegex.exec(css)) !== null) {
-      const value = match[1].trim()
-      tokens.push({
-        name: `radius-${tokens.length + 1}`,
-        value,
-        type: TokenType.BORDER_RADIUS,
-        category: TokenCategory.BORDER_RADIUS,
-        source: 'css',
-      })
+      const value = match[1]?.trim()
+      if (value) {
+        tokens.push({
+          name: `radius-${tokens.length + 1}`,
+          value,
+          type: TokenType.BORDER_RADIUS,
+          category: TokenCategory.BORDER_RADIUS,
+          source: 'css',
+        })
+      }
     }
 
     // Extract box-shadow
     const shadowRegex = /box-shadow\s*:\s*([^;]+);/gi
     while ((match = shadowRegex.exec(css)) !== null) {
-      const value = match[1].trim()
+      const value = match[1]?.trim()
+      if (!value) continue
       const shadowValue = this.parseShadowValue(value)
       if (shadowValue) {
         tokens.push({
@@ -1755,12 +1772,20 @@ export class DesignTokenExtractor {
     // Simple shadow parsing (e.g., "0px 4px 10px rgba(0,0,0,0.25)")
     const parts = value.split(/\s+/)
     if (parts.length >= 3) {
+      const x = parts[0]
+      const y = parts[1]
+      const blur = parts[2]
+      const spread = parts[3]
+      const color = parts[parts.length - 1]
+
+      if (!x || !y || !blur || !color) return null
+
       return {
-        x: parseFloat(parts[0]),
-        y: parseFloat(parts[1]),
-        blur: parseFloat(parts[2]),
-        spread: parts.length > 4 ? parseFloat(parts[3]) : 0,
-        color: parts[parts.length - 1],
+        x: parseFloat(x),
+        y: parseFloat(y),
+        blur: parseFloat(blur),
+        spread: parts.length > 4 && spread ? parseFloat(spread) : 0,
+        color,
       }
     }
     return null

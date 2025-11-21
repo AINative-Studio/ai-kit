@@ -67,6 +67,10 @@ export class MockLLMProvider {
       this.mockToolCalls.length > 0 ? this.mockToolCalls : undefined;
     this.responseIndex++;
 
+    if (!response) {
+      throw new Error('No mock response available');
+    }
+
     // Simulate streaming if requested
     if (params.streaming && params.onStream) {
       await this.simulateStreaming(response, params.onStream);
@@ -103,8 +107,11 @@ export class MockLLMProvider {
     const tokens = content.split(' ');
 
     for (let i = 0; i < tokens.length; i++) {
-      const token = i === 0 ? tokens[i] : ' ' + tokens[i];
-      await onStream(token);
+      const token = tokens[i];
+      if (!token) continue;
+
+      const tokenWithSpace = i === 0 ? token : ' ' + token;
+      await onStream(tokenWithSpace);
 
       // Simulate network delay
       if (this.tokenDelay > 0) {

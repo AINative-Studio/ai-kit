@@ -23,7 +23,8 @@ export { AgentResponse } from './components/AgentResponse'
 export { MarkdownRenderer } from './components/MarkdownRenderer'
 export { ToolResult } from './components/ToolResult'
 export { UnknownTool } from './components/UnknownTool'
-export { UsageDashboard } from './components/UsageDashboard'
+// Temporarily disabled - requires tracking types from core
+// export { UsageDashboard } from './components/UsageDashboard'
 
 // Component Props Types
 export type {
@@ -37,11 +38,12 @@ export type {
   ToolResultProps,
   UnknownToolProps,
 } from './types'
-export type {
-  UsageDashboardProps,
-  DateRangePreset,
-  TimeSeriesGranularity,
-} from './components/UsageDashboard'
+// Temporarily disabled - requires tracking types from core
+// export type {
+//   UsageDashboardProps,
+//   DateRangePreset,
+//   TimeSeriesGranularity,
+// } from './components/UsageDashboard'
 
 // State and Configuration Types
 export type {

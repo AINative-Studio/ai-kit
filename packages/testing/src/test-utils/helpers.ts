@@ -106,7 +106,7 @@ export function createMockServerResponse() {
     setHeader: vi.fn((key: string, value: string) => {
       headers[key] = value;
     }),
-    writeHead: vi.fn((status: number, headersObj?: Record<string, string>) => {
+    writeHead: vi.fn((_status: number, headersObj?: Record<string, string>) => {
       if (headersObj) {
         Object.assign(headers, headersObj);
       }
@@ -176,7 +176,7 @@ export function createMethodSpy<T extends object>(
   const original = obj[methodName];
 
   if (typeof original === 'function') {
-    (obj[methodName] as any) = function (...args: any[]) {
+    (obj[methodName] as any) = function (this: any, ...args: any[]) {
       spy(...args);
       return (original as any).apply(this, args);
     };
@@ -312,7 +312,10 @@ export function captureConsole() {
 
   Object.keys(output).forEach((level) => {
     (console as any)[level] = (...args: any[]) => {
-      output[level].push(args.join(' '));
+      const levelOutput = output[level];
+      if (levelOutput) {
+        levelOutput.push(args.join(' '));
+      }
     };
   });
 

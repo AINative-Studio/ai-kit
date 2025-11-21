@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-auth",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.1",
   "description": "AI Kit - AINative authentication integration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -27,14 +27,25 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
+    "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
     "auth",
     "authentication",
-    "ainative"
+    "jwt",
+    "security",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://ainative.studio/ai-kit",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

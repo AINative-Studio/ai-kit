@@ -270,4 +270,4 @@ MIT
 ## Support
 
 - GitHub Issues: [ai-kit/issues](https://github.com/AINative-Studio/ai-kit/issues)
-- Documentation: [ai-kit docs](https://github.com/AINative-Studio/ai-kit)
+- Documentation: [https://ainative.studio/ai-kit](https://ainative.studio/ai-kit)

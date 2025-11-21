@@ -29,14 +29,23 @@ interface ZeroDBRow {
 }
 
 export class ZeroDBStore extends ConversationStore {
-  private config: Omit<ZeroDBStoreConfig, 'type'>
-  private tableName: string
+  protected override config: ZeroDBStoreConfig
+  // Note: tableName will be used in production implementation via ZeroDB MCP commands
+  private _tableName: string
   private initialized: boolean = false
 
-  constructor(config: Omit<ZeroDBStoreConfig, 'type'>) {
+  constructor(config: ZeroDBStoreConfig) {
     super(config)
     this.config = config
-    this.tableName = config.tableName || 'conversations'
+    this._tableName = config.tableName || 'conversations'
+  }
+
+  /**
+   * Get the table name (for production ZeroDB operations)
+   * @internal - Reserved for future ZeroDB MCP implementation
+   */
+  private get tableName(): string {
+    return this._tableName
   }
 
   /**
@@ -50,6 +59,8 @@ export class ZeroDBStore extends ConversationStore {
     try {
       // Check if table exists using ZeroDB MCP command
       // We'll use a mock implementation that can be replaced with actual ZeroDB calls
+      // The tableName property will be used in production: await zerodb.createTable(this.tableName, schema)
+      void this.tableName // Reference to prevent unused warning
       this.initialized = true
     } catch (error) {
       throw new Error(
@@ -252,7 +263,7 @@ export class ZeroDBStore extends ConversationStore {
    * In a real implementation, this would use the ZeroDB MCP /zerodb-table-insert
    * or /zerodb-table-update commands
    */
-  private async upsertRow(row: ZeroDBRow): Promise<void> {
+  private async upsertRow(_row: ZeroDBRow): Promise<void> {
     // Mock implementation - to be replaced with actual ZeroDB API calls
     // In production, this would use the ZeroDB MCP commands:
     // await this.mcpClient.call('/zerodb-table-update', {
@@ -265,7 +276,7 @@ export class ZeroDBStore extends ConversationStore {
   /**
    * Query a single row by conversation ID
    */
-  private async queryRow(conversationId: string): Promise<ZeroDBRow | null> {
+  private async queryRow(_conversationId: string): Promise<ZeroDBRow | null> {
     // Mock implementation - to be replaced with actual ZeroDB API calls
     // In production, this would use the ZeroDB MCP commands:
     // const result = await this.mcpClient.call('/zerodb-table-query', {
@@ -293,7 +304,7 @@ export class ZeroDBStore extends ConversationStore {
   /**
    * Delete a row by conversation ID
    */
-  private async deleteRow(conversationId: string): Promise<void> {
+  private async deleteRow(_conversationId: string): Promise<void> {
     // Mock implementation - to be replaced with actual ZeroDB API calls
     // In production, this would use the ZeroDB MCP commands:
     // await this.mcpClient.call('/zerodb-table-delete', {

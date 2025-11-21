@@ -9,7 +9,6 @@ import { Agent } from './Agent';
 import {
   AgentState,
   Message,
-  ToolCall,
   ToolResult,
   ExecutionTrace,
   TraceEvent,

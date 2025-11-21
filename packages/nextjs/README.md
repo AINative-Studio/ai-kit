@@ -301,5 +301,5 @@ Contributions are welcome! Please read our [Contributing Guide](../../CONTRIBUTI
 ## Support
 
 - GitHub: https://github.com/AINative-Studio/ai-kit
-- Documentation: https://ainative.studio/docs
+- Documentation: https://ainative.studio/ai-kit
 - Issues: https://github.com/AINative-Studio/ai-kit/issues

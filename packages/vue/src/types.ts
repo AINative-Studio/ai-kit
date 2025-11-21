@@ -5,20 +5,20 @@
 import { Ref } from 'vue'
 
 // Temporary type definitions until core DTS is fixed
-type Message = {
+export type Message = {
   id: string
   role: 'user' | 'assistant' | 'system'
   content: string
   timestamp: number
 }
 
-type Conversation = {
+export type Conversation = {
   id: string
   messages: Message[]
   metadata?: ConversationMetadata
 }
 
-type ConversationMetadata = {
+export type ConversationMetadata = {
   createdAt?: number
   updatedAt?: number
   title?: string

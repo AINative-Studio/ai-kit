@@ -3,15 +3,12 @@
  * Comprehensive types for framework configuration
  */
 
-import type { JsonValue, Brand } from './utils';
+import type { JsonValue, Brand, ModelId, ToolId, AgentId } from './utils';
+import type { ModelProvider } from './models.d';
 import type {
-  ModelProvider,
-  ModelId,
-  ToolId,
-  AgentId,
   ErrorCategory,
   ErrorSeverity,
-} from './utils';
+} from './errors.d';
 import type {
   RateLimitConfig,
   RateLimitRule,

@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-observability",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0",
   "description": "AI Kit - Usage tracking, monitoring, cost alerts, and observability for LLM applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -32,16 +32,27 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
+    "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic",
     "observability",
     "monitoring",
-    "usage-tracking",
-    "cost-tracking",
-    "ainative"
+    "metrics",
+    "analytics",
+    "tracking",
+    "reporting"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://ainative.studio/ai-kit",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

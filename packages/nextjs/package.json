@@ -32,17 +32,27 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
     "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic",
     "nextjs",
-    "next",
     "react",
-    "server-components",
-    "ainative"
+    "framework",
+    "ssr",
+    "app-router",
+    "server-components"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

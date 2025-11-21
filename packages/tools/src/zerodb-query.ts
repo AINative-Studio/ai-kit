@@ -313,7 +313,7 @@ export class QueryParser {
 
     // Match "where key=value"
     const whereMatch = nl.match(/where\s+(\w+)\s*=\s*['"']?(\w+)['"']?/);
-    if (whereMatch) {
+    if (whereMatch && whereMatch[1] && whereMatch[2]) {
       filters[whereMatch[1]] = whereMatch[2];
     }
 
@@ -340,12 +340,13 @@ export class QueryParser {
 
   private static extractOffset(nl: string): number | undefined {
     const match = nl.match(/offset\s+(\d+)/);
-    return match ? parseInt(match[1], 10) : undefined;
+    const offset = match?.[1]
+    return offset ? parseInt(offset, 10) : undefined;
   }
 
   private static extractTopic(nl: string): string | undefined {
     const match = nl.match(/topic\s+['"']?(\w+)['"']?/);
-    return match ? match[1] : undefined;
+    return match?.[1];
   }
 }
 
@@ -398,12 +399,12 @@ export class ResultFormatter {
     });
 
     // Build header
-    const header = columns.map((col, i) => col.padEnd(widths[i])).join(' | ');
-    const separator = widths.map((w) => '-'.repeat(w)).join('-+-');
+    const header = columns.map((col, i) => col.padEnd(widths[i] || 0)).join(' | ');
+    const separator = widths.map((w) => '-'.repeat(w || 0)).join('-+-');
 
     // Build rows
     const tableRows = rows.map((row) =>
-      columns.map((col, i) => String(row[col] || '').padEnd(widths[i])).join(' | ')
+      columns.map((col, i) => String(row[col] || '').padEnd(widths[i] || 0)).join(' | ')
     );
 
     return [header, separator, ...tableRows].join('\n');

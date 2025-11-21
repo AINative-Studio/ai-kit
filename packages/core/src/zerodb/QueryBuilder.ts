@@ -117,7 +117,7 @@ export class QueryBuilder<T = any> implements IQueryBuilder<T> {
   /**
    * Add GROUP BY
    */
-  groupBy(...fields: string[]): IQueryBuilder<T> {
+  groupBy(..._fields: string[]): IQueryBuilder<T> {
     // Store group by fields in metadata for later processing
     if (!this.options.select) {
       this.options.select = []
@@ -129,7 +129,7 @@ export class QueryBuilder<T = any> implements IQueryBuilder<T> {
   /**
    * Add HAVING
    */
-  having(field: string, operator: FilterOperator, value: any): IQueryBuilder<T> {
+  having(_field: string, _operator: FilterOperator, _value: any): IQueryBuilder<T> {
     // Note: HAVING implementation would require GROUP BY support
     return this
   }

@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-core",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.1",
   "description": "Framework-agnostic core for AI Kit - streaming, agents, state management, and LLM primitives",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -106,19 +106,27 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
     "llm",
-    "streaming",
-    "agents",
-    "state-management",
-    "framework-agnostic",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
+    "claude",
+    "claude-code",
     "openai",
     "anthropic",
-    "ainative"
+    "framework",
+    "sdk",
+    "agents",
+    "streaming",
+    "memory",
+    "tools"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://ainative.studio/ai-kit",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

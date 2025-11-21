@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-rlhf",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0",
   "description": "AI Kit - AINative RLHF (Reinforcement Learning from Human Feedback) integration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -27,15 +27,26 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
+    "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic",
     "rlhf",
+    "reinforcement-learning",
     "feedback",
-    "machine-learning",
-    "ainative"
+    "training",
+    "machine-learning"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

@@ -5,7 +5,7 @@
  */
 
 import { Message } from '../types';
-import { LLMProvider, ChatRequest } from '../agents/llm/LLMProvider';
+import { LLMProvider } from '../agents/llm/LLMProvider';
 import { OpenAIProvider } from '../agents/llm/OpenAIProvider';
 import { AnthropicProvider } from '../agents/llm/AnthropicProvider';
 import { generateShortId } from '../utils/id';
@@ -226,7 +226,7 @@ export class ConversationSummarizer {
     });
 
     const summary: Summary = {
-      id: generateShortId('sum'),
+      id: `sum-${generateShortId()}`,
       conversationId,
       content: response.content,
       keyPoints: this.extractKeyPointsFromSummary(response.content),
@@ -319,7 +319,7 @@ export class ConversationSummarizer {
     }
 
     const summary: Summary = {
-      id: generateShortId('sum'),
+      id: `sum-${generateShortId()}`,
       conversationId,
       content: finalResponse.content,
       keyPoints: this.extractKeyPointsFromSummary(finalResponse.content),
@@ -380,7 +380,7 @@ export class ConversationSummarizer {
       }
 
       leafSummaries.push({
-        id: generateShortId('sum'),
+        id: `sum-${generateShortId()}`,
         conversationId,
         content: response.content,
         strategy: 'hierarchical',
@@ -418,7 +418,7 @@ export class ConversationSummarizer {
     }
 
     const rootSummary: Summary = {
-      id: generateShortId('sum'),
+      id: `sum-${generateShortId()}`,
       conversationId,
       content: finalResponse.content,
       keyPoints: this.extractKeyPointsFromSummary(finalResponse.content),
@@ -468,7 +468,7 @@ export class ConversationSummarizer {
     );
 
     const summary: Summary = {
-      id: generateShortId('sum'),
+      id: `sum-${generateShortId()}`,
       conversationId,
       content,
       keyPoints,
@@ -524,7 +524,7 @@ export class ConversationSummarizer {
     });
 
     const summary: Summary = {
-      id: generateShortId('sum'),
+      id: `sum-${generateShortId()}`,
       conversationId,
       content: response.content,
       keyPoints: keywords.slice(0, this.config.maxKeyPoints ?? 5),
@@ -562,7 +562,7 @@ export class ConversationSummarizer {
 
       const combinedSummary: Summary = {
         ...existingSummary,
-        id: generateShortId('sum'),
+        id: `sum-${generateShortId()}`,
         content: `${existingSummary.content}\n\n${newSummaryResult.summary.content}`,
         messageCount:
           existingSummary.messageCount + newMessages.length,
@@ -597,7 +597,7 @@ export class ConversationSummarizer {
 
       const mergedSummary: Summary = {
         ...existingSummary,
-        id: generateShortId('sum'),
+        id: `sum-${generateShortId()}`,
         content: response.content,
         keyPoints: this.extractKeyPointsFromSummary(response.content),
         messageCount:

@@ -256,7 +256,9 @@ export class MockUsageTracker {
         return records.map((r) => JSON.stringify(r)).join('\n');
       case 'csv':
         if (records.length === 0) return '';
-        const headers = Object.keys(records[0]).join(',');
+        const firstRecord = records[0];
+        if (!firstRecord) return '';
+        const headers = Object.keys(firstRecord).join(',');
         const rows = records.map((r) => Object.values(r).join(','));
         return [headers, ...rows].join('\n');
       default:

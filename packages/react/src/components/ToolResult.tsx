@@ -6,7 +6,6 @@
 import React from 'react';
 import { ComponentRegistry } from '../registry/ComponentRegistry';
 import { UnknownTool } from './UnknownTool';
-import { ToolResultData } from '../types';
 
 export interface ToolResultProps {
   /**
@@ -81,14 +80,14 @@ class ToolResultErrorBoundary extends React.Component<
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ToolResult rendering error:', error, errorInfo);
     if (this.props.onError) {
       this.props.onError(error);
     }
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       return (
         <div

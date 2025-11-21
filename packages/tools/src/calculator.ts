@@ -7,7 +7,7 @@
  * Security: Uses mathjs parser instead of eval() to prevent code injection.
  */
 
-import { create, all, ConfigOptions, MathJsStatic } from 'mathjs'
+import { create, all, ConfigOptions, MathJsStatic, FactoryFunctionMap } from 'mathjs'
 import { z } from 'zod'
 
 /**
@@ -21,7 +21,7 @@ const mathConfig: ConfigOptions = {
 }
 
 // Create a restricted math instance
-const math: MathJsStatic = create(all, mathConfig)
+const math: MathJsStatic = create(all as FactoryFunctionMap, mathConfig)
 
 /**
  * Input validation schema

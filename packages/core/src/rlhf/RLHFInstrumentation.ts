@@ -18,7 +18,7 @@ import type {
   ErrorEvent,
   CustomInstrumentor,
   InstrumentationMiddleware,
-  InstrumentationStorage,
+  // InstrumentationStorage,
   InteractionFilter,
 } from './instrumentation-types'
 
@@ -181,9 +181,13 @@ export class RLHFInstrumentation extends EventEmitter {
     const runMiddleware = () => {
       if (middlewareIndex < this.middleware.length) {
         const current = this.middleware[middlewareIndex++]
-        current(processedInteraction!, runMiddleware)
+        if (current && processedInteraction) {
+          current(processedInteraction, runMiddleware)
+        }
       } else {
-        this.storeInteraction(processedInteraction!)
+        if (processedInteraction) {
+          this.storeInteraction(processedInteraction)
+        }
       }
     }
     runMiddleware()
@@ -417,7 +421,7 @@ export class RLHFInstrumentation extends EventEmitter {
   /**
    * Handle token event from stream
    */
-  private handleToken(token: string): void {
+  private handleToken(_token: string): void {
     if (!this.config.captureMetrics) {
       return
     }
@@ -431,7 +435,7 @@ export class RLHFInstrumentation extends EventEmitter {
   /**
    * Handle usage event from stream
    */
-  private handleUsage(usage: Usage): void {
+  private handleUsage(_usage: Usage): void {
     // Usage will be attached to the interaction when completed
   }
 
@@ -484,7 +488,8 @@ export class RLHFInstrumentation extends EventEmitter {
     if (entries.length === 0) {
       return undefined
     }
-    return entries[entries.length - 1][1]
+    const lastEntry = entries[entries.length - 1]
+    return lastEntry?.[1]
   }
 
   /**
@@ -594,7 +599,7 @@ export class RLHFInstrumentation extends EventEmitter {
 
     // Update average response time
     this.metrics.averageResponseTime =
-      (this.metrics.averageResponseTime * (total - 1) + interaction.metrics.totalResponseTime) / total
+      (this.metrics.averageResponseTime * (total - 1) + (interaction.metrics?.totalResponseTime ?? 0)) / total
 
     // Update average tokens per interaction
     const totalTokens = (interaction.usage?.totalTokens ?? 0)

@@ -65,7 +65,11 @@ export class AINativeAuthProvider {
    * @param storageAdapter - Custom storage adapter (required if using CUSTOM storage strategy)
    */
   constructor(config: AuthConfig = {}, storageAdapter?: StorageAdapter) {
-    this.config = { ...DEFAULT_CONFIG, ...config };
+    this.config = {
+      ...DEFAULT_CONFIG,
+      ...config,
+      customHeaders: config.customHeaders || {},
+    };
     this.customHeaders = config.customHeaders || {};
     this.session = { status: AuthStatus.UNAUTHENTICATED };
     this.eventListeners = new Map();

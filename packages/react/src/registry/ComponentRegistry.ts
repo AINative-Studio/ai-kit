@@ -49,7 +49,7 @@ export class ComponentRegistry {
   constructor(config: RegistryConfig = {}) {
     this.config = {
       strictMode: config.strictMode ?? false,
-      fallbackComponent: config.fallbackComponent ?? null,
+      fallbackComponent: (config.fallbackComponent ?? null) as any,
       enableCaching: config.enableCaching ?? true,
       cacheSize: config.cacheSize ?? 100,
     }
@@ -168,11 +168,15 @@ export class ComponentRegistry {
       result = this.createNotFoundResult(toolName, options)
     } else {
       const entry = entries.find((e) => e.variant === variant) ?? entries[0]
-      result = {
-        component: entry.mapping.component as ComponentType<TProps>,
-        mapProps: entry.mapping.mapProps as PropMapper<TToolResult, TProps>,
-        found: true,
-        validate: entry.mapping.validate as ((props: TProps) => boolean) | undefined,
+      if (!entry) {
+        result = this.createNotFoundResult(toolName, options)
+      } else {
+        result = {
+          component: entry.mapping.component as ComponentType<TProps>,
+          mapProps: entry.mapping.mapProps as PropMapper<TToolResult, TProps>,
+          found: true,
+          validate: entry.mapping.validate as ((props: TProps) => boolean) | undefined,
+        }
       }
     }
 

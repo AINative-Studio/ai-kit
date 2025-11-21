@@ -10,7 +10,7 @@ import type {
   AggregatedUsage,
   LLMProvider,
   ExportFormat,
-} from '@ainative/ai-kit-core/src/tracking/types';
+} from '@ainative/ai-kit-core/tracking';
 
 /**
  * Date range preset options
@@ -493,8 +493,8 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({
   const costByDateData = useMemo(() => {
     if (!aggregatedData.byDate) return [];
     return Object.values(aggregatedData.byDate)
-      .sort((a, b) => a.date.localeCompare(b.date))
-      .map((d) => ({
+      .sort((a: any, b: any) => a.date.localeCompare(b.date))
+      .map((d: any) => ({
         label: d.date.substring(5), // MM-DD
         value: d.totalCost,
       }));
@@ -502,9 +502,9 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({
 
   const requestsByModelData = useMemo(() => {
     return Object.values(aggregatedData.byModel)
-      .sort((a, b) => b.totalRequests - a.totalRequests)
+      .sort((a: any, b: any) => b.totalRequests - a.totalRequests)
       .slice(0, 10)
-      .map((m) => ({
+      .map((m: any) => ({
         label: m.model,
         value: m.totalRequests,
         color: m.provider === 'openai' ? '#10a37f' : m.provider === 'anthropic' ? '#d97757' : '#6b7280',
@@ -513,9 +513,9 @@ export const UsageDashboard: React.FC<UsageDashboardProps> = ({
 
   const tokensByModelData = useMemo(() => {
     return Object.values(aggregatedData.byModel)
-      .sort((a, b) => b.totalTokens - a.totalTokens)
+      .sort((a: any, b: any) => b.totalTokens - a.totalTokens)
       .slice(0, 10)
-      .map((m) => ({
+      .map((m: any) => ({
         label: m.model,
         value: m.totalTokens,
         color: m.provider === 'openai' ? '#10a37f' : m.provider === 'anthropic' ? '#d97757' : '#6b7280',

@@ -30,7 +30,18 @@ export function countTokens(text: string): TokenCount {
 export function countMessageTokens(message: Message): TokenCount {
   // Add overhead for role, etc. (approximate)
   const overhead = 4
-  const contentTokens = countTokens(message.content)
+
+  // Handle different content types
+  let contentText = ''
+  if (typeof message.content === 'string') {
+    contentText = message.content
+  } else if (Array.isArray(message.content)) {
+    contentText = message.content.map(c => c.type === 'text' ? (c as any).text : '').join('')
+  } else if (message.content && typeof message.content === 'object' && 'text' in message.content) {
+    contentText = (message.content as any).text || ''
+  }
+
+  const contentTokens = countTokens(contentText)
 
   return {
     tokens: contentTokens.tokens + overhead,

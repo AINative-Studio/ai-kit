@@ -66,6 +66,7 @@ export const StreamingToolResult: React.FC<StreamingToolResultProps> = ({
       }, 300);
       return () => clearTimeout(timeout);
     }
+    return undefined;
   }, [status.state, previousState]);
 
   // Call onComplete when execution succeeds

@@ -15,9 +15,7 @@ import {
   Message,
   AgentError,
   ToolValidationError,
-  ToolExecutionError,
 } from './types';
-import { generateId } from '../utils/id';
 
 /**
  * Base Agent class that manages tools and provides execution context
@@ -32,11 +30,6 @@ export class Agent {
    * Tool registry (name -> definition)
    */
   private toolRegistry: ToolRegistry;
-
-  /**
-   * Whether the agent has been initialized
-   */
-  private initialized: boolean = false;
 
   constructor(config: AgentConfig) {
     this.config = config;

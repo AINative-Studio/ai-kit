@@ -84,7 +84,10 @@ export class SemanticSearch {
         dimensions: this.config.dimensions,
       })
 
-      const embedding = response.data[0].embedding
+      const embedding = response.data[0]?.embedding
+      if (!embedding) {
+        throw new Error('Failed to generate embedding')
+      }
       const duration = Date.now() - startTime
 
       // Update cache
@@ -160,8 +163,10 @@ export class SemanticSearch {
         })
 
         uncachedIndices.forEach((index, i) => {
-          const embedding = response.data[i].embedding
-          batchEmbeddings[index] = embedding
+          const embedding = response.data[i]?.embedding
+          if (embedding) {
+            batchEmbeddings[index] = embedding
+          }
 
           // Cache the result
           const text = uncachedTexts[i]
@@ -357,9 +362,11 @@ export class SemanticSearch {
     let normB = 0
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i]
-      normA += a[i] * a[i]
-      normB += b[i] * b[i]
+      const aVal = a[i] ?? 0
+      const bVal = b[i] ?? 0
+      dotProduct += aVal * bVal
+      normA += aVal * aVal
+      normB += bVal * bVal
     }
 
     const denominator = Math.sqrt(normA) * Math.sqrt(normB)

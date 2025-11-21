@@ -245,7 +245,7 @@ export class DesignConstraints {
       // Layout constraints
       if (description.includes('grid') || description.includes('column')) {
         const gridMatch = description.match(/(\d+)\s*columns?/);
-        if (gridMatch) {
+        if (gridMatch && gridMatch[1]) {
           const columns = parseInt(gridMatch[1], 10);
           constraints.push(
             this.defineLayoutConstraint(
@@ -274,7 +274,7 @@ export class DesignConstraints {
       // Typography constraints
       if (description.includes('font') || description.includes('typography')) {
         const fontMatch = description.match(/(?:use|font-family:?)\s*['"]([^'"]+)['"]/i);
-        if (fontMatch) {
+        if (fontMatch && fontMatch[1]) {
           constraints.push(
             this.defineTypographyConstraint(
               `nl_typography_${Date.now()}`,
@@ -288,7 +288,7 @@ export class DesignConstraints {
       // Accessibility constraints
       if (description.includes('accessible') || description.includes('wcag') || description.includes('a11y')) {
         const wcagMatch = description.match(/wcag\s*(a{1,3})/i);
-        const level = wcagMatch ? (wcagMatch[1].toUpperCase() as WCAGLevel) : WCAGLevel.AA;
+        const level = wcagMatch?.[1] ? (wcagMatch[1].toUpperCase() as WCAGLevel) : WCAGLevel.AA;
         constraints.push(
           this.defineAccessibilityConstraint(
             `nl_a11y_${Date.now()}`,
@@ -964,8 +964,8 @@ export class DesignConstraints {
    * Validate spacing constraint
    */
   private validateSpacingConstraint(
-    constraint: SpacingConstraint,
-    design: DesignOutput
+    _constraint: SpacingConstraint,
+    _design: DesignOutput
   ): ValidationIssue[] {
     const issues: ValidationIssue[] = [];
     // Spacing validation would require deep inspection of styles
@@ -1162,7 +1162,7 @@ export class DesignConstraints {
     return severityMap[priority];
   }
 
-  private generateExamples(type: ConstraintType, constraints: Constraint[]): string[] | undefined {
+  private generateExamples(type: ConstraintType, _constraints: Constraint[]): string[] | undefined {
     // Generate examples based on constraint type
     const examples: string[] = [];
 

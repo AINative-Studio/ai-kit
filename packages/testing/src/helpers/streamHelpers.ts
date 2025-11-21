@@ -151,6 +151,8 @@ export function mockStreamingResponse(
           }
 
           const event = events[i];
+          if (!event) continue;
+
           const encoder = new TextEncoder();
 
           // Build SSE format

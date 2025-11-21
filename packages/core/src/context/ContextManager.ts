@@ -22,7 +22,7 @@ class OldestFirstStrategy implements TruncationStrategy {
   truncate(
     messages: ContextMessage[],
     maxTokens: number,
-    currentTokens: number,
+    _currentTokens: number,
     config: ContextConfig
   ): ContextMessage[] {
     const counter = new TokenCounter();
@@ -84,7 +84,7 @@ class SlidingWindowStrategy implements TruncationStrategy {
   truncate(
     messages: ContextMessage[],
     maxTokens: number,
-    currentTokens: number,
+    _currentTokens: number,
     config: ContextConfig
   ): ContextMessage[] {
     const counter = new TokenCounter();
@@ -103,7 +103,6 @@ class SlidingWindowStrategy implements TruncationStrategy {
 
     // Combine and deduplicate
     const combined = [...systemMessages, ...firstMessages];
-    const lastMessagesSet = new Set(lastMessages);
 
     for (const msg of lastMessages) {
       if (!combined.includes(msg)) {
@@ -139,7 +138,7 @@ class ImportanceBasedStrategy implements TruncationStrategy {
   truncate(
     messages: ContextMessage[],
     maxTokens: number,
-    currentTokens: number,
+    _currentTokens: number,
     config: ContextConfig
   ): ContextMessage[] {
     const counter = new TokenCounter();
@@ -228,7 +227,7 @@ class LeastRelevantStrategy implements TruncationStrategy {
   truncate(
     messages: ContextMessage[],
     maxTokens: number,
-    currentTokens: number,
+    _currentTokens: number,
     config: ContextConfig
   ): ContextMessage[] {
     const counter = new TokenCounter();
@@ -241,7 +240,7 @@ class LeastRelevantStrategy implements TruncationStrategy {
     if (!hasEmbeddings) {
       // Fallback to oldest-first strategy
       const strategy = new OldestFirstStrategy();
-      return strategy.truncate(messages, maxTokens, currentTokens, config);
+      return strategy.truncate(messages, maxTokens, _currentTokens, config);
     }
 
     // Separate messages
@@ -268,14 +267,18 @@ class LeastRelevantStrategy implements TruncationStrategy {
         if (!embedding) continue;
         for (let i = 0; i < embeddingLength; i++) {
           const val = embedding[i];
-          if (val !== undefined && avgEmbedding[i] !== undefined) {
-            avgEmbedding[i] += val;
+          const avgVal = avgEmbedding[i];
+          if (val !== undefined && avgVal !== undefined) {
+            avgEmbedding[i] = avgVal + val;
           }
         }
       }
 
       for (let i = 0; i < embeddingLength; i++) {
-        avgEmbedding[i] /= recentEmbeddings.length;
+        const avgVal = avgEmbedding[i];
+        if (avgVal !== undefined) {
+          avgEmbedding[i] = avgVal / recentEmbeddings.length;
+        }
       }
     }
 
@@ -324,7 +327,7 @@ class LeastRelevantStrategy implements TruncationStrategy {
 export class ContextManager {
   private config: ContextConfig;
   private counter: TokenCounter;
-  private strategies: Map<TruncationStrategyType, TruncationStrategy>;
+  private strategies: Map<string, TruncationStrategy>;
 
   constructor(config: ContextConfig) {
     this.config = {
@@ -339,12 +342,11 @@ export class ContextManager {
     this.counter = new TokenCounter();
 
     // Initialize strategies
-    this.strategies = new Map([
-      ['oldest-first', new OldestFirstStrategy()],
-      ['sliding-window', new SlidingWindowStrategy()],
-      ['importance-based', new ImportanceBasedStrategy()],
-      ['least-relevant', new LeastRelevantStrategy()],
-    ]);
+    this.strategies = new Map<string, TruncationStrategy>();
+    this.strategies.set('oldest-first', new OldestFirstStrategy());
+    this.strategies.set('sliding-window', new SlidingWindowStrategy());
+    this.strategies.set('importance-based', new ImportanceBasedStrategy());
+    this.strategies.set('least-relevant', new LeastRelevantStrategy());
   }
 
   /**

@@ -166,8 +166,8 @@ export class MemoryStorage implements IStorageBackend {
 
       case ExportFormat.JSONL:
         const lines = [
-          ...interactions.map(i => JSON.stringify({ type: 'interaction', ...i })),
-          ...feedback.map(f => JSON.stringify({ type: 'feedback', ...f })),
+          ...interactions.map(i => JSON.stringify({ ...i, type: 'interaction' })),
+          ...feedback.map(f => JSON.stringify({ ...f, type: 'feedback' })),
         ];
         return lines.join('\n');
 
@@ -250,7 +250,7 @@ export class MemoryStorage implements IStorageBackend {
       const ratings = ratingFeedback.map(f => (f.data as RatingFeedbackData).rating);
       const sum = ratings.reduce((a, b) => a + b, 0);
       const sorted = [...ratings].sort((a, b) => a - b);
-      const median = sorted[Math.floor(sorted.length / 2)];
+      const median = sorted[Math.floor(sorted.length / 2)] ?? 0;
 
       const distribution: { [rating: number]: number } = {};
       ratings.forEach(r => {
@@ -305,7 +305,11 @@ export class MemoryStorage implements IStorageBackend {
 
       const dimensionAverages: { [key: string]: number } = {};
       Object.keys(dimensionSums).forEach(dim => {
-        dimensionAverages[dim] = dimensionSums[dim] / dimensionCounts[dim];
+        const sum = dimensionSums[dim];
+        const count = dimensionCounts[dim];
+        if (sum !== undefined && count !== undefined && count > 0) {
+          dimensionAverages[dim] = sum / count;
+        }
       });
 
       stats.multiDimensional = {

@@ -78,10 +78,16 @@ export class RLHFLogger {
   private createStorageBackend(): IStorageBackend {
     switch (this.config.backend) {
       case StorageBackend.ZERODB:
-        return new ZeroDBStorage(this.config.backendConfig?.zerodb || {});
+        if (!this.config.backendConfig?.zerodb) {
+          throw new Error('ZeroDB backend config is required when using ZERODB storage');
+        }
+        return new ZeroDBStorage(this.config.backendConfig.zerodb);
 
       case StorageBackend.LOCAL:
-        return new LocalStorage(this.config.backendConfig?.local || {});
+        if (!this.config.backendConfig?.local) {
+          throw new Error('Local backend config is required when using LOCAL storage');
+        }
+        return new LocalStorage(this.config.backendConfig.local);
 
       case StorageBackend.MEMORY:
         return new MemoryStorage(this.config.backendConfig?.memory || {});
@@ -136,7 +142,7 @@ export class RLHFLogger {
       [key: string]: any;
     }
   ): Promise<string> {
-    const interactionId = this.config.autoGenerateIds ? randomUUID() : metadata?.id;
+    const interactionId = this.config.autoGenerateIds ? randomUUID() : metadata?.['id'];
 
     if (!interactionId) {
       throw new Error('Interaction ID required when autoGenerateIds is disabled');
@@ -322,7 +328,7 @@ export class RLHFLogger {
       [key: string]: any;
     }
   ): Promise<string> {
-    const feedbackId = this.config.autoGenerateIds ? randomUUID() : metadata?.id;
+    const feedbackId = this.config.autoGenerateIds ? randomUUID() : metadata?.['id'];
 
     if (!feedbackId) {
       throw new Error('Feedback ID required when autoGenerateIds is disabled');

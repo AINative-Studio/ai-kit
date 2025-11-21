@@ -565,7 +565,7 @@ If multiple specialists are needed, respond with a JSON array of such objects.`;
 
     // If only one specialist, return its response directly
     if (results.length === 1) {
-      return results[0].response;
+      return results[0]?.response ?? '';
     }
 
     // Emit synthesis event

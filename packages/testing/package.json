@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-testing",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0",
   "description": "AI Kit - Testing utilities and fixtures for AI applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -47,15 +47,27 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
+    "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic",
     "testing",
     "test-utils",
+    "mocks",
     "fixtures",
-    "ainative"
+    "vitest",
+    "jest"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

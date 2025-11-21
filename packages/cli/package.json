@@ -27,17 +27,27 @@
     "prepublishOnly": "pnpm build"
   },
   "keywords": [
+    "ainative",
     "ai",
+    "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
     "cli",
     "scaffold",
     "generator",
-    "ai-kit",
     "template",
-    "ainative"
+    "developer-tools",
+    "code-generation",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

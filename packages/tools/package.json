@@ -27,17 +27,26 @@
     "clean": "rm -rf dist"
   },
   "keywords": [
+    "ainative",
     "ai",
     "llm",
+    "typescript",
+    "ai-agents",
+    "ai-primitives",
+    "ainative-developer",
+    "claude",
+    "claude-code",
+    "openai",
+    "anthropic",
     "tools",
-    "agents",
-    "web-search",
-    "calculator",
-    "ainative"
+    "utilities",
+    "helpers",
+    "mcp",
+    "integrations"
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://ai-kit.ainative.studio",
+  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",

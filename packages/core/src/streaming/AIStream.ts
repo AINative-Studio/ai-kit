@@ -6,7 +6,16 @@ import type {
   StreamConfig,
   StreamOptions,
   RetryConfig,
+  StreamCallbacks,
 } from '../types'
+import { createBrandedId } from '../types/utils'
+
+/**
+ * Extended StreamConfig with callbacks
+ */
+interface AIStreamConfig extends StreamConfig, Partial<StreamCallbacks> {
+  onCost?: (usage: Usage) => void;
+}
 
 /**
  * Core AI streaming client - framework-agnostic
@@ -24,7 +33,7 @@ export class AIStream extends EventEmitter {
   }
 
   constructor(
-    private config: StreamConfig,
+    private config: AIStreamConfig,
     _options: StreamOptions = {}
   ) {
     super()
@@ -37,10 +46,10 @@ export class AIStream extends EventEmitter {
    */
   async send(content: string): Promise<void> {
     const userMessage: Message = {
-      id: this.generateId(),
+      id: createBrandedId(this.generateId(), 'MessageId'),
       role: 'user',
       content,
-      timestamp: Date.now(),
+      timestamp: Date.now() as any, // Cast to branded Timestamp type
     }
 
     this.messages.push(userMessage)
@@ -108,11 +117,12 @@ export class AIStream extends EventEmitter {
     const decoder = new TextDecoder()
     let accumulatedContent = ''
 
-    const assistantMessage: Message = {
-      id: this.generateId(),
-      role: 'assistant',
+    // Create a mutable copy of the message for accumulation
+    const assistantMessage = {
+      id: createBrandedId(this.generateId(), 'MessageId'),
+      role: 'assistant' as const,
       content: '',
-      timestamp: Date.now(),
+      timestamp: Date.now() as any, // Cast to branded Timestamp type
     }
 
     const parser = createParser((event: ParsedEvent | ReconnectInterval) => {
@@ -239,10 +249,16 @@ export class AIStream extends EventEmitter {
    */
   private getRetryConfig(): Required<RetryConfig> {
     return {
+      enabled: this.config.retry?.enabled ?? true,
       maxRetries: this.config.retry?.maxRetries ?? 3,
+      maxAttempts: this.config.retry?.maxAttempts ?? 3,
       backoff: this.config.retry?.backoff ?? 'exponential',
+      backoffMultiplier: this.config.retry?.backoffMultiplier ?? 2,
       initialDelay: this.config.retry?.initialDelay ?? 1000,
       maxDelay: this.config.retry?.maxDelay ?? 10000,
+      jitter: this.config.retry?.jitter ?? false,
+      retryableStatusCodes: this.config.retry?.retryableStatusCodes ?? [408, 429, 500, 502, 503, 504],
+      retryableErrors: this.config.retry?.retryableErrors ?? [],
     }
   }
 
@@ -268,7 +284,8 @@ export class AIStream extends EventEmitter {
     }
 
     // Remove the last assistant message if exists
-    if (this.messages[this.messages.length - 1].role === 'assistant') {
+    const lastMessage = this.messages[this.messages.length - 1]
+    if (lastMessage && lastMessage.role === 'assistant') {
       this.messages.pop()
     }
 

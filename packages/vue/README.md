@@ -240,7 +240,7 @@ Same as Vue 3 requirements:
 
 ## Documentation
 
-For full documentation, visit [AI Kit Documentation](https://github.com/AINative-Studio/ai-kit).
+For full documentation, visit [https://ainative.studio/ai-kit](https://ainative.studio/ai-kit)
 
 ## License
 

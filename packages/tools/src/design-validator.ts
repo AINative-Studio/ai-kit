@@ -35,12 +35,9 @@ import {
   AIRecommendation,
   RecommendationEngine,
   BatchValidationResult,
-  ReportConfig,
   ContrastResult,
   TouchTargetResult,
   TypographyResult,
-  SpacingResult,
-  ImageOptimizationResult,
   Color,
   FixStrategy
 } from './design-validator-types'
@@ -295,7 +292,7 @@ export class DesignValidator {
         severity: Severity.WARNING,
         wcagCriteria: ['2.5.5'],
         enabled: true,
-        validate: (element, context) => {
+        validate: (element, _context) => {
           const issues: ValidationIssue[] = []
           const minSize = this.config.accessibility?.minTouchTargetSize || 44
 
@@ -338,7 +335,7 @@ export class DesignValidator {
         validate: (element) => {
           const issues: ValidationIssue[] = []
 
-          if (element.focusable && !element.styles?.outline && !element.styles?.boxShadow) {
+          if (element.focusable && !element.styles?.['outline'] && !element.styles?.['boxShadow']) {
             issues.push({
               id: `${element.id}-focus-indicator`,
               ruleId: 'a11y-focus-indicator',
@@ -491,9 +488,9 @@ export class DesignValidator {
         validate: (element, context) => {
           const issues: ValidationIssue[] = []
 
-          if (!context.brandGuide?.spacing || !element.styles?.padding) return issues
+          if (!context.brandGuide?.spacing || !element.styles?.['padding']) return issues
 
-          const padding = element.styles.padding
+          const padding = element.styles['padding']
           const matches = this.spacingMatchesSystem(
             padding,
             context.brandGuide.spacing
@@ -540,7 +537,7 @@ export class DesignValidator {
 
           if (element.type === 'heading' && element.typography) {
             const siblingHeadings = context.siblingElements?.filter(
-              e => e.type === 'heading'
+              (e: DesignElement) => e.type === 'heading'
             ) || []
 
             const hasHierarchyIssue = this.checkHierarchyConsistency(
@@ -580,7 +577,7 @@ export class DesignValidator {
           const issues: ValidationIssue[] = []
 
           const similarElements = context.design.elements.filter(
-            e => e.type === element.type && e.id !== element.id
+            (e: DesignElement) => e.type === element.type && e.id !== element.id
           )
 
           if (similarElements.length > 0) {
@@ -628,19 +625,20 @@ export class DesignValidator {
         validate: (element) => {
           const issues: ValidationIssue[] = []
 
-          if (element.type === 'image' && element.properties?.fileSize) {
+          if (element.type === 'image' && element.properties?.['fileSize']) {
             const maxSize = this.config.performance?.maxImageSize || 500 * 1024
+            const fileSize = element.properties['fileSize']
 
-            if (element.properties.fileSize > maxSize) {
+            if (fileSize > maxSize) {
               issues.push({
                 id: `${element.id}-image-size`,
                 ruleId: 'perf-image-size',
                 category: ValidationCategory.PERFORMANCE,
                 severity: Severity.WARNING,
-                message: `Image too large: ${(element.properties.fileSize / 1024).toFixed(0)}KB`,
+                message: `Image too large: ${(fileSize / 1024).toFixed(0)}KB`,
                 description: `Images should be under ${(maxSize / 1024).toFixed(0)}KB`,
                 elementId: element.id,
-                actualValue: element.properties.fileSize,
+                actualValue: fileSize,
                 expectedValue: maxSize,
                 impact: 'moderate',
                 suggestions: [
@@ -666,8 +664,8 @@ export class DesignValidator {
           const issues: ValidationIssue[] = []
           const recommendedFormats = this.config.performance?.recommendedFormats || []
 
-          if (element.type === 'image' && element.properties?.format) {
-            const format = element.properties.format.toLowerCase()
+          if (element.type === 'image' && element.properties?.['format']) {
+            const format = String(element.properties['format']).toLowerCase()
 
             if (!recommendedFormats.includes(format) && format !== 'svg') {
               issues.push({
@@ -707,13 +705,13 @@ export class DesignValidator {
         category: ValidationCategory.RESPONSIVE,
         severity: Severity.INFO,
         enabled: true,
-        validate: (element, context) => {
+        validate: (element, _context) => {
           const issues: ValidationIssue[] = []
 
-          if (element.styles?.mediaQueries) {
+          if (element.styles?.['mediaQueries']) {
             const breakpoints = this.config.responsive?.breakpoints || {}
             const inconsistent = this.checkBreakpointConsistency(
-              element.styles.mediaQueries,
+              element.styles['mediaQueries'],
               Object.values(breakpoints)
             )
 
@@ -993,7 +991,10 @@ export class DesignValidator {
         if (!issueFrequency[issue.ruleId]) {
           issueFrequency[issue.ruleId] = { count: 0, severity: issue.severity }
         }
-        issueFrequency[issue.ruleId].count++
+        const entry = issueFrequency[issue.ruleId]
+        if (entry) {
+          entry.count++
+        }
       })
     })
 
@@ -1109,7 +1110,7 @@ export class DesignValidator {
       elementId: element.id,
       typography: element.typography,
       matchesBrandGuide: match.isMatch,
-      deviations: match.deviations ? match.deviations.map(d => ({
+      deviations: match.deviations ? match.deviations.map(_d => ({
         property: 'font',
         expected: 'brand font',
         actual: element.typography?.fontFamily,
@@ -1143,10 +1144,11 @@ export class DesignValidator {
    * Helper: Calculate relative luminance
    */
   private relativeLuminance(r: number, g: number, b: number): number {
-    const [rs, gs, bs] = [r, g, b].map(c => {
+    const values = [r, g, b].map(c => {
       const val = c / 255
       return val <= 0.03928 ? val / 12.92 : Math.pow((val + 0.055) / 1.055, 2.4)
     })
+    const [rs = 0, gs = 0, bs = 0] = values
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs
   }
 
@@ -1169,7 +1171,7 @@ export class DesignValidator {
   private suggestContrastColor(
     foreground: Color,
     background: Color,
-    minRatio: number
+    _minRatio: number
   ): Color {
     const fg = this.colorToRgb(foreground)
     const bg = this.colorToRgb(background)
@@ -1222,7 +1224,7 @@ export class DesignValidator {
   private typographyMatchesBrand(
     typography: any,
     brandTypography: any,
-    tolerance?: number
+    _tolerance?: number
   ): { isMatch: boolean; deviations?: string[]; recommendations?: string[] } {
     const deviations: string[] = []
 
@@ -1263,8 +1265,8 @@ export class DesignValidator {
    * Helper: Check hierarchy consistency
    */
   private checkHierarchyConsistency(
-    element: DesignElement,
-    siblings: DesignElement[]
+    _element: DesignElement,
+    _siblings: DesignElement[]
   ): boolean {
     // Simplified check - could be more sophisticated
     return false
@@ -1296,8 +1298,8 @@ export class DesignValidator {
    * Helper: Check breakpoint consistency
    */
   private checkBreakpointConsistency(
-    mediaQueries: any,
-    systemBreakpoints: number[]
+    _mediaQueries: any,
+    _systemBreakpoints: number[]
   ): boolean {
     // Simplified implementation
     return false
@@ -1315,7 +1317,10 @@ class AIRecommendationEngine implements RecommendationEngine {
     // Group issues by category
     const byCategory = issues.reduce((acc, issue) => {
       if (!acc[issue.category]) acc[issue.category] = []
-      acc[issue.category].push(issue)
+      const categoryIssues = acc[issue.category]
+      if (categoryIssues) {
+        categoryIssues.push(issue)
+      }
       return acc
     }, {} as { [key: string]: ValidationIssue[] })
 
@@ -1344,7 +1349,7 @@ class AIRecommendationEngine implements RecommendationEngine {
     return recommendations.sort((a, b) => b.priority - a.priority)
   }
 
-  suggestImprovements(design: Design, context: ValidationContext): AIRecommendation[] {
+  suggestImprovements(_design: Design, _context: ValidationContext): AIRecommendation[] {
     // Future: AI-powered proactive suggestions
     return []
   }
@@ -1473,7 +1478,10 @@ class AIRecommendationEngine implements RecommendationEngine {
     const steps: string[] = []
     const byCategory = issues.reduce((acc, issue) => {
       if (!acc[issue.ruleId]) acc[issue.ruleId] = []
-      acc[issue.ruleId].push(issue)
+      const ruleIssues = acc[issue.ruleId]
+      if (ruleIssues) {
+        ruleIssues.push(issue)
+      }
       return acc
     }, {} as { [key: string]: ValidationIssue[] })
 

@@ -561,6 +561,6 @@ export function createWebSearchTool(config: WebSearchConfig): any { // ToolDefin
 
 export {
   webSearchParametersSchema as schema,
-  WebSearchParams as Params,
-  WebSearchResponse as Result,
 };
+export type { WebSearchParams as Params };
+export type { WebSearchResponse as Result };

@@ -91,6 +91,10 @@ export class MockAIStream extends EventEmitter {
       this.mockResponses[this.responseIndex % this.mockResponses.length];
     this.responseIndex++;
 
+    if (!response) {
+      throw new Error('No mock response available');
+    }
+
     const assistantMessage: Message = {
       id: this.generateId(),
       role: 'assistant',
@@ -101,13 +105,16 @@ export class MockAIStream extends EventEmitter {
     // Simulate token-by-token streaming
     const tokens = response.split(' ');
     for (let i = 0; i < tokens.length; i++) {
-      const token = i === 0 ? tokens[i] : ' ' + tokens[i];
-      assistantMessage.content += token;
+      const token = tokens[i];
+      if (!token) continue;
 
-      this.emit('token', token);
+      const tokenWithSpace = i === 0 ? token : ' ' + token;
+      assistantMessage.content += tokenWithSpace;
+
+      this.emit('token', tokenWithSpace);
 
       if (this.config.onToken) {
-        this.config.onToken(token);
+        this.config.onToken(tokenWithSpace);
       }
 
       // Simulate network delay
@@ -166,7 +173,8 @@ export class MockAIStream extends EventEmitter {
     }
 
     // Remove last assistant message if exists
-    if (this.messages[this.messages.length - 1].role === 'assistant') {
+    const lastMessage = this.messages[this.messages.length - 1];
+    if (lastMessage?.role === 'assistant') {
       this.messages.pop();
     }
 

@@ -6,7 +6,7 @@
 
 import { LLMProvider, ChatRequest, ChatResponse } from './LLMProvider';
 import { ToolCall, LLMError } from '../types';
-import { generateShortId } from '../../utils/id';
+// import { generateShortId } from '../../utils/id';
 
 /**
  * Anthropic-specific configuration
@@ -30,7 +30,7 @@ export class AnthropicProvider extends LLMProvider {
 
   constructor(config: AnthropicConfig) {
     super(config);
-    this.apiKey = config.apiKey || process.env.ANTHROPIC_API_KEY || '';
+    this.apiKey = config.apiKey || process.env['ANTHROPIC_API_KEY'] || '';
     this.baseUrl = config.baseUrl || 'https://api.anthropic.com/v1';
     this.model = config.model;
 
@@ -171,10 +171,12 @@ export class AnthropicProvider extends LLMProvider {
                     const lastTool = toolCalls[toolCalls.length - 1];
                     // Note: This is simplified - real implementation would
                     // need to properly accumulate JSON chunks
-                    try {
-                      lastTool.parameters = JSON.parse(delta.partial_json);
-                    } catch {
-                      // Continue accumulating
+                    if (lastTool) {
+                      try {
+                        lastTool.parameters = JSON.parse(delta.partial_json);
+                      } catch {
+                        // Continue accumulating
+                      }
                     }
                   }
                 }

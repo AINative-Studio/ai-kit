@@ -302,19 +302,19 @@ export class NaturalLanguageParser {
 
       for (const condition of simpleConditions) {
         const eqMatch = condition.match(/(\w+)\s*=\s*['"']?(\w+)['"']?/)
-        if (eqMatch) {
+        if (eqMatch && eqMatch[1] && eqMatch[2]) {
           conditions[eqMatch[1]] = eqMatch[2]
           continue
         }
 
         const gtMatch = condition.match(/(\w+)\s*>\s*(\d+)/)
-        if (gtMatch) {
+        if (gtMatch && gtMatch[1] && gtMatch[2]) {
           conditions[gtMatch[1]] = { $gt: parseInt(gtMatch[2]) }
           continue
         }
 
         const ltMatch = condition.match(/(\w+)\s*<\s*(\d+)/)
-        if (ltMatch) {
+        if (ltMatch && ltMatch[1] && ltMatch[2]) {
           conditions[ltMatch[1]] = { $lt: parseInt(ltMatch[2]) }
         }
       }
@@ -342,7 +342,8 @@ export class NaturalLanguageParser {
 
   private static extractOffset(query: string): number | undefined {
     const match = query.match(/\boffset\s+(\d+)/)
-    return match ? parseInt(match[1], 10) : undefined
+    const offset = match?.[1]
+    return offset ? parseInt(offset, 10) : undefined
   }
 
   private static extractOrderBy(query: string): { column: string; direction: 'asc' | 'desc' }[] | undefined {
@@ -546,10 +547,10 @@ export class ResultFormatter {
       return Math.max(col.length, maxDataWidth, 3)
     })
 
-    const header = columns.map((col, i) => col.padEnd(widths[i])).join(' | ')
-    const separator = widths.map(w => '-'.repeat(w)).join('-+-')
+    const header = columns.map((col, i) => col.padEnd(widths[i] || 0)).join(' | ')
+    const separator = widths.map(w => '-'.repeat(w || 0)).join('-+-')
     const tableRows = rows.map(row =>
-      columns.map((col, i) => String(row[col] || '').padEnd(widths[i])).join(' | ')
+      columns.map((col, i) => String(row[col] || '').padEnd(widths[i] || 0)).join(' | ')
     )
 
     return [header, separator, ...tableRows].join('\n')

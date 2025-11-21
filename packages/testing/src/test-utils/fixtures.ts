@@ -10,22 +10,22 @@ import type { Message, Usage, StreamConfig } from '@ainative/ai-kit-core';
  */
 export const sampleMessages: Message[] = [
   {
-    id: 'msg-1',
+    id: 'msg-1' as any,
     role: 'user',
     content: 'Hello, how are you?',
-    timestamp: Date.now() - 1000,
+    timestamp: (Date.now() - 1000) as any,
   },
   {
-    id: 'msg-2',
+    id: 'msg-2' as any,
     role: 'assistant',
     content: "I'm doing well, thank you! How can I help you today?",
-    timestamp: Date.now() - 500,
+    timestamp: (Date.now() - 500) as any,
   },
   {
-    id: 'msg-3',
+    id: 'msg-3' as any,
     role: 'user',
     content: 'Can you explain quantum computing?',
-    timestamp: Date.now(),
+    timestamp: Date.now() as any,
   },
 ];
 

@@ -374,7 +374,7 @@ export function isPromise<T = unknown>(value: unknown): value is Promise<T> {
     value instanceof Promise ||
     (isObject(value) &&
       'then' in value &&
-      typeof value.then === 'function')
+      typeof value['then'] === 'function')
   );
 }
 

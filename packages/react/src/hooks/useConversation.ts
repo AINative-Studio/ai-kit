@@ -12,7 +12,6 @@
 
 import { useState, useEffect, useCallback, useRef } from 'react'
 import { Message } from '@ainative/ai-kit-core'
-import { Conversation } from '@ainative/ai-kit-core/store'
 import {
   UseConversationOptions,
   UseConversationReturn,
@@ -30,7 +29,6 @@ export function useConversation(
     conversationId: initialConversationId,
     autoSave = true,
     autoSaveDelay = 1000,
-    pageSize = 50,
     autoLoad = true,
     ttl,
     metadata: customMetadata,
