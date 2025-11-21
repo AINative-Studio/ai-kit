@@ -1,7 +1,7 @@
 {
   "name": "@ainative/ai-kit-core",
-  "version": "0.0.1",
-  "description": "Framework-agnostic core for AI Kit - streaming, agents, state management",
+  "version": "0.1.0-alpha.0",
+  "description": "Framework-agnostic core for AI Kit - streaming, agents, state management, and LLM primitives",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -55,16 +55,6 @@
       "import": "./dist/store/index.mjs",
       "require": "./dist/store/index.js"
     },
-    "./observability": {
-      "types": "./dist/observability/index.d.ts",
-      "import": "./dist/observability/index.mjs",
-      "require": "./dist/observability/index.js"
-    },
-    "./safety": {
-      "types": "./dist/safety/index.d.ts",
-      "import": "./dist/safety/index.mjs",
-      "require": "./dist/safety/index.js"
-    },
     "./search": {
       "types": "./dist/search/index.d.ts",
       "import": "./dist/search/index.mjs",
@@ -79,11 +69,6 @@
       "types": "./dist/summarization/index.d.ts",
       "import": "./dist/summarization/index.mjs",
       "require": "./dist/summarization/index.js"
-    },
-    "./security": {
-      "types": "./dist/security/index.d.ts",
-      "import": "./dist/security/index.mjs",
-      "require": "./dist/security/index.js"
     },
     "./session": {
       "types": "./dist/session/index.d.ts",
@@ -107,7 +92,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -123,16 +110,22 @@
     "llm",
     "streaming",
     "agents",
+    "state-management",
+    "framework-agnostic",
     "openai",
     "anthropic",
     "ainative"
   ],
   "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
     "eventsource-parser": "^1.1.2",
@@ -149,6 +142,15 @@
     "vitest": "^1.0.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "peerDependenciesMeta": {
+    "ioredis": {
+      "optional": true
+    }
   }
 }

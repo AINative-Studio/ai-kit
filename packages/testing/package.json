@@ -1,7 +1,7 @@
 {
   "name": "@ainative/ai-kit-testing",
-  "version": "0.0.1",
-  "description": "Comprehensive test utilities for AI Kit - mocks, fixtures, helpers, and custom matchers",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - Testing utilities and fixtures for AI applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -33,7 +33,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -47,19 +49,20 @@
   "keywords": [
     "ai",
     "testing",
-    "mocks",
+    "test-utils",
     "fixtures",
-    "matchers",
-    "jest",
-    "vitest",
     "ainative"
   ],
   "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/testing"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
     "@ainative/ai-kit-core": "workspace:*"
@@ -80,6 +83,10 @@
     }
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

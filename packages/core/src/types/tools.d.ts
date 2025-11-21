@@ -4,16 +4,26 @@
  */
 
 import type { JsonValue, Result, Brand } from './utils';
-import type { AgentId, MessageId } from './utils';
+import type { AgentId, MessageId, ToolId } from './utils';
+import type {
+  RateLimitConfig,
+  ToolCall,
+  ToolExecutionErrorDetails,
+  ToolErrorCode,
+  ValidationFailure,
+  AuthenticationConfig,
+} from './common';
+
+// Local type aliases for backwards compatibility within tools.d.ts
+type ToolError = ToolExecutionErrorDetails;
+type ValidationError = ValidationFailure;
 
 // ============================================================================
 // Core Tool Types
 // ============================================================================
 
-/**
- * Tool identifier - branded string
- */
-export type ToolId = Brand<string, 'ToolId'>;
+// Re-export ToolId from utils for backwards compatibility
+export type { ToolId } from './utils';
 
 /**
  * Tool category
@@ -148,15 +158,8 @@ export type ToolPermission =
   | 'database'
   | 'admin';
 
-/**
- * Rate limit configuration for tools
- */
-export interface RateLimitConfig {
-  readonly maxCalls: number;
-  readonly windowMs: number; // time window in milliseconds
-  readonly perUser?: boolean;
-  readonly perAgent?: boolean;
-}
+// Re-export RateLimitConfig from common
+export type { RateLimitConfig } from './common';
 
 /**
  * Tool cache configuration
@@ -209,17 +212,8 @@ export interface ToolRetryConfig {
   readonly retryableErrors?: readonly string[];
 }
 
-/**
- * Tool call
- */
-export interface ToolCall {
-  readonly id: string;
-  readonly toolId: ToolId;
-  readonly toolName: string;
-  readonly input: Record<string, JsonValue>;
-  readonly timestamp: number;
-  readonly context?: ToolExecutionContext;
-}
+// Re-export ToolCall from common
+export type { ToolCall } from './common';
 
 /**
  * Tool call result
@@ -236,33 +230,8 @@ export interface ToolCallResult {
   readonly metadata?: Record<string, JsonValue>;
 }
 
-/**
- * Tool error
- */
-export interface ToolError {
-  readonly code: ToolErrorCode;
-  readonly message: string;
-  readonly details?: JsonValue;
-  readonly recoverable: boolean;
-  readonly retryAfter?: number; // milliseconds
-}
-
-/**
- * Tool error codes
- */
-export type ToolErrorCode =
-  | 'INVALID_INPUT'
-  | 'MISSING_PARAMETER'
-  | 'VALIDATION_ERROR'
-  | 'PERMISSION_DENIED'
-  | 'RATE_LIMIT_EXCEEDED'
-  | 'TIMEOUT'
-  | 'NOT_FOUND'
-  | 'INTERNAL_ERROR'
-  | 'NETWORK_ERROR'
-  | 'UNAVAILABLE'
-  | 'DEPRECATED'
-  | 'UNKNOWN';
+// Re-export tool error types from common
+export type { ToolExecutionErrorDetails, ToolErrorCode } from './common';
 
 // ============================================================================
 // Tool Handler
@@ -285,15 +254,8 @@ export type ToolValidator = (
   schema: readonly ToolParameter[]
 ) => Result<Record<string, JsonValue>, ValidationError>;
 
-/**
- * Validation error
- */
-export interface ValidationError {
-  readonly field: string;
-  readonly message: string;
-  readonly expected?: string;
-  readonly received?: string;
-}
+// Re-export validation types from common
+export type { ValidationFailure } from './common';
 
 // ============================================================================
 // Tool Interface
@@ -418,14 +380,8 @@ export interface APIToolConfig extends ToolConfig {
   readonly responseTransform?: (response: JsonValue) => JsonValue;
 }
 
-/**
- * Authentication configuration
- */
-export interface AuthenticationConfig {
-  readonly type: 'none' | 'bearer' | 'basic' | 'api-key' | 'oauth2';
-  readonly credentials?: Record<string, string>;
-  readonly tokenRefresh?: () => Promise<string>;
-}
+// Re-export AuthenticationConfig from common
+export type { AuthenticationConfig } from './common';
 
 /**
  * Database tool configuration

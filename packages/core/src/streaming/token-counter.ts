@@ -1,4 +1,5 @@
 import type { Message } from '../types'
+import type { TokenCount } from '../types/common.d'
 
 /**
  * Token counting utilities
@@ -9,10 +10,8 @@ import type { Message } from '../types'
 // For production, integrate with tiktoken or similar
 const CHARS_PER_TOKEN = 4
 
-export interface TokenCount {
-  tokens: number
-  characters: number
-}
+// Re-export TokenCount for backwards compatibility
+export type { TokenCount }
 
 /**
  * Count tokens in text (approximation)

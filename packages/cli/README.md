@@ -1,8 +1,8 @@
-# @aikit/cli
+# @ainative/ai-kit-cli
 
 Official CLI tool for the AI Kit framework - scaffold projects, add features, and manage your AI-powered applications with Claude.
 
-[![npm version](https://badge.fury.io/js/@aikit%2Fcli.svg)](https://www.npmjs.com/package/@aikit/cli)
+[![npm version](https://badge.fury.io/js/@ainative%2Fai-kit-cli.svg)](https://www.npmjs.com/package/@ainative/ai-kit-cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 ## Features
@@ -23,19 +23,28 @@ Official CLI tool for the AI Kit framework - scaffold projects, add features, an
 ### Global Installation (Recommended)
 
 ```bash
-npm install -g @aikit/cli
+npm install -g @ainative/ai-kit-cli
 
 # Or with pnpm
-pnpm add -g @aikit/cli
+pnpm add -g @ainative/ai-kit-cli
 
 # Or with yarn
-yarn global add @aikit/cli
+yarn global add @ainative/ai-kit-cli
 ```
 
 ### One-time Usage (npx)
 
 ```bash
-npx @aikit/cli create my-app
+npx @ainative/ai-kit-cli create my-app
+```
+
+### Migration from Old Package Name
+
+If you previously installed `@aikit/cli`, please uninstall it first:
+
+```bash
+npm uninstall -g @aikit/cli
+npm install -g @ainative/ai-kit-cli
 ```
 
 ## Quick Start
@@ -993,7 +1002,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Install AI Kit CLI
-        run: npm install -g @aikit/cli
+        run: npm install -g @ainative/ai-kit-cli
 
       - name: Test Prompts
         env:
@@ -1547,7 +1556,7 @@ Extend AI Kit CLI with custom plugins:
 
 ```typescript
 // aikit-plugin-custom.ts
-import { Plugin } from '@aikit/cli';
+import { Plugin } from '@ainative/ai-kit-cli';
 
 export const customPlugin: Plugin = {
   name: 'custom',

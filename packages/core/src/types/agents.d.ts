@@ -13,6 +13,14 @@ import type {
   Option,
 } from './utils';
 import type { Message, StreamConfig, UsageStats } from './streaming';
+import type { PerformanceMetrics } from './common.d';
+import type {
+  CollaborationConfig,
+  CollaborationMode,
+  LearningConfig,
+  LearningMode,
+  MemoryConfig,
+} from './common';
 
 // ============================================================================
 // Core Agent Types
@@ -278,27 +286,8 @@ export interface AgentTeam {
   readonly metadata?: Record<string, JsonValue>;
 }
 
-/**
- * Agent collaboration mode
- */
-export type CollaborationMode =
-  | 'sequential' // Agents work one after another
-  | 'parallel' // Agents work simultaneously
-  | 'hierarchical' // Coordinator delegates to subordinates
-  | 'consensus' // Agents reach agreement
-  | 'competitive' // Agents compete for best solution
-  | 'democratic'; // Voting-based decisions
-
-/**
- * Agent collaboration configuration
- */
-export interface CollaborationConfig {
-  readonly mode: CollaborationMode;
-  readonly maxAgents?: number;
-  readonly consensusThreshold?: number; // 0-1 for consensus/democratic modes
-  readonly timeout?: number; // milliseconds
-  readonly failureStrategy?: 'abort' | 'continue' | 'fallback';
-}
+// Re-export collaboration types from common
+export type { CollaborationConfig, CollaborationMode } from './common';
 
 /**
  * Agent orchestration plan
@@ -417,23 +406,8 @@ export interface PlanStep {
 // Agent Learning and Adaptation
 // ============================================================================
 
-/**
- * Learning mode
- */
-export type LearningMode = 'supervised' | 'reinforcement' | 'imitation' | 'none';
-
-/**
- * Agent learning configuration
- */
-export interface LearningConfig {
-  readonly mode: LearningMode;
-  readonly enabled: boolean;
-  readonly learningRate?: number;
-  readonly explorationRate?: number;
-  readonly discountFactor?: number;
-  readonly batchSize?: number;
-  readonly updateFrequency?: number; // iterations
-}
+// Re-export learning types from common
+export type { LearningConfig, LearningMode } from './common';
 
 /**
  * Learning experience
@@ -451,18 +425,9 @@ export interface Experience {
 
 /**
  * Agent performance metrics
+ * Re-export from common types for consistency
  */
-export interface PerformanceMetrics {
-  readonly successRate: number; // 0-1
-  readonly averageTaskDuration: number; // milliseconds
-  readonly tasksCompleted: number;
-  readonly tasksFailed: number;
-  readonly totalCost?: number;
-  readonly totalTokens?: number;
-  readonly uptime?: number; // milliseconds
-  readonly errorRate?: number; // 0-1
-  readonly userSatisfaction?: number; // 0-1
-}
+export type { PerformanceMetrics };
 
 // ============================================================================
 // Agent Memory
@@ -488,16 +453,8 @@ export interface MemoryEntry {
   readonly metadata?: Record<string, JsonValue>;
 }
 
-/**
- * Memory configuration
- */
-export interface MemoryConfig {
-  readonly maxSize?: number; // max entries
-  readonly retentionPolicy?: 'fifo' | 'lru' | 'importance' | 'custom';
-  readonly compressionEnabled?: boolean;
-  readonly persistToDisk?: boolean;
-  readonly embeddings?: boolean;
-}
+// Re-export MemoryConfig from common
+export type { MemoryConfig } from './common';
 
 // ============================================================================
 // Agent Reflection and Self-Improvement

@@ -1,7 +1,7 @@
 import { defineConfig } from 'tsup'
 
 export default defineConfig({
-  entry: ['src/index.ts', 'src/useAIStream.vue.ts'],
+  entry: ['src/index.ts'],
   format: ['cjs', 'esm'],
   dts: true,
   splitting: false,
@@ -9,7 +9,7 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['react', 'react-dom', 'vue'],
+  external: ['react', 'react-dom'],
   esbuildOptions(options) {
     options.jsx = 'automatic'
   },

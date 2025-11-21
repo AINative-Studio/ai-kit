@@ -1,7 +1,7 @@
 {
   "name": "@ainative/ai-kit-nextjs",
-  "version": "0.0.1",
-  "description": "Next.js-specific utilities for AI Kit - middleware helpers, streaming, and more",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - Next.js utilities and helpers for AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -31,22 +33,27 @@
   },
   "keywords": [
     "ai",
+    "llm",
     "nextjs",
-    "middleware",
-    "streaming",
-    "auth",
-    "rate-limiting",
+    "next",
+    "react",
+    "server-components",
     "ainative"
   ],
   "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/nextjs"
   },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
+  },
   "peerDependencies": {
-    "next": ">=13.0.0"
+    "next": "^13.0.0 || ^14.0.0 || ^15.0.0",
+    "react": "^18.0.0"
   },
   "dependencies": {
     "@ainative/ai-kit-core": "workspace:*"
@@ -60,6 +67,10 @@
     "vitest": "^1.0.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

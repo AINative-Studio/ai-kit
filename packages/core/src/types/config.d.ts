@@ -12,6 +12,19 @@ import type {
   ErrorCategory,
   ErrorSeverity,
 } from './utils';
+import type {
+  RateLimitConfig,
+  RateLimitRule,
+  RetryConfig,
+  TimeoutConfig,
+  AuthenticationConfig,
+  AuthMethod,
+  AuthProviderConfig,
+  MemoryConfig,
+  LearningConfig,
+  CollaborationConfig,
+  LoadBalancingConfig,
+} from './common';
 
 // ============================================================================
 // Core Configuration
@@ -112,15 +125,8 @@ export interface RoutingCondition {
   readonly custom?: (context: Record<string, JsonValue>) => boolean;
 }
 
-/**
- * Load balancing configuration
- */
-export interface LoadBalancingConfig {
-  readonly algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'random';
-  readonly weights?: Record<ModelId, number>;
-  readonly healthCheck?: boolean;
-  readonly healthCheckInterval?: number; // milliseconds
-}
+// Re-export LoadBalancingConfig from common
+export type { LoadBalancingConfig } from './common';
 
 /**
  * Model fallback configuration
@@ -245,16 +251,8 @@ export interface AgentDefaultsConfig {
   readonly tools?: readonly ToolId[];
 }
 
-/**
- * Collaboration configuration
- */
-export interface CollaborationConfig {
-  readonly enabled: boolean;
-  readonly mode?: 'sequential' | 'parallel' | 'hierarchical' | 'consensus';
-  readonly maxAgents?: number;
-  readonly communicationProtocol?: string;
-  readonly consensusThreshold?: number; // 0-1
-}
+// Re-export CollaborationConfig from common
+export type { CollaborationConfig } from './common';
 
 /**
  * Planning configuration
@@ -266,28 +264,11 @@ export interface PlanningConfig {
   readonly timeLimit?: number; // milliseconds
 }
 
-/**
- * Learning configuration
- */
-export interface LearningConfig {
-  readonly enabled: boolean;
-  readonly mode?: 'supervised' | 'reinforcement' | 'imitation';
-  readonly learningRate?: number;
-  readonly explorationRate?: number;
-  readonly updateFrequency?: number;
-}
+// Re-export LearningConfig from common
+export type { LearningConfig } from './common';
 
-/**
- * Memory configuration
- */
-export interface MemoryConfig {
-  readonly enabled: boolean;
-  readonly maxSize?: number; // max entries
-  readonly retentionPolicy?: 'fifo' | 'lru' | 'importance';
-  readonly persistToDisk?: boolean;
-  readonly embeddings?: boolean;
-  readonly compressionEnabled?: boolean;
-}
+// Re-export MemoryConfig from common
+export type { MemoryConfig } from './common';
 
 // ============================================================================
 // Streaming Configuration
@@ -564,33 +545,8 @@ export interface SecurityConfig {
   readonly contentSecurity?: ContentSecurityConfig;
 }
 
-/**
- * Authentication configuration
- */
-export interface AuthenticationConfig {
-  readonly required: boolean;
-  readonly methods?: readonly AuthMethod[];
-  readonly providers?: Record<string, AuthProviderConfig>;
-  readonly sessionTimeout?: number; // milliseconds
-  readonly tokenExpiration?: number; // seconds
-}
-
-/**
- * Authentication method
- */
-export type AuthMethod = 'api-key' | 'jwt' | 'oauth2' | 'basic' | 'custom';
-
-/**
- * Auth provider configuration
- */
-export interface AuthProviderConfig {
-  readonly enabled: boolean;
-  readonly clientId?: string;
-  readonly clientSecret?: string;
-  readonly issuer?: string;
-  readonly audience?: string;
-  readonly scopes?: readonly string[];
-}
+// Re-export authentication types from common
+export type { AuthenticationConfig, AuthMethod, AuthProviderConfig } from './common';
 
 /**
  * Authorization configuration
@@ -633,26 +589,8 @@ export interface EncryptionConfig {
   readonly inTransit?: boolean;
 }
 
-/**
- * Rate limit configuration
- */
-export interface RateLimitConfig {
-  readonly enabled: boolean;
-  readonly global?: RateLimitRule;
-  readonly perUser?: RateLimitRule;
-  readonly perIP?: RateLimitRule;
-  readonly perEndpoint?: Record<string, RateLimitRule>;
-}
-
-/**
- * Rate limit rule
- */
-export interface RateLimitRule {
-  readonly requests: number;
-  readonly window: number; // milliseconds
-  readonly burst?: number;
-  readonly strategy?: 'sliding-window' | 'fixed-window' | 'token-bucket';
-}
+// Re-export rate limiting types from common
+export type { RateLimitConfig, RateLimitRule } from './common';
 
 /**
  * CORS configuration
@@ -725,27 +663,8 @@ export interface ConcurrencyConfig {
   readonly queueTimeout?: number; // milliseconds
 }
 
-/**
- * Timeout configuration
- */
-export interface TimeoutConfig {
-  readonly default?: number; // milliseconds
-  readonly request?: number;
-  readonly response?: number;
-  readonly idle?: number;
-}
-
-/**
- * Retry configuration
- */
-export interface RetryConfig {
-  readonly enabled: boolean;
-  readonly maxAttempts?: number;
-  readonly backoff?: 'linear' | 'exponential' | 'constant';
-  readonly initialDelay?: number; // milliseconds
-  readonly maxDelay?: number; // milliseconds
-  readonly jitter?: boolean;
-}
+// Re-export timeout and retry types from common
+export type { TimeoutConfig, RetryConfig } from './common';
 
 // ============================================================================
 // Storage Configuration

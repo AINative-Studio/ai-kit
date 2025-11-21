@@ -1,21 +1,29 @@
 {
-  "name": "@aikit/cli",
-  "version": "0.1.0",
-  "description": "Official CLI tool for AI Kit framework - scaffold projects, add features, and manage your AI applications",
+  "name": "@ainative/ai-kit-cli",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - CLI tool for scaffolding and managing AI-powered applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
   "bin": {
     "aikit": "./dist/index.js",
     "ai-kit": "./dist/index.js"
   },
   "scripts": {
-    "dev": "tsx watch src/index.ts",
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsx watch src/index.ts",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
-    "lint": "eslint src --ext .ts",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist",
     "prepublishOnly": "pnpm build"
   },
   "keywords": [
@@ -24,13 +32,20 @@
     "scaffold",
     "generator",
     "ai-kit",
-    "claude",
-    "anthropic",
     "template",
-    "boilerplate"
+    "ainative"
   ],
-  "author": "AI Native",
+  "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AINative-Studio/ai-kit.git",
+    "directory": "packages/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
+  },
   "dependencies": {
     "boxen": "^7.1.1",
     "chalk": "^5.3.0",
@@ -78,6 +93,7 @@
     "LICENSE"
   ],
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

@@ -3,27 +3,30 @@
  * Comprehensive type exports for all AI Kit functionality
  */
 
+// Common shared types (single source of truth)
+export * from './common.d';
+
 // Type utilities
 export * from './utils';
 
 // Streaming types
-export * from './streaming';
+export * from './streaming.d';
 
 // Agent types
-export * from './agents';
+export * from './agents.d';
 
 // Tool types
-export * from './tools';
+export * from './tools.d';
 
 // Model types
-export * from './models';
+export * from './models.d';
 
 // Error types
-export * from './errors';
+export * from './errors.d';
 
 // Configuration types
-export * from './config';
+export * from './config.d';
 
 // Legacy type re-exports for backwards compatibility
-import type { Message, Usage, StreamConfig, StreamResult, StreamOptions } from './streaming';
+import type { Message, Usage, StreamConfig, StreamResult, StreamOptions } from './streaming.d';
 export type { Message, Usage, StreamConfig, StreamResult, StreamOptions };

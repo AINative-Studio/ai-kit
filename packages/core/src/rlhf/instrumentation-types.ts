@@ -3,6 +3,7 @@
  */
 
 import type { Message, Usage } from '../types'
+import type { PerformanceMetrics } from '../types/common.d'
 
 /**
  * Configuration for RLHF instrumentation
@@ -233,53 +234,9 @@ export interface ContextData {
 
 /**
  * Performance metrics for an interaction
+ * Re-export from common types for consistency
  */
-export interface PerformanceMetrics {
-  /**
-   * Time to first token (TTFT) in milliseconds
-   */
-  timeToFirstToken?: number
-
-  /**
-   * Total response time in milliseconds
-   */
-  totalResponseTime: number
-
-  /**
-   * Time to complete streaming
-   */
-  streamingTime?: number
-
-  /**
-   * Number of tokens in prompt
-   */
-  promptTokenCount?: number
-
-  /**
-   * Number of tokens in response
-   */
-  responseTokenCount?: number
-
-  /**
-   * Tokens per second
-   */
-  tokensPerSecond?: number
-
-  /**
-   * Network latency
-   */
-  networkLatency?: number
-
-  /**
-   * Retry count
-   */
-  retryCount?: number
-
-  /**
-   * Cache hit/miss
-   */
-  cacheHit?: boolean
-}
+export type { PerformanceMetrics }
 
 /**
  * User feedback event

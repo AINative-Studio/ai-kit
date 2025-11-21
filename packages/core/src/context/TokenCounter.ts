@@ -104,6 +104,7 @@ export class TokenCounter {
 
     return {
       tokens,
+      characters: 0, // Not tracked in this implementation
       breakdown,
     };
   }
@@ -160,7 +161,9 @@ export class TokenCounter {
     const messagesToCheck = fromEnd ? [...messages].reverse() : messages;
 
     for (let i = 0; i < messagesToCheck.length; i++) {
-      const messageTokens = this.countMessageTokens(messagesToCheck[i], model).tokens;
+      const message = messagesToCheck[i];
+      if (!message) continue;
+      const messageTokens = this.countMessageTokens(message, model).tokens;
       totalTokens += messageTokens;
 
       if (totalTokens > maxTokens) {

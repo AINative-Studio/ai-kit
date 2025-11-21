@@ -74,4 +74,5 @@ export type {
 } from './registry/types'
 
 // Re-export core types for convenience
-export type { Message, Usage, StreamConfig, StreamResult } from '@ainative/ai-kit-core'
+// Note: Temporarily disabled due to core package not generating DTS files
+// export type { Message, Usage, StreamConfig, StreamResult } from '@ainative/ai-kit-core'

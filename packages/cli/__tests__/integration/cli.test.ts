@@ -11,7 +11,7 @@ describe('CLI integration', () => {
     const packagePath = join(__dirname, '../../package.json');
     const packageJson = JSON.parse(readFileSync(packagePath, 'utf-8'));
 
-    expect(packageJson.name).toBe('@aikit/cli');
+    expect(packageJson.name).toBe('@ainative/ai-kit-cli');
     expect(packageJson.bin).toBeDefined();
     expect(packageJson.bin.aikit).toBeDefined();
   });

@@ -1,7 +1,7 @@
 {
   "name": "@ainative/ai-kit",
-  "version": "0.0.1",
-  "description": "AI Kit - React adapter with hooks and components",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - React hooks and components for building AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -15,23 +15,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.js"
-    },
-    "./vue": {
-      "types": "./dist/useAIStream.vue.d.ts",
-      "import": "./dist/useAIStream.vue.mjs",
-      "require": "./dist/useAIStream.vue.js"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
     "test": "vitest",
-    "test:vue": "vitest --config vitest.vue.config.ts",
     "test:coverage": "vitest --coverage",
-    "test:vue:coverage": "vitest --config vitest.vue.config.ts --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint src",
     "clean": "rm -rf dist"
@@ -40,18 +35,22 @@
     "ai",
     "llm",
     "react",
-    "vue",
     "hooks",
-    "composable",
+    "components",
+    "react18",
     "streaming",
     "ainative"
   ],
   "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/react"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
     "@ainative/ai-kit-core": "workspace:*",
@@ -69,17 +68,18 @@
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.45",
     "@vitest/coverage-v8": "^1.6.0",
-    "@vue/test-utils": "^2.4.0",
-    "happy-dom": "^12.10.3",
     "jsdom": "^23.0.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "tsup": "^8.0.1",
     "typescript": "^5.3.0",
-    "vitest": "^1.6.0",
-    "vue": "^3.4.0"
+    "vitest": "^1.6.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

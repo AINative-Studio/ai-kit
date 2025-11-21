@@ -10,6 +10,13 @@ import type {
   JsonValue,
   Result,
 } from './utils';
+import type { PerformanceMetrics } from './common.d';
+import type {
+  RateLimitConfig,
+  RetryConfig,
+  TimeoutConfig,
+  ToolCall,
+} from './common';
 
 // ============================================================================
 // Core Streaming Types
@@ -100,14 +107,8 @@ export interface FunctionCall {
   readonly arguments: string; // JSON string
 }
 
-/**
- * Tool call in a message
- */
-export interface ToolCall {
-  readonly id: string;
-  readonly type: 'function';
-  readonly function: FunctionCall;
-}
+// Re-export ToolCall from common
+export type { ToolCall } from './common';
 
 // ============================================================================
 // Usage and Cost Tracking
@@ -145,13 +146,9 @@ export interface CostBreakdown {
 
 /**
  * Performance metrics
+ * Re-export from common types for backwards compatibility
  */
-export interface PerformanceMetrics {
-  readonly latency: number; // milliseconds
-  readonly timeToFirstToken?: number; // milliseconds
-  readonly tokensPerSecond?: number;
-  readonly totalDuration: number; // milliseconds
-}
+export type { PerformanceMetrics };
 
 /**
  * Complete usage statistics
@@ -291,16 +288,8 @@ export type StreamEvent =
 // Stream Configuration
 // ============================================================================
 
-/**
- * Retry configuration
- */
-export interface RetryConfig {
-  readonly maxRetries: number;
-  readonly backoff: 'linear' | 'exponential' | 'constant';
-  readonly initialDelay: number; // milliseconds
-  readonly maxDelay: number; // milliseconds
-  readonly retryableErrors?: readonly string[]; // Error codes/messages to retry
-}
+// Re-export RetryConfig from common
+export type { RetryConfig } from './common';
 
 /**
  * Cache configuration
@@ -313,23 +302,11 @@ export interface CacheConfig {
   readonly maxSize?: number; // max items in cache
 }
 
-/**
- * Timeout configuration
- */
-export interface TimeoutConfig {
-  readonly request?: number; // milliseconds
-  readonly response?: number; // milliseconds
-  readonly idle?: number; // milliseconds
-}
+// Re-export TimeoutConfig from common
+export type { TimeoutConfig } from './common';
 
-/**
- * Rate limit configuration
- */
-export interface RateLimitConfig {
-  readonly requestsPerSecond?: number;
-  readonly tokensPerMinute?: number;
-  readonly concurrentRequests?: number;
-}
+// Re-export RateLimitConfig from common
+export type { RateLimitConfig } from './common';
 
 /**
  * Stream transport type

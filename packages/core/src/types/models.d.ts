@@ -5,6 +5,10 @@
 
 import type { ModelId, JsonValue, Brand } from './utils';
 import type { UsageStats } from './streaming';
+import type {
+  RetryConfig,
+  LoadBalancingConfig,
+} from './common';
 
 // ============================================================================
 // Model Identifiers and Categories
@@ -143,16 +147,8 @@ export interface ModelCredentials {
   readonly [key: string]: string | undefined;
 }
 
-/**
- * Retry configuration
- */
-export interface RetryConfig {
-  readonly maxRetries: number;
-  readonly initialDelay: number; // milliseconds
-  readonly maxDelay: number; // milliseconds
-  readonly backoff: 'linear' | 'exponential';
-  readonly retryableStatusCodes?: readonly number[];
-}
+// Re-export RetryConfig from common
+export type { RetryConfig } from './common';
 
 // ============================================================================
 // Model Selection and Routing
@@ -214,15 +210,8 @@ export type RoutingStrategy =
   | 'least-loaded' // Select least busy model
   | 'custom';
 
-/**
- * Load balancing configuration
- */
-export interface LoadBalancingConfig {
-  readonly algorithm: 'round-robin' | 'least-connections' | 'weighted' | 'random';
-  readonly weights?: Record<ModelId, number>;
-  readonly healthCheck?: boolean;
-  readonly healthCheckInterval?: number; // milliseconds
-}
+// Re-export LoadBalancingConfig from common
+export type { LoadBalancingConfig } from './common';
 
 // ============================================================================
 // Model Performance and Monitoring

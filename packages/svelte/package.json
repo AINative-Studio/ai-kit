@@ -1,7 +1,7 @@
 {
   "name": "@ainative/ai-kit-svelte",
-  "version": "0.0.1",
-  "description": "AI Kit - Svelte adapter with stores and components",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - Svelte stores and actions for building AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -13,7 +13,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -29,15 +31,21 @@
     "llm",
     "svelte",
     "stores",
+    "actions",
+    "sveltekit",
     "streaming",
     "ainative"
   ],
   "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/svelte"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
     "@ainative/ai-kit-core": "workspace:*"
@@ -56,6 +64,10 @@
     "vitest": "^1.6.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

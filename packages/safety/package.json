@@ -1,0 +1,86 @@
+{
+  "name": "@ainative/ai-kit-safety",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - Safety features: prompt injection detection, PII filtering, content moderation",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./prompt-injection": {
+      "types": "./dist/PromptInjectionDetector.d.ts",
+      "import": "./dist/PromptInjectionDetector.mjs",
+      "require": "./dist/PromptInjectionDetector.js"
+    },
+    "./jailbreak": {
+      "types": "./dist/JailbreakDetector.d.ts",
+      "import": "./dist/JailbreakDetector.mjs",
+      "require": "./dist/JailbreakDetector.js"
+    },
+    "./pii": {
+      "types": "./dist/PIIDetector.d.ts",
+      "import": "./dist/PIIDetector.mjs",
+      "require": "./dist/PIIDetector.js"
+    },
+    "./content-moderation": {
+      "types": "./dist/ContentModerator.d.ts",
+      "import": "./dist/ContentModerator.mjs",
+      "require": "./dist/ContentModerator.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ai",
+    "safety",
+    "security",
+    "prompt-injection",
+    "pii",
+    "content-moderation",
+    "ainative"
+  ],
+  "author": "AINative Studio",
+  "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AINative-Studio/ai-kit.git",
+    "directory": "packages/safety"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
+  },
+  "dependencies": {
+    "@ainative/ai-kit-core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

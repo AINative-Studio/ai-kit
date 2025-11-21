@@ -1,7 +1,7 @@
 {
   "name": "@ainative/ai-kit-tools",
-  "version": "0.0.1",
-  "description": "Built-in tools for AI Kit agents - web search, calculator, code interpreter",
+  "version": "0.1.0-alpha.0",
+  "description": "AI Kit - Built-in tools for agents including web search, calculator, code interpreter, and more",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -13,7 +13,9 @@
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "README.md",
+    "LICENSE"
   ],
   "scripts": {
     "build": "tsup",
@@ -29,14 +31,20 @@
     "llm",
     "tools",
     "agents",
+    "web-search",
+    "calculator",
     "ainative"
   ],
   "author": "AINative Studio",
   "license": "MIT",
+  "homepage": "https://ai-kit.ainative.studio",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/tools"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
     "@ainative/ai-kit-core": "workspace:*",
@@ -53,6 +61,10 @@
     "vitest": "^1.0.0"
   },
   "publishConfig": {
-    "access": "public"
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }

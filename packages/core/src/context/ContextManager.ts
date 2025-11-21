@@ -52,6 +52,7 @@ class OldestFirstStrategy implements TruncationStrategy {
     // Add middle messages from newest to oldest until we hit limit
     for (let i = middleMessages.length - 1; i >= 0; i--) {
       const message = middleMessages[i];
+      if (!message) continue;
       const messageTokens = counter.countMessageTokens(message, config.model).tokens;
 
       if (tokensUsed + messageTokens + recentTokens <= maxTokens) {
@@ -212,9 +213,12 @@ class LeastRelevantStrategy implements TruncationStrategy {
     let normB = 0;
 
     for (let i = 0; i < a.length; i++) {
-      dotProduct += a[i] * b[i];
-      normA += a[i] * a[i];
-      normB += b[i] * b[i];
+      const aVal = a[i];
+      const bVal = b[i];
+      if (aVal === undefined || bVal === undefined) continue;
+      dotProduct += aVal * bVal;
+      normA += aVal * aVal;
+      normB += bVal * bVal;
     }
 
     const denominator = Math.sqrt(normA) * Math.sqrt(normB);
@@ -256,13 +260,17 @@ class LeastRelevantStrategy implements TruncationStrategy {
       .map((m) => m.embedding!);
 
     let avgEmbedding: number[] | null = null;
-    if (recentEmbeddings.length > 0) {
+    if (recentEmbeddings.length > 0 && recentEmbeddings[0]) {
       const embeddingLength = recentEmbeddings[0].length;
       avgEmbedding = new Array(embeddingLength).fill(0);
 
       for (const embedding of recentEmbeddings) {
+        if (!embedding) continue;
         for (let i = 0; i < embeddingLength; i++) {
-          avgEmbedding[i] += embedding[i];
+          const val = embedding[i];
+          if (val !== undefined && avgEmbedding[i] !== undefined) {
+            avgEmbedding[i] += val;
+          }
         }
       }
 
@@ -316,7 +324,7 @@ class LeastRelevantStrategy implements TruncationStrategy {
 export class ContextManager {
   private config: ContextConfig;
   private counter: TokenCounter;
-  private strategies: Map<string, TruncationStrategy>;
+  private strategies: Map<TruncationStrategyType, TruncationStrategy>;
 
   constructor(config: ContextConfig) {
     this.config = {

@@ -3,44 +3,123 @@
  * Framework-agnostic core for AI Kit
  */
 
-// Types
+// Types - export first to establish base types
 export * from './types'
 
-// Streaming
-export * from './streaming'
+// Streaming - use explicit exports to avoid TokenCount conflict with context
+export { AIStream } from './streaming'
+export {
+  countTokens,
+  countMessageTokens,
+  countMessagesTokens,
+  calculateCost,
+  estimateRequestTokens,
+  MODEL_PRICING,
+  type ModelName,
+  // TokenCount from streaming (main one)
+  type TokenCount,
+} from './streaming'
 
 // Store
 export * from './store'
 
-// Context
-export * from './context'
+// Context - avoid re-exporting TokenCount which conflicts with streaming
+export {
+  TokenCounter,
+  tokenCounter,
+  ContextManager,
+  type ContextMessage,
+  type TokenUsage,
+  type ContextConfig,
+  type TruncationStrategy,
+  type TruncationStrategyType,
+  type ModelType,
+  MessageImportance,
+  MODEL_TOKEN_LIMITS,
+  MODEL_ENCODING_MAP,
+} from './context'
 
 // Summarization
 export * from './summarization'
 
-// Alerts
-export * from './alerts'
+// Session - use explicit exports to avoid StorageBackend conflict with RLHF
+export {
+  SessionManager,
+  InMemorySessionStore,
+  RedisSessionStore,
+  ZeroDBSessionStore,
+  // StorageBackend from session (main one)
+  StorageBackend,
+  SessionEvent,
+  ExpirationStrategy,
+} from './session'
+// Re-export other session types
+export type {
+  SessionConfig,
+  SessionData,
+  Session,
+  SessionStore,
+  SessionStats,
+  CreateSessionOptions,
+  UpdateSessionOptions,
+  RefreshSessionOptions,
+  ListSessionsOptions,
+  SessionEventPayload,
+} from './session/types'
 
-// Tracking
-export * from './tracking'
+// Authentication - use explicit exports to avoid AuthMethod conflict with types
+export {
+  AINativeAuthProvider,
+  AuthError,
+  AuthErrorType,
+  // AuthMethod from auth (main enum)
+  AuthMethod,
+  AuthStatus,
+  StorageStrategy,
+  AuthEventType,
+} from './auth'
+export type {
+  AuthCredentials,
+  AuthConfig,
+  AuthSession,
+  TokenRefreshOptions,
+  TokenValidationResult,
+  AuthEventListener,
+  AuthEvent,
+  StorageAdapter,
+  AuthResponse,
+  RefreshResponse,
+  ValidationResponse,
+  APIKeyCredentials,
+  OAuthCredentials,
+  JWTCredentials,
+  BaseCredentials,
+  UserInfo,
+} from './auth'
 
-// Reporting
-export * from './reporting'
-
-// Instrumentation
-export * from './instrumentation'
-
-// Security
-export * from './security'
-
-// Session
-export * from './session'
-
-// Authentication
-export * from './auth'
-
-// RLHF
-export * from './rlhf'
+// RLHF - avoid re-exporting StorageBackend and PerformanceMetrics which conflict
+export {
+  RLHFLogger,
+  RLHFInstrumentation,
+  ZeroDBStorage as RLHFZeroDBStorage,
+  MemoryStorage as RLHFMemoryStorage,
+  LocalStorage as RLHFLocalStorage,
+} from './rlhf'
+// Re-export RLHF types excluding conflicting ones
+export type {
+  RLHFConfig,
+  FeedbackData,
+  Feedback,
+  InteractionLog,
+  FeedbackSession,
+  FeedbackStats,
+  IStorageBackend,
+  InstrumentationConfig,
+  BatchOperation,
+  ExportOptions,
+  FeedbackFilter,
+  AnalyticsResult,
+} from './rlhf'
 
 // Design
 export * from './design'

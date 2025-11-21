@@ -16,20 +16,33 @@ import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
-const getFilename = () => {
-  try {
-    return fileURLToPath(import.meta.url);
-  } catch {
+const getFilename = (): string => {
+  // CommonJS context
+  if (typeof __filename !== 'undefined') {
     return __filename;
   }
+
+  // ESM context - use dynamic check to avoid TS errors
+  try {
+    // @ts-ignore - import.meta is only available in ESM at runtime
+    if (typeof import.meta !== 'undefined' && import.meta.url) {
+      // @ts-ignore
+      return fileURLToPath(import.meta.url);
+    }
+  } catch {
+    // Fallback
+  }
+
+  // Last resort fallback
+  return process.cwd();
 };
 
-const __filename = getFilename();
-const __dirname = dirname(__filename);
+const filename = getFilename();
+const dirnamePath = dirname(filename);
 
 // Read package.json for version
 const packageJson = JSON.parse(
-  readFileSync(join(__dirname, '../package.json'), 'utf-8')
+  readFileSync(join(dirnamePath, '../package.json'), 'utf-8')
 );
 
 // Check for updates
@@ -47,7 +60,7 @@ if (notifier.update) {
         chalk.green(notifier.update.latest) +
         '\n\n' +
         chalk.cyan('Run ') +
-        chalk.bold('npm install -g @aikit/cli') +
+        chalk.bold('npm install -g @ainative/ai-kit-cli') +
         chalk.cyan(' to update'),
       {
         padding: 1,

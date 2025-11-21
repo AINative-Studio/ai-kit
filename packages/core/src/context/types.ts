@@ -2,6 +2,8 @@
  * Context truncation types and interfaces
  */
 
+import type { TokenCount } from '../types/common.d';
+
 /**
  * Supported AI models for token counting
  */
@@ -109,17 +111,9 @@ export interface TruncationStrategy {
 
 /**
  * Token counter result
+ * Re-export from common types for backwards compatibility
  */
-export interface TokenCount {
-  tokens: number;
-  breakdown?: {
-    role: number;
-    name: number;
-    content: number;
-    functionCall: number;
-    toolCalls: number;
-  };
-}
+export type { TokenCount };
 
 /**
  * Model token limits mapping
