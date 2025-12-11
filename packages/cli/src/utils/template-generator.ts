@@ -470,16 +470,16 @@ async function generateConfigFiles(
   options: GenerateProjectOptions,
   template: any
 ): Promise<void> {
-  // Generate aikit.config.ts
-  const configContent = `import { defineConfig } from '@ainative-studio/aikit-core';
-
-export default defineConfig({
+  // Generate aikit.config.js (using .js instead of .ts for Node.js compatibility)
+  const configContent = `// @ts-check
+/** @type {import('@ainative-studio/aikit-core').ProjectConfig} */
+module.exports = {
   framework: '${template.framework}',
   typescript: ${options.typescript},
   features: ${JSON.stringify(options.features)},
-});
+};
 `;
-  await writeFile(join(options.projectPath, 'aikit.config.ts'), configContent);
+  await writeFile(join(options.projectPath, 'aikit.config.js'), configContent);
 
   // Generate Tailwind config for frameworks that use it
   if (['nextjs', 'react', 'vite', 'vue', 'svelte'].includes(template.framework)) {

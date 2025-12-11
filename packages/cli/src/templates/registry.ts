@@ -57,12 +57,14 @@ export const TEMPLATES: Template[] = [
       'typescript': '^5.3.0',
       'tailwindcss': '^3.4.0',
       'autoprefixer': '^10.4.16',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'next dev',
       build: 'next build',
       start: 'next start',
       lint: 'next lint',
+      test: 'vitest run',
     },
     nextSteps: [
       { command: 'pnpm dev', description: 'Start development server' },
@@ -102,11 +104,13 @@ export const TEMPLATES: Template[] = [
       'typescript': '^5.3.0',
       'tailwindcss': '^3.4.0',
       'autoprefixer': '^10.4.16',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'vite',
       build: 'vite build',
       preview: 'vite preview',
+      test: 'vitest run',
     },
   },
   {
@@ -142,11 +146,13 @@ export const TEMPLATES: Template[] = [
       '@types/cors': '^2.8.0',
       'tsx': '^4.7.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'tsx watch src/index.ts',
       build: 'tsup src/index.ts',
       start: 'node dist/index.js',
+      test: 'vitest run',
     },
   },
   {
@@ -176,11 +182,13 @@ export const TEMPLATES: Template[] = [
     devDependencies: {
       'tsx': '^4.7.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'tsx watch src/index.ts',
       build: 'tsup src/index.ts',
       start: 'node dist/index.js',
+      test: 'vitest run',
     },
   },
   {
@@ -204,11 +212,13 @@ export const TEMPLATES: Template[] = [
     devDependencies: {
       'tsx': '^4.7.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'tsx watch src/index.ts',
       build: 'tsup src/index.ts',
       start: 'node dist/index.js',
+      test: 'vitest run',
     },
   },
   {
@@ -233,11 +243,13 @@ export const TEMPLATES: Template[] = [
     devDependencies: {
       'tsx': '^4.7.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'tsx watch src/index.ts',
       build: 'tsup src/index.ts',
       start: 'node dist/index.js',
+      test: 'vitest run',
     },
   },
   {
@@ -272,12 +284,14 @@ export const TEMPLATES: Template[] = [
     devDependencies: {
       'prisma': '^5.7.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'next dev',
       build: 'prisma generate && next build',
       start: 'next start',
       'db:push': 'prisma db push',
+      test: 'vitest run',
     },
   },
   {
@@ -295,11 +309,13 @@ export const TEMPLATES: Template[] = [
     devDependencies: {
       'tsx': '^4.7.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
     },
     scripts: {
       dev: 'tsx watch src/index.ts',
       build: 'tsup src/index.ts',
       start: 'node dist/index.js',
+      test: 'vitest run',
     },
   },
   {
@@ -381,11 +397,15 @@ export const TEMPLATES: Template[] = [
       '@vitejs/plugin-vue': '^5.0.0',
       'vite': '^5.0.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
+      'tailwindcss': '^3.4.0',
+      'autoprefixer': '^10.4.16',
     },
     scripts: {
       dev: 'vite',
       build: 'vite build',
       preview: 'vite preview',
+      test: 'vitest run',
     },
   },
   {
@@ -412,11 +432,15 @@ export const TEMPLATES: Template[] = [
       '@sveltejs/vite-plugin-svelte': '^3.0.0',
       'vite': '^5.0.0',
       'typescript': '^5.3.0',
+      'vitest': '^1.1.0',
+      'tailwindcss': '^3.4.0',
+      'autoprefixer': '^10.4.16',
     },
     scripts: {
       dev: 'vite dev',
       build: 'vite build',
       preview: 'vite preview',
+      test: 'vitest run',
     },
   },
 ];

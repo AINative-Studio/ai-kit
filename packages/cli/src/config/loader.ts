@@ -21,8 +21,9 @@ export interface ProjectConfig {
 export async function loadProjectConfig(
   projectPath: string
 ): Promise<ProjectConfig> {
-  const configPath = join(projectPath, 'aikit.config.ts');
-  const altConfigPath = join(projectPath, 'aikit.config.js');
+  // Prioritize .js config (more compatible with Node.js)
+  const configPath = join(projectPath, 'aikit.config.js');
+  const altConfigPath = join(projectPath, 'aikit.config.ts');
 
   let config: ProjectConfig = {
     framework: 'node',
@@ -33,16 +34,17 @@ export async function loadProjectConfig(
   if (existsSync(configPath)) {
     try {
       const module = await import(pathToFileURL(configPath).href);
-      config = { ...config, ...module.default };
+      // Handle both CommonJS (module.exports) and ES modules (export default)
+      config = { ...config, ...(module.default || module) };
     } catch (error) {
-      console.warn('Failed to load aikit.config.ts:', error);
+      console.warn('Failed to load aikit.config.js:', error);
     }
   } else if (existsSync(altConfigPath)) {
     try {
       const module = await import(pathToFileURL(altConfigPath).href);
       config = { ...config, ...module.default };
     } catch (error) {
-      console.warn('Failed to load aikit.config.js:', error);
+      console.warn('Failed to load aikit.config.ts:', error);
     }
   }
 

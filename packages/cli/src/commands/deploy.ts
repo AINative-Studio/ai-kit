@@ -8,6 +8,7 @@ import { execa } from 'execa';
 import { loadProjectConfig } from '../config/loader.js';
 import { buildDockerImage } from '../utils/docker.js';
 import { validateEnvironment } from '../utils/validation.js';
+import { detectPackageManager } from '../utils/package-manager.js';
 
 export interface DeployOptions {
   platform?: 'vercel' | 'railway' | 'docker' | 'netlify';
@@ -36,8 +37,8 @@ async function deployProject(options: DeployOptions): Promise<void> {
   console.log(chalk.bold.cyan('\n🚀 Deploy AI Kit project\n'));
 
   // Check if we're in a project
-  const configPath = join(process.cwd(), 'aikit.config.ts');
-  const altConfigPath = join(process.cwd(), 'aikit.config.js');
+  const configPath = join(process.cwd(), 'aikit.config.js');
+  const altConfigPath = join(process.cwd(), 'aikit.config.ts');
 
   if (!existsSync(configPath) && !existsSync(altConfigPath)) {
     console.error(
@@ -77,11 +78,15 @@ async function deployProject(options: DeployOptions): Promise<void> {
     process.exit(1);
   }
 
+  // Detect package manager
+  const packageManager = await detectPackageManager();
+
   const tasks = new Listr([
     {
       title: 'Building project',
       task: async () => {
-        await execa('pnpm', ['build'], {
+        const buildArgs = packageManager === 'npm' ? ['run', 'build'] : ['build'];
+        await execa(packageManager, buildArgs, {
           cwd: process.cwd(),
           preferLocal: true,
         });

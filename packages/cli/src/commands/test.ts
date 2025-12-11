@@ -38,8 +38,8 @@ async function runTests(
   console.log(chalk.bold.cyan('\n🧪 Running tests\n'));
 
   // Check if we're in a project
-  const configPath = join(process.cwd(), 'aikit.config.ts');
-  const altConfigPath = join(process.cwd(), 'aikit.config.js');
+  const configPath = join(process.cwd(), 'aikit.config.js');
+  const altConfigPath = join(process.cwd(), 'aikit.config.ts');
 
   if (!existsSync(configPath) && !existsSync(altConfigPath)) {
     console.error(

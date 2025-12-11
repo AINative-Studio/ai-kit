@@ -45,11 +45,14 @@ async function upgradeProject(options: UpgradeOptions): Promise<void> {
   const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
   const packageManager = await detectPackageManager();
 
-  // Find AI Kit packages
+  // Find AI Kit packages (both @ainative-studio/aikit-core and @ainative/ai-kit-*)
   const aikitPackages = Object.keys({
     ...packageJson.dependencies,
     ...packageJson.devDependencies,
-  }).filter((pkg) => pkg.startsWith('@aikit/'));
+  }).filter((pkg) =>
+    pkg.startsWith('@ainative-studio/aikit-') ||
+    pkg.startsWith('@ainative/ai-kit')
+  );
 
   if (aikitPackages.length === 0) {
     console.log(chalk.yellow('⚠️  No AI Kit packages found in this project'));

@@ -41,8 +41,8 @@ async function addFeature(
   console.log(chalk.bold.cyan('\n➕ Add feature to AI Kit project\n'));
 
   // Check if we're in a project
-  const configPath = join(process.cwd(), 'aikit.config.ts');
-  const altConfigPath = join(process.cwd(), 'aikit.config.js');
+  const configPath = join(process.cwd(), 'aikit.config.js');
+  const altConfigPath = join(process.cwd(), 'aikit.config.ts');
 
   if (!existsSync(configPath) && !existsSync(altConfigPath)) {
     console.error(
