@@ -56,6 +56,7 @@ export const TEMPLATES: Template[] = [
       '@types/react': '^18.2.0',
       'typescript': '^5.3.0',
       'tailwindcss': '^3.4.0',
+      'autoprefixer': '^10.4.16',
     },
     scripts: {
       dev: 'next dev',
@@ -99,6 +100,8 @@ export const TEMPLATES: Template[] = [
       '@vitejs/plugin-react': '^4.2.0',
       'vite': '^5.0.0',
       'typescript': '^5.3.0',
+      'tailwindcss': '^3.4.0',
+      'autoprefixer': '^10.4.16',
     },
     scripts: {
       dev: 'vite',

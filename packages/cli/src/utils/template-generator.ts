@@ -339,6 +339,39 @@ app.listen(PORT, () => {
 async function generateReactFiles(options: GenerateProjectOptions): Promise<void> {
   const srcDir = join(options.projectPath, 'src');
 
+  // Generate index.html
+  const indexHtmlContent = `<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>${options.projectName}</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+`;
+  await writeFile(join(options.projectPath, 'index.html'), indexHtmlContent);
+
+  // Generate vite.config.ts
+  const viteConfigContent = `import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
+
+export default defineConfig({
+  plugins: [react()],
+});
+`;
+  await writeFile(join(options.projectPath, 'vite.config.ts'), viteConfigContent);
+
+  // Generate index.css
+  const indexCssContent = `@tailwind base;
+@tailwind components;
+@tailwind utilities;
+`;
+  await writeFile(join(srcDir, 'index.css'), indexCssContent);
+
   const appContent = `function App() {
   return (
     <div className="min-h-screen p-8">
@@ -464,7 +497,7 @@ export default {
 `;
     await writeFile(join(options.projectPath, 'tailwind.config.js'), tailwindContent);
 
-    const postcssContent = `export default {
+    const postcssContent = `module.exports = {
   plugins: {
     tailwindcss: {},
     autoprefixer: {},
