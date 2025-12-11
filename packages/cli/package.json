@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-cli",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.1-alpha.1",
   "description": "AI Kit - CLI tool for scaffolding and managing AI-powered applications",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -47,7 +47,7 @@
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
+  "homepage": "https://www.ainative.studio/ai-kit",
   "repository": {
     "type": "git",
     "url": "https://github.com/AINative-Studio/ai-kit.git",
