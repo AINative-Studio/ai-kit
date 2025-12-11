@@ -2,56 +2,68 @@
  * Custom assertion utilities for AI Kit tests
  */
 
-import { expect } from 'vitest';
 import type { Message, Usage } from '@ainative/ai-kit-core';
+
+// Lazy import vitest to avoid CommonJS require() errors
+let expect: any;
+function getExpect() {
+  if (!expect) {
+    try {
+      expect = require('vitest').expect;
+    } catch (e) {
+      throw new Error('vitest is required to use testing utilities. Install it with: npm install -D vitest');
+    }
+  }
+  return expect;
+}
 
 /**
  * Assert that a value is a valid message
  */
 export function assertValidMessage(message: any): asserts message is Message {
-  expect(message).toBeDefined();
-  expect(message).toHaveProperty('id');
-  expect(message).toHaveProperty('role');
-  expect(message).toHaveProperty('content');
-  expect(message).toHaveProperty('timestamp');
-  expect(typeof message.id).toBe('string');
-  expect(['user', 'assistant', 'system']).toContain(message.role);
-  expect(typeof message.content).toBe('string');
-  expect(typeof message.timestamp).toBe('number');
+  getExpect()(message).toBeDefined();
+  getExpect()(message).toHaveProperty('id');
+  getExpect()(message).toHaveProperty('role');
+  getExpect()(message).toHaveProperty('content');
+  getExpect()(message).toHaveProperty('timestamp');
+  getExpect()(typeof message.id).toBe('string');
+  getExpect()(['user', 'assistant', 'system']).toContain(message.role);
+  getExpect()(typeof message.content).toBe('string');
+  getExpect()(typeof message.timestamp).toBe('number');
 }
 
 /**
  * Assert that a value is valid usage data
  */
 export function assertValidUsage(usage: any): asserts usage is Usage {
-  expect(usage).toBeDefined();
-  expect(usage).toHaveProperty('promptTokens');
-  expect(usage).toHaveProperty('completionTokens');
-  expect(usage).toHaveProperty('totalTokens');
-  expect(typeof usage.promptTokens).toBe('number');
-  expect(typeof usage.completionTokens).toBe('number');
-  expect(typeof usage.totalTokens).toBe('number');
-  expect(usage.promptTokens).toBeGreaterThanOrEqual(0);
-  expect(usage.completionTokens).toBeGreaterThanOrEqual(0);
-  expect(usage.totalTokens).toBeGreaterThanOrEqual(0);
+  getExpect()(usage).toBeDefined();
+  getExpect()(usage).toHaveProperty('promptTokens');
+  getExpect()(usage).toHaveProperty('completionTokens');
+  getExpect()(usage).toHaveProperty('totalTokens');
+  getExpect()(typeof usage.promptTokens).toBe('number');
+  getExpect()(typeof usage.completionTokens).toBe('number');
+  getExpect()(typeof usage.totalTokens).toBe('number');
+  getExpect()(usage.promptTokens).toBeGreaterThanOrEqual(0);
+  getExpect()(usage.completionTokens).toBeGreaterThanOrEqual(0);
+  getExpect()(usage.totalTokens).toBeGreaterThanOrEqual(0);
 }
 
 /**
  * Assert that a stream event is valid
  */
 export function assertValidStreamEvent(event: any, type: string) {
-  expect(event).toBeDefined();
-  expect(event.type).toBe(type);
-  expect(event.data).toBeDefined();
+  getExpect()(event).toBeDefined();
+  getExpect()(event.type).toBe(type);
+  getExpect()(event.data).toBeDefined();
 }
 
 /**
  * Assert that an error has the expected structure
  */
 export function assertValidError(error: any, expectedMessage?: string) {
-  expect(error).toBeInstanceOf(Error);
+  getExpect()(error).toBeInstanceOf(Error);
   if (expectedMessage) {
-    expect(error.message).toContain(expectedMessage);
+    getExpect()(error.message).toContain(expectedMessage);
   }
 }
 
@@ -59,16 +71,16 @@ export function assertValidError(error: any, expectedMessage?: string) {
  * Assert that a value is within range
  */
 export function assertInRange(value: number, min: number, max: number) {
-  expect(value).toBeGreaterThanOrEqual(min);
-  expect(value).toBeLessThanOrEqual(max);
+  getExpect()(value).toBeGreaterThanOrEqual(min);
+  getExpect()(value).toBeLessThanOrEqual(max);
 }
 
 /**
  * Assert that two arrays have the same elements (order independent)
  */
 export function assertArraysEqual<T>(actual: T[], expected: T[]) {
-  expect(actual).toHaveLength(expected.length);
-  expect(new Set(actual)).toEqual(new Set(expected));
+  getExpect()(actual).toHaveLength(expected.length);
+  getExpect()(new Set(actual)).toEqual(new Set(expected));
 }
 
 /**
@@ -86,12 +98,12 @@ export async function assertAsyncThrows(
     error = e as Error;
   }
 
-  expect(error).toBeDefined();
+  getExpect()(error).toBeDefined();
   if (expectedError) {
     if (typeof expectedError === 'string') {
-      expect(error!.message).toContain(expectedError);
+      getExpect()(error!.message).toContain(expectedError);
     } else {
-      expect(error!.message).toMatch(expectedError);
+      getExpect()(error!.message).toMatch(expectedError);
     }
   }
 }
@@ -101,11 +113,11 @@ export async function assertAsyncThrows(
  */
 export function assertObjectContains(obj: any, subset: any) {
   for (const key in subset) {
-    expect(obj).toHaveProperty(key);
+    getExpect()(obj).toHaveProperty(key);
     if (typeof subset[key] === 'object' && subset[key] !== null) {
       assertObjectContains(obj[key], subset[key]);
     } else {
-      expect(obj[key]).toEqual(subset[key]);
+      getExpect()(obj[key]).toEqual(subset[key]);
     }
   }
 }
@@ -114,7 +126,7 @@ export function assertObjectContains(obj: any, subset: any) {
  * Assert that a function was called with specific arguments
  */
 export function assertCalledWithMatch(mockFn: any, expectedArgs: any[]) {
-  expect(mockFn).toHaveBeenCalled();
+  getExpect()(mockFn).toHaveBeenCalled();
   const calls = mockFn.mock.calls;
   const foundMatch = calls.some((call: any[]) =>
     expectedArgs.every((expectedArg, index) => {
@@ -124,16 +136,16 @@ export function assertCalledWithMatch(mockFn: any, expectedArgs: any[]) {
       return call[index] === expectedArg;
     })
   );
-  expect(foundMatch).toBe(true);
+  getExpect()(foundMatch).toBe(true);
 }
 
 /**
  * Assert that a value is a valid ISO date string
  */
 export function assertValidISODate(value: any) {
-  expect(typeof value).toBe('string');
+  getExpect()(typeof value).toBe('string');
   const date = new Date(value);
-  expect(date.toISOString()).toBe(value);
+  getExpect()(date.toISOString()).toBe(value);
 }
 
 /**
@@ -145,5 +157,5 @@ export function assertApproximatelyEqual(
   tolerance: number = 0.0001
 ) {
   const diff = Math.abs(actual - expected);
-  expect(diff).toBeLessThanOrEqual(tolerance);
+  getExpect()(diff).toBeLessThanOrEqual(tolerance);
 }

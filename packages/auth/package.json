@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-auth",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "AI Kit - AINative authentication integration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -62,7 +62,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@ainative/ai-kit-core": "workspace:*",
+    "@ainative-studio/aikit-core": "^0.1.3",
     "jsonwebtoken": "^9.0.2",
     "zod": "^3.22.4"
   },

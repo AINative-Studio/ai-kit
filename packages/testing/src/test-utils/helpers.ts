@@ -2,7 +2,19 @@
  * Test helper utilities for AI Kit
  */
 
-import { vi } from 'vitest';
+// Lazy import vitest to avoid CommonJS require() errors
+// This allows the package to be required without vitest installed
+let vi: any;
+function getVi() {
+  if (!vi) {
+    try {
+      vi = require('vitest').vi;
+    } catch (e) {
+      throw new Error('vitest is required to use testing utilities. Install it with: npm install -D vitest');
+    }
+  }
+  return vi;
+}
 
 /**
  * Create a mock fetch response
@@ -101,25 +113,26 @@ export function createMockServerResponse() {
   const headers: Record<string, string> = {};
   const writtenData: string[] = [];
   let ended = false;
+  const viInstance = getVi();
 
   const mockResponse = {
-    setHeader: vi.fn((key: string, value: string) => {
+    setHeader: viInstance.fn((key: string, value: string) => {
       headers[key] = value;
     }),
-    writeHead: vi.fn((_status: number, headersObj?: Record<string, string>) => {
+    writeHead: viInstance.fn((_status: number, headersObj?: Record<string, string>) => {
       if (headersObj) {
         Object.assign(headers, headersObj);
       }
     }),
-    write: vi.fn((data: string) => {
+    write: viInstance.fn((data: string) => {
       if (!ended) {
         writtenData.push(data);
       }
     }),
-    end: vi.fn(() => {
+    end: viInstance.fn(() => {
       ended = true;
     }),
-    on: vi.fn(),
+    on: viInstance.fn(),
 
     // Test helpers
     getHeaders: () => headers,
@@ -136,22 +149,23 @@ export function createMockServerResponse() {
  */
 export function createMockEventEmitter() {
   const listeners: Record<string, Array<(...args: any[]) => void>> = {};
+  const viInstance = getVi();
 
   return {
-    on: vi.fn((event: string, handler: (...args: any[]) => void) => {
+    on: viInstance.fn((event: string, handler: (...args: any[]) => void) => {
       if (!listeners[event]) {
         listeners[event] = [];
       }
       listeners[event].push(handler);
     }),
 
-    emit: vi.fn((event: string, ...args: any[]) => {
+    emit: viInstance.fn((event: string, ...args: any[]) => {
       if (listeners[event]) {
         listeners[event].forEach((handler) => handler(...args));
       }
     }),
 
-    removeListener: vi.fn((event: string, handler: (...args: any[]) => void) => {
+    removeListener: viInstance.fn((event: string, handler: (...args: any[]) => void) => {
       if (listeners[event]) {
         const index = listeners[event].indexOf(handler);
         if (index > -1) {
@@ -171,8 +185,9 @@ export function createMockEventEmitter() {
 export function createMethodSpy<T extends object>(
   obj: T,
   methodName: keyof T
-): ReturnType<typeof vi.fn> {
-  const spy = vi.fn();
+): any {
+  const viInstance = getVi();
+  const spy = viInstance.fn();
   const original = obj[methodName];
 
   if (typeof original === 'function') {

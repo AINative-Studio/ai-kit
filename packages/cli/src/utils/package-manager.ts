@@ -34,19 +34,56 @@ export async function detectPackageManager(): Promise<PackageManager> {
 }
 
 /**
+ * Check if a package manager is available
+ */
+async function isPackageManagerAvailable(pm: PackageManager): Promise<boolean> {
+  try {
+    await execa(pm, ['--version'], { stdio: 'ignore' });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Install dependencies using the specified package manager
  */
 export async function installDependencies(
   projectPath: string,
   packageManager: PackageManager
 ): Promise<void> {
+  // Verify the package manager is available, fallback if not
+  let pm = packageManager;
+  if (!(await isPackageManagerAvailable(pm))) {
+    console.warn(`\n⚠️  ${pm} is not installed. Checking for alternatives...`);
+
+    // Try alternatives in order: npm -> yarn -> pnpm
+    const alternatives: PackageManager[] = ['npm', 'yarn', 'pnpm'];
+    let found = false;
+
+    for (const alt of alternatives) {
+      if (alt !== pm && (await isPackageManagerAvailable(alt))) {
+        console.log(`✓ Using ${alt} instead`);
+        pm = alt;
+        found = true;
+        break;
+      }
+    }
+
+    if (!found) {
+      throw new Error(
+        'No package manager found. Please install npm, yarn, or pnpm.'
+      );
+    }
+  }
+
   const commands: Record<PackageManager, string[]> = {
     npm: ['install'],
     yarn: ['install'],
     pnpm: ['install'],
   };
 
-  await execa(packageManager, commands[packageManager], {
+  await execa(pm, commands[pm], {
     cwd: projectPath,
     stdio: 'inherit',
   });

@@ -3,48 +3,77 @@
  * This file is automatically imported by vitest for all test files
  */
 
-import { beforeAll, afterAll, beforeEach, afterEach, vi } from 'vitest';
+// Lazy import vitest to avoid CommonJS require() errors
+let vitestInstance: any;
 
-// Mock global fetch API
-global.fetch = vi.fn();
+function getVitest() {
+  if (!vitestInstance) {
+    try {
+      vitestInstance = require('vitest');
+    } catch (e) {
+      // Vitest not available - this is OK, these functions are only used in test environments
+      return null;
+    }
+  }
+  return vitestInstance;
+}
 
-// Mock console methods to reduce noise in tests
-const originalConsole = { ...console };
+// Lazy getter for vi
+function getVi() {
+  const vitest = getVitest();
+  if (!vitest) {
+    throw new Error('vitest is required to use testing utilities. Install it with: npm install -D vitest');
+  }
+  return vitest.vi;
+}
 
-beforeAll(() => {
-  // Suppress console output in tests unless explicitly needed
-  global.console = {
-    ...console,
-    log: vi.fn(),
-    debug: vi.fn(),
-    info: vi.fn(),
-    warn: vi.fn(),
-    error: vi.fn(),
-  };
-});
+// Only initialize vitest if it's available (in test environments)
+// This allows the package to be loaded without vitest installed
+const vitest = getVitest();
 
-afterAll(() => {
-  // Restore original console
-  global.console = originalConsole;
-});
+if (vitest) {
+  // Mock global fetch API
+  global.fetch = vitest.vi.fn();
 
-beforeEach(() => {
-  // Clear all mocks before each test
-  vi.clearAllMocks();
+  // Mock console methods to reduce noise in tests
+  const originalConsole = { ...console };
 
-  // Reset fetch mock
-  (global.fetch as any).mockClear();
-});
+  vitest.beforeAll(() => {
+    // Suppress console output in tests unless explicitly needed
+    global.console = {
+      ...console,
+      log: vitest.vi.fn(),
+      debug: vitest.vi.fn(),
+      info: vitest.vi.fn(),
+      warn: vitest.vi.fn(),
+      error: vitest.vi.fn(),
+    };
+  });
 
-afterEach(() => {
-  // Clean up after each test
-  vi.restoreAllMocks();
-});
+  vitest.afterAll(() => {
+    // Restore original console
+    global.console = originalConsole;
+  });
+
+  vitest.beforeEach(() => {
+    // Clear all mocks before each test
+    vitest.vi.clearAllMocks();
+
+    // Reset fetch mock
+    (global.fetch as any).mockClear();
+  });
+
+  vitest.afterEach(() => {
+    // Clean up after each test
+    vitest.vi.restoreAllMocks();
+  });
+}
 
 /**
  * Setup function for streaming tests
  */
 export function setupStreamingTest() {
+  const vi = getVi();
   const mockReadableStream = {
     getReader: vi.fn(() => ({
       read: vi.fn(),
@@ -59,6 +88,7 @@ export function setupStreamingTest() {
  * Setup function for agent tests
  */
 export function setupAgentTest() {
+  const vi = getVi();
   const mockLLMProvider = {
     complete: vi.fn(),
     stream: vi.fn(),

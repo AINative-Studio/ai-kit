@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-tools",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.2",
   "description": "AI Kit - Built-in tools for agents including web search, calculator, code interpreter, and more",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -56,7 +56,7 @@
     "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
-    "@ainative/ai-kit-core": "workspace:*",
+    "@ainative-studio/aikit-core": "^0.1.3",
     "isolated-vm": "^6.0.2",
     "mathjs": "^15.1.0",
     "vm2": "^3.10.0",

@@ -9,7 +9,7 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['react', 'react-dom'],
+  external: ['react', 'react-dom', 'react-syntax-highlighter', 'react-markdown', 'remark-gfm'],
   esbuildOptions(options) {
     options.jsx = 'automatic'
   },

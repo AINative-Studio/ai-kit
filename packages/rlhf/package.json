@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-rlhf",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "AI Kit - AINative RLHF (Reinforcement Learning from Human Feedback) integration",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -63,7 +63,7 @@
     "node": ">=18.0.0"
   },
   "dependencies": {
-    "@ainative/ai-kit-core": "workspace:*",
+    "@ainative-studio/aikit-core": "^0.1.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {

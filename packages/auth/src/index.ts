@@ -9,4 +9,4 @@
 export const version = '0.1.0-alpha.0';
 
 // Re-export core auth functionality
-export * from '@ainative/ai-kit-core/auth';
+export * from '@ainative-studio/aikit-core/auth';

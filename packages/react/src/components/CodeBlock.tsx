@@ -5,7 +5,7 @@ import {
   atomDark,
   dracula,
   nord,
-} from 'react-syntax-highlighter/dist/esm/styles/prism';
+} from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import { CodeBlockProps } from '../types';
 
 const themeMap = {

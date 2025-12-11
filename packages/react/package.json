@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit",
-  "version": "0.1.0-alpha.0",
+  "version": "0.1.0-alpha.3",
   "description": "AI Kit - React hooks and components for building AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -62,7 +62,7 @@
     "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
-    "@ainative/ai-kit-core": "workspace:*",
+    "@ainative-studio/aikit-core": "^0.1.3",
     "@types/react-syntax-highlighter": "^15.5.13",
     "react-markdown": "^10.1.0",
     "react-syntax-highlighter": "^16.1.0",

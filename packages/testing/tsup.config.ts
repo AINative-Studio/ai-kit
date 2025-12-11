@@ -13,5 +13,5 @@ export default defineConfig({
   clean: true,
   splitting: false,
   sourcemap: true,
-  external: ['@ainative/ai-kit-core'],
+  external: ['@ainative/ai-kit-core', 'vitest'],
 });

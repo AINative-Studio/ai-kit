@@ -79,7 +79,7 @@ async function generatePackageJson(
       packageJson.dependencies['@prisma/client'] = '^5.7.0';
       packageJson.devDependencies['prisma'] = '^5.7.0';
     } else if (feature === 'vector') {
-      packageJson.dependencies['@ainative-studio/aikit-zerodb'] = '^0.1.0';
+      packageJson.dependencies['@ainative/ai-kit-zerodb'] = 'latest';
     }
   }
 
