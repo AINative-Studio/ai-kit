@@ -104,8 +104,8 @@ export async function generateAgent(
   const agentName = toPascalCase(name);
   const fileName = `${agentName}.${config.typescript ? 'ts' : 'js'}`;
 
-  const content = `import { Agent } from '@aikit/core';
-import type { Message, Tool } from '@aikit/core';
+  const content = `import { Agent } from '@ainative-studio/aikit-core';
+import type { Message, Tool } from '@ainative-studio/aikit-core';
 
 export class ${agentName} extends Agent {
   constructor() {
@@ -168,7 +168,7 @@ export async function generateTool(
   const toolName = toCamelCase(name);
   const fileName = `${toolName}.${config.typescript ? 'ts' : 'js'}`;
 
-  const content = `import type { Tool } from '@aikit/core';
+  const content = `import type { Tool } from '@ainative-studio/aikit-core';
 
 export const ${toolName}: Tool = {
   name: '${toolName}',

@@ -1,6 +1,6 @@
 import { mkdir, writeFile } from 'fs/promises';
 import { join } from 'path';
-import { TEMPLATES } from '../templates/registry.js';
+import { findTemplate, getAllTemplateIdentifiers } from '../templates/registry.js';
 import { createGitignore } from './git.js';
 import Handlebars from 'handlebars';
 
@@ -18,10 +18,13 @@ export interface GenerateProjectOptions {
 export async function generateProject(
   options: GenerateProjectOptions
 ): Promise<void> {
-  const template = TEMPLATES.find((t) => t.id === options.template);
+  const template = findTemplate(options.template);
 
   if (!template) {
-    throw new Error(`Template not found: ${options.template}`);
+    const available = getAllTemplateIdentifiers().join(', ');
+    throw new Error(
+      `Template not found: ${options.template}\nAvailable templates: ${available}`
+    );
   }
 
   // Create project directory
@@ -76,7 +79,7 @@ async function generatePackageJson(
       packageJson.dependencies['@prisma/client'] = '^5.7.0';
       packageJson.devDependencies['prisma'] = '^5.7.0';
     } else if (feature === 'vector') {
-      packageJson.dependencies['@aikit/zerodb'] = '^0.1.0';
+      packageJson.dependencies['@ainative-studio/aikit-zerodb'] = '^0.1.0';
     }
   }
 
@@ -435,7 +438,7 @@ async function generateConfigFiles(
   template: any
 ): Promise<void> {
   // Generate aikit.config.ts
-  const configContent = `import { defineConfig } from '@aikit/core';
+  const configContent = `import { defineConfig } from '@ainative-studio/aikit-core';
 
 export default defineConfig({
   framework: '${template.framework}',

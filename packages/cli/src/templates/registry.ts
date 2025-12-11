@@ -5,6 +5,7 @@ export interface Template {
   tags: string[];
   framework: string;
   features: string[];
+  aliases?: string[];
   optionalFeatures?: Array<{
     name: string;
     value: string;
@@ -27,6 +28,7 @@ export const TEMPLATES: Template[] = [
     description: 'Full-featured chat application with Claude AI',
     tags: ['nextjs', 'chat', 'ai', 'streaming'],
     framework: 'nextjs',
+    aliases: ['next', 'nextjs'],
     features: [
       'App Router',
       'Server Components',
@@ -42,8 +44,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/nextjs': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-nextjs': '^0.1.0',
       '@anthropic-ai/sdk': '^0.17.0',
       'next': '^14.0.0',
       'react': '^18.2.0',
@@ -72,6 +74,7 @@ export const TEMPLATES: Template[] = [
     description: 'Analytics dashboard with AI insights',
     tags: ['react', 'dashboard', 'analytics', 'vite'],
     framework: 'vite',
+    aliases: ['react', 'vite'],
     features: [
       'Vite',
       'React 18',
@@ -86,8 +89,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/react': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-react': '^0.1.0',
       'react': '^18.2.0',
       'react-dom': '^18.2.0',
       'recharts': '^2.10.0',
@@ -109,6 +112,7 @@ export const TEMPLATES: Template[] = [
     description: 'RESTful API with AI endpoints',
     tags: ['express', 'api', 'backend', 'rest'],
     framework: 'express',
+    aliases: ['express', 'api'],
     features: [
       'Express.js',
       'AI endpoints',
@@ -124,7 +128,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
       'express': '^4.18.0',
       'cors': '^2.8.5',
       'helmet': '^7.1.0',
@@ -162,8 +166,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/tools': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-tools': '^0.1.0',
       '@anthropic-ai/sdk': '^0.17.0',
     },
     devDependencies: {
@@ -191,8 +195,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/tools': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-tools': '^0.1.0',
     },
     devDependencies: {
       'tsx': '^4.7.0',
@@ -219,8 +223,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/tools': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-tools': '^0.1.0',
       'cheerio': '^1.0.0-rc.12',
     },
     devDependencies: {
@@ -253,8 +257,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY', 'DATABASE_URL'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/nextjs': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-nextjs': '^0.1.0',
       'next': '^14.0.0',
       'react': '^18.2.0',
       'next-auth': '^4.24.0',
@@ -282,7 +286,7 @@ export const TEMPLATES: Template[] = [
     features: ['Simple setup', 'TypeScript', 'Basic examples'],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
       '@anthropic-ai/sdk': '^0.17.0',
     },
     devDependencies: {
@@ -310,7 +314,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: [],
     dependencies: {
-      '@aikit/core': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
     },
     devDependencies: {
       'tsup': '^8.0.0',
@@ -355,6 +359,7 @@ export const TEMPLATES: Template[] = [
     description: 'Vue 3 application with Claude AI',
     tags: ['vue', 'vite', 'composition-api'],
     framework: 'vue',
+    aliases: ['vue'],
     features: [
       'Vue 3',
       'Composition API',
@@ -364,8 +369,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/vue': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-vue': '^0.1.0',
       'vue': '^3.4.0',
       'pinia': '^2.1.0',
     },
@@ -386,6 +391,7 @@ export const TEMPLATES: Template[] = [
     description: 'SvelteKit application with AI features',
     tags: ['svelte', 'sveltekit', 'ssr'],
     framework: 'svelte',
+    aliases: ['svelte', 'sveltekit'],
     features: [
       'SvelteKit',
       'Server-side rendering',
@@ -394,8 +400,8 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@aikit/core': '^0.1.0',
-      '@aikit/svelte': '^0.1.0',
+      '@ainative-studio/aikit-core': '^0.1.0',
+      '@ainative-studio/aikit-svelte': '^0.1.0',
       '@sveltejs/kit': '^2.0.0',
       'svelte': '^5.0.0',
     },
@@ -411,3 +417,33 @@ export const TEMPLATES: Template[] = [
     },
   },
 ];
+
+/**
+ * Find a template by ID or alias
+ */
+export function findTemplate(idOrAlias: string): Template | undefined {
+  const search = idOrAlias.toLowerCase().trim();
+
+  // Try exact ID match first
+  const exactMatch = TEMPLATES.find((t) => t.id === search);
+  if (exactMatch) return exactMatch;
+
+  // Try alias match
+  return TEMPLATES.find(
+    (t) => t.aliases?.some((alias) => alias.toLowerCase() === search)
+  );
+}
+
+/**
+ * Get all available template IDs and aliases
+ */
+export function getAllTemplateIdentifiers(): string[] {
+  const identifiers: string[] = [];
+  TEMPLATES.forEach((t) => {
+    identifiers.push(t.id);
+    if (t.aliases) {
+      identifiers.push(...t.aliases);
+    }
+  });
+  return identifiers;
+}
