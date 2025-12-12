@@ -1,0 +1,23 @@
+{
+  "name": "test-library-template",
+  "version": "0.1.0",
+  "private": true,
+  "description": "AI Kit project based on TypeScript Library",
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@ainative/ai-kit-core": "workspace:*"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.0",
+    "typescript": "^5.3.0",
+    "vitest": "^1.1.0",
+    "@changesets/cli": "^2.27.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
