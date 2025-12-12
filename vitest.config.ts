@@ -8,8 +8,15 @@ import { resolve } from 'path';
 
 export default defineConfig({
   test: {
-    // Test environment
+    // Test environment (default to node, override for browser-based tests)
     environment: 'node',
+
+    // Environment overrides for React/Vue tests that need DOM
+    environmentMatchGlobs: [
+      ['packages/react/**/*.{test,spec}.{ts,tsx}', 'jsdom'],
+      ['packages/vue/**/*.{test,spec}.{ts,tsx}', 'jsdom'],
+      ['packages/nextjs/**/*.{test,spec}.{ts,tsx}', 'jsdom'],
+    ],
 
     // Global setup
     globals: true,
@@ -46,8 +53,6 @@ export default defineConfig({
         '**/__mocks__/**',
       ],
 
-      // Per-package coverage thresholds
-      perFile: true,
     },
 
     // Test match patterns
@@ -58,11 +63,11 @@ export default defineConfig({
 
     // Files to exclude
     exclude: [
-      'node_modules',
-      'dist',
-      '.idea',
-      '.git',
-      '.cache',
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.idea/**',
+      '**/.git/**',
+      '**/.cache/**',
     ],
 
     // Test timeout

@@ -12,7 +12,8 @@ describe('add command', () => {
   });
 
   it('should accept feature argument', () => {
-    const args = addCommand.args;
+    // In Commander.js, registered arguments are in registeredArguments
+    const args = addCommand.registeredArguments;
     expect(args).toHaveLength(1);
   });
 

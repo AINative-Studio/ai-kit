@@ -97,10 +97,12 @@ export class AgentExecutor {
   private executionId: string;
   private trace: ExecutionTrace;
   private state: AgentState;
+  private defaultConfig: ExecutionConfig;
 
   constructor(agent: Agent, config?: ExecutionConfig) {
     this.agent = agent;
     this.executionId = generateId('exec');
+    this.defaultConfig = config ?? {};
 
     // Initialize LLM provider
     if (config?.llmProvider) {
@@ -166,7 +168,7 @@ export class AgentExecutor {
       this.state.messages = this.agent.buildInitialMessages(input);
 
       // Execute the main loop
-      const maxSteps = config?.maxSteps ?? this.agent.config.maxSteps ?? 10;
+      const maxSteps = config?.maxSteps ?? this.defaultConfig.maxSteps ?? this.agent.config.maxSteps ?? 10;
       await this.executionLoop(maxSteps, config);
 
       // Calculate final stats
@@ -250,8 +252,12 @@ export class AgentExecutor {
     config?: ExecutionConfig
   ): Promise<void> {
     while (this.state.step < maxSteps && !this.state.isComplete) {
-      this.state.step++;
-      this.trace.stats.totalSteps++;
+      // Only increment step counter for LLM reasoning steps, not for tool execution
+      const isToolExecutionStep = this.state.pendingToolCalls.length > 0;
+      if (!isToolExecutionStep) {
+        this.state.step++;
+        this.trace.stats.totalSteps++;
+      }
 
       // Add step start trace event
       this.addTraceEvent({
@@ -273,7 +279,7 @@ export class AgentExecutor {
 
       try {
         // If there are pending tool calls, execute them
-        if (this.state.pendingToolCalls.length > 0) {
+        if (isToolExecutionStep) {
           await this.executeToolCallsStep(config);
         } else {
           // Otherwise, get next response from LLM
@@ -363,7 +369,7 @@ export class AgentExecutor {
               await this.emitStreamEvent(config.onStream, {
                 type: 'text_chunk',
                 timestamp: new Date().toISOString(),
-                data: { chunk },
+                data: chunk,
               });
             }
           : undefined,

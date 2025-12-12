@@ -4,7 +4,7 @@
  * Comprehensive test suite for RLHF logging system
  */
 
-import { describe, it, expect, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { RLHFLogger, createRLHFLogger } from '../../src/rlhf/RLHFLogger';
 import { MemoryStorage } from '../../src/rlhf/storage/MemoryStorage';
 import {
@@ -101,6 +101,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -178,6 +179,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -222,6 +224,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -267,6 +270,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -301,6 +305,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -341,6 +346,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -385,6 +391,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -524,6 +531,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
         enableSessionTracking: true,
       };
       logger = new RLHFLogger(config);
@@ -587,6 +595,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -671,6 +680,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -729,6 +739,7 @@ describe('RLHFLogger', () => {
     beforeEach(async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
       };
       logger = new RLHFLogger(config);
       await logger.initialize();
@@ -810,6 +821,7 @@ describe('RLHFLogger', () => {
     it('should apply default metadata', async () => {
       const config: RLHFConfig = {
         backend: StorageBackend.MEMORY,
+        enableBatching: false,
         defaultMetadata: {
           app: 'test-app',
           version: '1.0.0',
@@ -822,8 +834,8 @@ describe('RLHFLogger', () => {
       const id = await logger.logInteraction('test', 'response');
       const interaction = await logger.getInteraction(id);
 
-      expect(interaction?.metadata?.app).toBe('test-app');
-      expect(interaction?.metadata?.version).toBe('1.0.0');
+      expect(interaction?.metadata?.['app']).toBe('test-app');
+      expect(interaction?.metadata?.['version']).toBe('1.0.0');
     });
   });
 });

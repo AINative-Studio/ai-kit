@@ -5,45 +5,67 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { SemanticSearch } from '../../src/search/SemanticSearch'
 import { MemoryStore } from '../../src/store/MemoryStore'
-import { Message } from '../../src/types'
+import { Message, MessageId, Timestamp } from '../../src/types'
 
-// Create mock embedding function
-const mockEmbedding = (text: string): number[] => {
-  const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
-  const vector: number[] = []
-  for (let i = 0; i < 1536; i++) {
-    vector.push(Math.sin(hash + i) * 0.5 + 0.5)
+// Helper to create test messages with proper branded types
+function createTestMessage(
+  id: string,
+  role: 'user' | 'assistant',
+  content: string,
+  timestamp?: number
+): Message {
+  return {
+    id: id as MessageId,
+    role,
+    content,
+    timestamp: (timestamp ?? Date.now()) as Timestamp,
   }
-  return vector
 }
 
-// Create mock implementation
-const mockCreate = vi.fn().mockImplementation(async (params: any) => {
-  const inputs = Array.isArray(params.input) ? params.input : [params.input]
-  const embeddings = inputs.map((text: string) => ({
-    embedding: mockEmbedding(text),
-  }))
-
-  return {
-    data: embeddings,
-    model: params.model,
-    usage: {
-      prompt_tokens: inputs.length * 10,
-      total_tokens: inputs.length * 10,
-    },
-  }
-})
-
-// Mock OpenAI
+// Mock OpenAI with a stable class-based mock that persists across vi.clearAllMocks()
 vi.mock('openai', () => {
-  return {
-    default: vi.fn().mockImplementation(() => ({
-      embeddings: {
-        create: mockCreate,
+  // Helper function for generating embeddings
+  const mockEmbeddingFn = (text: string): number[] => {
+    const hash = text.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)
+    const vector: number[] = []
+    for (let i = 0; i < 1536; i++) {
+      vector.push(Math.sin(hash + i) * 0.5 + 0.5)
+    }
+    return vector
+  }
+
+  // Create the mock create function
+  const mockCreate = vi.fn(async (params: any) => {
+    const inputs = Array.isArray(params.input) ? params.input : [params.input]
+    const embeddings = inputs.map((text: string) => ({
+      embedding: mockEmbeddingFn(text),
+    }))
+
+    return {
+      data: embeddings,
+      model: params.model,
+      usage: {
+        prompt_tokens: inputs.length * 10,
+        total_tokens: inputs.length * 10,
       },
-    })),
+    }
+  })
+
+  // Class-based mock that won't be cleared by vi.clearAllMocks()
+  class MockOpenAI {
+    embeddings = {
+      create: mockCreate,
+    }
+  }
+
+  return {
+    default: MockOpenAI,
   }
 })
+
+// Get reference to the mock create function for test assertions
+const OpenAI = (await import('openai')).default
+const mockCreate = new OpenAI().embeddings.create as any
 
 describe('SemanticSearch', () => {
   let store: MemoryStore
@@ -162,33 +184,13 @@ describe('SemanticSearch', () => {
     beforeEach(async () => {
       // Setup test data
       const messages1: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'What is artificial intelligence?',
-          timestamp: Date.now(),
-        },
-        {
-          id: '2',
-          role: 'assistant',
-          content: 'Artificial intelligence is the simulation of human intelligence by machines.',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'What is artificial intelligence?'),
+        createTestMessage('2', 'assistant', 'Artificial intelligence is the simulation of human intelligence by machines.'),
       ]
 
       const messages2: Message[] = [
-        {
-          id: '3',
-          role: 'user',
-          content: 'How does machine learning work?',
-          timestamp: Date.now(),
-        },
-        {
-          id: '4',
-          role: 'assistant',
-          content: 'Machine learning uses algorithms to learn from data.',
-          timestamp: Date.now(),
-        },
+        createTestMessage('3', 'user', 'How does machine learning work?'),
+        createTestMessage('4', 'assistant', 'Machine learning uses algorithms to learn from data.'),
       ]
 
       await store.save('conv-1', messages1)
@@ -239,10 +241,10 @@ describe('SemanticSearch', () => {
       const results = await search.searchMessages('intelligence', { topK: 3 })
 
       for (let i = 0; i < results.length - 1; i++) {
-        expect(results[i].similarity.score).toBeGreaterThanOrEqual(
-          results[i + 1].similarity.score
+        expect(results[i]!.similarity.score).toBeGreaterThanOrEqual(
+          results[i + 1]!.similarity.score
         )
-        expect(results[i].similarity.rank).toBe(i + 1)
+        expect(results[i]!.similarity.rank).toBe(i + 1)
       }
     })
 
@@ -301,30 +303,10 @@ describe('SemanticSearch', () => {
   describe('findSimilarMessages', () => {
     beforeEach(async () => {
       const messages: Message[] = [
-        {
-          id: 'msg-1',
-          role: 'user',
-          content: 'What is machine learning?',
-          timestamp: Date.now(),
-        },
-        {
-          id: 'msg-2',
-          role: 'assistant',
-          content: 'Machine learning is a subset of AI.',
-          timestamp: Date.now(),
-        },
-        {
-          id: 'msg-3',
-          role: 'user',
-          content: 'How does deep learning work?',
-          timestamp: Date.now(),
-        },
-        {
-          id: 'msg-4',
-          role: 'user',
-          content: 'What is the weather today?',
-          timestamp: Date.now(),
-        },
+        createTestMessage('msg-1', 'user', 'What is machine learning?'),
+        createTestMessage('msg-2', 'assistant', 'Machine learning is a subset of AI.'),
+        createTestMessage('msg-3', 'user', 'How does deep learning work?'),
+        createTestMessage('msg-4', 'user', 'What is the weather today?'),
       ]
 
       await store.save('conv-1', messages)
@@ -386,30 +368,15 @@ describe('SemanticSearch', () => {
   describe('searchConversations', () => {
     beforeEach(async () => {
       const messages1: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Machine learning basics',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Machine learning basics'),
       ]
 
       const messages2: Message[] = [
-        {
-          id: '2',
-          role: 'user',
-          content: 'Deep learning tutorial',
-          timestamp: Date.now(),
-        },
+        createTestMessage('2', 'user', 'Deep learning tutorial'),
       ]
 
       const messages3: Message[] = [
-        {
-          id: '3',
-          role: 'user',
-          content: 'Weather forecast',
-          timestamp: Date.now(),
-        },
+        createTestMessage('3', 'user', 'Weather forecast'),
       ]
 
       await store.save('conv-1', messages1)
@@ -448,8 +415,8 @@ describe('SemanticSearch', () => {
       const results = await search.searchConversations('learning', { topK: 3 })
 
       for (let i = 0; i < results.length - 1; i++) {
-        expect(results[i].similarity.score).toBeGreaterThanOrEqual(
-          results[i + 1].similarity.score
+        expect(results[i]!.similarity.score).toBeGreaterThanOrEqual(
+          results[i + 1]!.similarity.score
         )
       }
     })
@@ -524,12 +491,7 @@ describe('SemanticSearch', () => {
 
     it('should track messages and conversations', async () => {
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Test message',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Test message'),
       ]
 
       await store.save('conv-1', messages)
@@ -562,12 +524,7 @@ describe('SemanticSearch', () => {
       // This should work - vectors will be different dimensions
       // The actual error will happen during cosine similarity calculation
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Test',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Test'),
       ]
 
       await store.save('conv-1', messages)
@@ -584,12 +541,7 @@ describe('SemanticSearch', () => {
   describe('edge cases', () => {
     it('should handle single message conversation', async () => {
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Single message',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Single message'),
       ]
 
       await store.save('conv-1', messages)
@@ -602,12 +554,7 @@ describe('SemanticSearch', () => {
     it('should handle very long messages', async () => {
       const longContent = 'This is a very long message. '.repeat(100)
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: longContent,
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', longContent),
       ]
 
       await store.save('conv-1', messages)
@@ -619,12 +566,7 @@ describe('SemanticSearch', () => {
 
     it('should handle special characters in messages', async () => {
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Special chars: @#$%^&*(){}[]|\\/<>?~`',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Special chars: @#$%^&*(){}[]|\\/<>?~`'),
       ]
 
       await store.save('conv-1', messages)
@@ -636,12 +578,7 @@ describe('SemanticSearch', () => {
 
     it('should handle unicode and emoji', async () => {
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Hello 你好 مرحبا 🌍🚀',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Hello 你好 مرحبا 🌍🚀'),
       ]
 
       await store.save('conv-1', messages)
@@ -653,12 +590,7 @@ describe('SemanticSearch', () => {
 
     it('should handle zero threshold', async () => {
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Test message',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Test message'),
       ]
 
       await store.save('conv-1', messages)
@@ -670,12 +602,7 @@ describe('SemanticSearch', () => {
 
     it('should handle high threshold (1.0)', async () => {
       const messages: Message[] = [
-        {
-          id: '1',
-          role: 'user',
-          content: 'Test message',
-          timestamp: Date.now(),
-        },
+        createTestMessage('1', 'user', 'Test message'),
       ]
 
       await store.save('conv-1', messages)
@@ -695,46 +622,21 @@ describe('SemanticSearch', () => {
         {
           id: 'conv-1',
           messages: [
-            {
-              id: '1',
-              role: 'user' as const,
-              content: 'What is machine learning?',
-              timestamp: Date.now(),
-            },
-            {
-              id: '2',
-              role: 'assistant' as const,
-              content: 'Machine learning is a subset of AI.',
-              timestamp: Date.now(),
-            },
+            createTestMessage('1', 'user', 'What is machine learning?'),
+            createTestMessage('2', 'assistant', 'Machine learning is a subset of AI.'),
           ],
         },
         {
           id: 'conv-2',
           messages: [
-            {
-              id: '3',
-              role: 'user' as const,
-              content: 'Explain neural networks',
-              timestamp: Date.now(),
-            },
-            {
-              id: '4',
-              role: 'assistant' as const,
-              content: 'Neural networks are computing systems inspired by biological neural networks.',
-              timestamp: Date.now(),
-            },
+            createTestMessage('3', 'user', 'Explain neural networks'),
+            createTestMessage('4', 'assistant', 'Neural networks are computing systems inspired by biological neural networks.'),
           ],
         },
         {
           id: 'conv-3',
           messages: [
-            {
-              id: '5',
-              role: 'user' as const,
-              content: 'What is the weather forecast?',
-              timestamp: Date.now(),
-            },
+            createTestMessage('5', 'user', 'What is the weather forecast?'),
           ],
         },
       ]
@@ -754,8 +656,8 @@ describe('SemanticSearch', () => {
 
       // Results should be ranked by similarity
       for (let i = 0; i < results.length - 1; i++) {
-        expect(results[i].similarity.score).toBeGreaterThanOrEqual(
-          results[i + 1].similarity.score
+        expect(results[i]!.similarity.score).toBeGreaterThanOrEqual(
+          results[i + 1]!.similarity.score
         )
       }
 
@@ -765,7 +667,7 @@ describe('SemanticSearch', () => {
       })
 
       expect(similarMessages.length).toBeGreaterThan(0)
-      expect(similarMessages[0].message.id).not.toBe('1')
+      expect(similarMessages[0]!.message.id).not.toBe('1')
 
       // Get statistics
       const stats = search.getStats()

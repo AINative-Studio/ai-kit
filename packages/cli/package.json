@@ -18,7 +18,7 @@
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --clean",
     "dev": "tsx watch src/index.ts",
-    "test": "vitest",
+    "test": "vitest run",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
     "type-check": "tsc --noEmit",

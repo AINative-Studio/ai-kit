@@ -83,7 +83,10 @@ export class QueryMonitor {
   public startQuery(context: QueryContext): void {
     if (!this.enabled) return;
 
-    const startTime = Date.now();
+    // Use context.startTime if provided, otherwise use current time
+    const startTime = context.startTime
+      ? new Date(context.startTime).getTime()
+      : Date.now();
     this.startTimes.set(context.queryId, startTime);
     this.queryContexts.set(context.queryId, context);
 
@@ -229,6 +232,11 @@ export class QueryMonitor {
     };
 
     this.emitEvent(event);
+
+    // Pattern detection for failing queries
+    if (this.config.enablePatternDetection) {
+      this.detectPatterns(queryId, metrics);
+    }
 
     // Check for error rate alerts
     this.checkAlerts();

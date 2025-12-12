@@ -136,6 +136,7 @@ export const ToolResult: React.FC<ToolResultProps> = ({
         className={`tool-result tool-result-error ${className}`}
         data-testid={`${testId}-error`}
         data-tool-name={toolName}
+        role="alert"
       >
         <style>{`
           .tool-result-error {

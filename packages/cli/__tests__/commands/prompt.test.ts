@@ -141,7 +141,7 @@ describe('PromptComparator', () => {
   it('should calculate comparison metrics', () => {
     const results: PromptTestResult[] = [
       mockResult,
-      { ...mockResult, id: 'test-2', metrics: { ...mockResult.metrics, tokens_used: 120 } },
+      { ...mockResult, id: 'test-2', prompt_id: 'v2', metrics: { ...mockResult.metrics, tokens_used: 120 } },
     ];
 
     const metrics = {
@@ -159,7 +159,9 @@ describe('PromptComparator', () => {
       },
     };
 
+    // v1 should have tokens_used of 100, v2 should have 120
     expect(metrics.token_comparison['v1']).toBe(100);
+    expect(metrics.token_comparison['v2']).toBe(120);
   });
 
   it('should determine winner based on metrics', () => {
@@ -235,7 +237,7 @@ describe('PromptOptimizer', () => {
 
   it('should detect complex sentences', () => {
     const longSentence =
-      'This is a very long sentence that contains more than thirty words and should be flagged as too complex for optimal prompt clarity and understanding.';
+      'This is a very long sentence that contains more than thirty words and should be flagged as too complex for optimal prompt clarity and understanding because it makes the prompt harder to process and interpret correctly by the language model.';
     const wordCount = longSentence.trim().split(/\s+/).length;
     expect(wordCount).toBeGreaterThan(30);
   });

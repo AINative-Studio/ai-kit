@@ -434,10 +434,10 @@ export class RLHFLogger {
    * Query and analyze feedback
    */
   async queryFeedback(filter: FeedbackFilter): Promise<Feedback[]> {
+    // Get all feedback in range without limit (limit is applied after offset)
     let feedback = await this.storage.getFeedbackInRange(
       filter.startTime || new Date(0),
-      filter.endTime || new Date(),
-      filter.limit
+      filter.endTime || new Date()
     );
 
     // Apply filters
@@ -476,9 +476,13 @@ export class RLHFLogger {
       });
     }
 
-    // Apply offset
+    // Apply offset first, then limit
     if (filter.offset) {
       feedback = feedback.slice(filter.offset);
+    }
+
+    if (filter.limit) {
+      feedback = feedback.slice(0, filter.limit);
     }
 
     return feedback;

@@ -8,6 +8,12 @@ export default defineConfig({
     'zerodb/index': 'src/zerodb/index.ts',
     'agents/index': 'src/agents/index.ts',
     'store/index': 'src/store/index.ts',
+    'auth/index': 'src/auth/index.ts',
+    'design/index': 'src/design/index.ts',
+    'search/index': 'src/search/index.ts',
+    'summarization/index': 'src/summarization/index.ts',
+    'session/index': 'src/session/index.ts',
+    'rlhf/index': 'src/rlhf/index.ts',
   },
   format: ['cjs', 'esm'],
   // DTS generation re-enabled after consolidating duplicate type definitions

@@ -20,7 +20,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "vitest",
+    "test": "vitest run",
     "test:coverage": "vitest --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint src",
@@ -57,7 +57,7 @@
     "url": "https://github.com/AINative-Studio/ai-kit/issues"
   },
   "dependencies": {
-    "@ainative-studio/aikit-core": "^0.1.3"
+    "@ainative/ai-kit-core": "workspace:*"
   },
   "peerDependencies": {
     "vue": "^3.0.0"

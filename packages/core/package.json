@@ -89,6 +89,11 @@
       "types": "./dist/design/index.d.ts",
       "import": "./dist/design/index.mjs",
       "require": "./dist/design/index.js"
+    },
+    "./rlhf": {
+      "types": "./dist/rlhf/index.d.ts",
+      "import": "./dist/rlhf/index.mjs",
+      "require": "./dist/rlhf/index.js"
     }
   },
   "files": [
@@ -99,7 +104,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
-    "test": "vitest",
+    "test": "vitest run",
     "test:coverage": "vitest --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint src",

@@ -44,7 +44,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-nextjs': 'latest',
       '@anthropic-ai/sdk': '^0.17.0',
       'next': '^14.0.0',
@@ -92,7 +92,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit': 'latest',
       'react': '^18.2.0',
       'react-dom': '^18.2.0',
@@ -135,7 +135,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       'express': '^4.18.0',
       'cors': '^2.8.5',
       'helmet': '^7.1.0',
@@ -175,7 +175,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-tools': 'latest',
       '@anthropic-ai/sdk': '^0.17.0',
     },
@@ -206,7 +206,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-tools': 'latest',
     },
     devDependencies: {
@@ -236,7 +236,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-tools': 'latest',
       'cheerio': '^1.0.0-rc.12',
     },
@@ -272,7 +272,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY', 'DATABASE_URL'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-nextjs': '^0.1.0',
       'next': '^14.0.0',
       'react': '^18.2.0',
@@ -303,7 +303,7 @@ export const TEMPLATES: Template[] = [
     features: ['Simple setup', 'TypeScript', 'Basic examples'],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@anthropic-ai/sdk': '^0.17.0',
     },
     devDependencies: {
@@ -333,7 +333,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: [],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
     },
     devDependencies: {
       'tsup': '^8.0.0',
@@ -388,7 +388,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-vue': 'latest',
       'vue': '^3.4.0',
       'pinia': '^2.1.0',
@@ -423,7 +423,7 @@ export const TEMPLATES: Template[] = [
     ],
     requiredEnvVars: ['ANTHROPIC_API_KEY'],
     dependencies: {
-      '@ainative-studio/aikit-core': 'latest',
+      '@ainative/ai-kit-core': 'latest',
       '@ainative/ai-kit-svelte': 'latest',
       '@sveltejs/kit': '^2.0.0',
       'svelte': '^5.0.0',

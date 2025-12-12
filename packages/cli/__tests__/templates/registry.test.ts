@@ -39,8 +39,13 @@ describe('template registry', () => {
           expect(Array.isArray(template.requiredEnvVars)).toBe(true);
         });
 
-        it('should have @aikit/core dependency', () => {
-          expect(template.dependencies['@aikit/core']).toBeDefined();
+        it('should have @ainative/ai-kit-core dependency (or be a monorepo)', () => {
+          // Monorepo templates don't have direct dependencies as they manage packages at workspace level
+          if (template.id === 'monorepo-setup' || template.framework === 'monorepo') {
+            expect(Object.keys(template.dependencies).length).toBe(0);
+          } else {
+            expect(template.dependencies['@ainative/ai-kit-core']).toBeDefined();
+          }
         });
 
         it('should have TypeScript devDependency', () => {

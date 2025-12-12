@@ -1,39 +1,45 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 import { detectPackageManager, addPackage, removePackage, getRunCommand } from '../../src/utils/package-manager';
-import { vol } from 'memfs';
+import * as fs from 'fs';
 
 vi.mock('fs');
 vi.mock('execa');
 
 describe('package-manager utils', () => {
   beforeEach(() => {
-    vol.reset();
+    vi.clearAllMocks();
+    // Default: no lock files exist
+    (fs.existsSync as Mock).mockReturnValue(false);
   });
 
   describe('detectPackageManager', () => {
     it('should detect pnpm from lock file', async () => {
-      vol.fromJSON({ 'pnpm-lock.yaml': '' });
+      (fs.existsSync as Mock).mockImplementation((path: string) => {
+        return path === 'pnpm-lock.yaml';
+      });
       const pm = await detectPackageManager();
       expect(pm).toBe('pnpm');
     });
 
     it('should detect yarn from lock file', async () => {
-      vol.fromJSON({ 'yarn.lock': '' });
+      (fs.existsSync as Mock).mockImplementation((path: string) => {
+        return path === 'yarn.lock';
+      });
       const pm = await detectPackageManager();
       expect(pm).toBe('yarn');
     });
 
     it('should detect npm from lock file', async () => {
-      vol.fromJSON({ 'package-lock.json': '' });
+      (fs.existsSync as Mock).mockImplementation((path: string) => {
+        return path === 'package-lock.json';
+      });
       const pm = await detectPackageManager();
       expect(pm).toBe('npm');
     });
 
     it('should prioritize pnpm lock file', async () => {
-      vol.fromJSON({
-        'pnpm-lock.yaml': '',
-        'yarn.lock': '',
-        'package-lock.json': '',
+      (fs.existsSync as Mock).mockImplementation((path: string) => {
+        return ['pnpm-lock.yaml', 'yarn.lock', 'package-lock.json'].includes(path);
       });
       const pm = await detectPackageManager();
       expect(pm).toBe('pnpm');

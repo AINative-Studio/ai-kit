@@ -290,6 +290,20 @@ export class JailbreakDetector {
         description: 'Character-based safety bypass',
         severity: 'high',
       },
+      {
+        type: 'roleplay',
+        pattern: /as (this|an?) (unrestricted|unlimited|free) (character|ai|assistant)/i,
+        confidence: 0.85,
+        description: 'Unrestricted character roleplay',
+        severity: 'high',
+      },
+      {
+        type: 'roleplay',
+        pattern: /(you are|free from|no) (all )?(restrictions|constraints|limitations)/i,
+        confidence: 0.8,
+        description: 'Restriction-free roleplay request',
+        severity: 'high',
+      },
 
       // Token manipulation
       {
@@ -317,7 +331,7 @@ export class JailbreakDetector {
       // Character-based bypasses
       {
         type: 'character_bypass',
-        pattern: /[a-z][\u0300-\u036f]{3,}|[a-z](\s[a-z]){5,}/i,
+        pattern: /[a-z][\u0300-\u036f]{3,}|[a-z](\s[a-z]){5,}|([a-z][\u0300-\u036f]+\s*){5,}/i,
         confidence: 0.75,
         description: 'Character obfuscation detected',
         severity: 'medium',
@@ -358,6 +372,20 @@ export class JailbreakDetector {
         confidence: 0.85,
         description: 'Fictional world ethics bypass',
         severity: 'high',
+      },
+      {
+        type: 'hypothetical',
+        pattern: /(fictional|hypothetical) (world|scenario|universe).*?(ethics|rules|laws) (don't|do not|doesn't) apply/i,
+        confidence: 0.85,
+        description: 'Fictional scenario ethics bypass',
+        severity: 'high',
+      },
+      {
+        type: 'hypothetical',
+        pattern: /hypothetically.*?(fictional|imagine)/i,
+        confidence: 0.75,
+        description: 'Hypothetical fictional scenario',
+        severity: 'medium',
       },
 
       // Indirect instruction patterns
@@ -423,7 +451,7 @@ export class JailbreakDetector {
       },
       {
         type: 'cognitive',
-        pattern: /it's (okay|fine|safe|legal) (because|since|as)/i,
+        pattern: /it['']s (okay|fine|safe|legal).*?(because|since|as)/i,
         confidence: 0.7,
         description: 'Rationalization attempt',
         severity: 'low',
@@ -532,7 +560,7 @@ export class JailbreakDetector {
 
     // ALL CAPS detection
     const capsWords = input.match(/\b[A-Z]{3,}\b/g) || []
-    if (capsWords.length > 10) {
+    if (capsWords.length >= 5) {
       flags.push('excessive_caps')
       indicators.push('Excessive capital letters (possible emphasis manipulation)')
     }
@@ -616,7 +644,7 @@ export class JailbreakDetector {
     // Check for role reversal attempts
     if (
       /you are (the user|human|person)/.test(input.toLowerCase()) &&
-      /(i am|i'm) (the )?(assistant|ai|bot)/.test(input.toLowerCase())
+      /(i am|i'm) (the )?(assistant|ai|bot|ai assistant)/.test(input.toLowerCase())
     ) {
       patterns.push({
         type: 'cognitive',
@@ -625,7 +653,7 @@ export class JailbreakDetector {
         description: 'Role reversal attempt detected',
         severity: 'high',
       })
-      indicators.push('Role reversal pattern detected')
+      indicators.push('Attempted role reversal detected')
     }
 
     // Check for base64/encoding patterns (common in bypasses)
@@ -643,7 +671,7 @@ export class JailbreakDetector {
     // Check for system delimiter patterns
     const systemDelimiters = ['---', '===', '###', '\\*\\*\\*']
     const delimiterCount = systemDelimiters.reduce(
-      (count, delim) => count + (input.match(new RegExp(delim + '{3,}', 'g')) || []).length,
+      (count, delim) => count + (input.match(new RegExp(delim, 'g')) || []).length,
       0
     )
     if (delimiterCount >= 3) {
@@ -654,7 +682,7 @@ export class JailbreakDetector {
         description: 'Multiple system delimiters detected',
         severity: 'high',
       })
-      indicators.push('Excessive system-like delimiters detected')
+      indicators.push('Multiple delimiter patterns detected')
     }
 
     return {
@@ -688,18 +716,19 @@ export class JailbreakDetector {
     }
 
     // Boost from behavioral analysis
-    const behavioralBoost = Math.min(behavioralFlags.length * 0.05, 0.2)
+    const behavioralBoost = Math.min(behavioralFlags.length * 0.05, 0.15)
 
     // Boost from additional indicators
-    const indicatorBoost = Math.min(indicators.length * 0.03, 0.15)
+    const indicatorBoost = Math.min(indicators.length * 0.03, 0.1)
 
-    // Multiple pattern boost
-    const multiPatternBoost = detectedPatterns.length > 1 ? 0.1 : 0
+    // Multiple pattern boost - scales with number of patterns
+    const multiPatternBoost = Math.min((detectedPatterns.length - 1) * 0.05, 0.15)
 
     // Calculate final confidence (weighted combination)
+    // Prioritize the max pattern confidence to preserve high-confidence detections
     const confidence =
-      maxPatternConfidence * 0.6 +
-      avgPatternConfidence * 0.2 +
+      maxPatternConfidence * 0.85 +
+      avgPatternConfidence * 0.05 +
       behavioralBoost +
       indicatorBoost +
       multiPatternBoost
@@ -717,14 +746,20 @@ export class JailbreakDetector {
   ): 'low' | 'medium' | 'high' | 'critical' {
     // Check for critical patterns
     const hasCritical = detectedPatterns.some((p) => p.severity === 'critical')
-    if (hasCritical && confidence >= 0.8) {
+    const hasHigh = detectedPatterns.some((p) => p.severity === 'high')
+
+    if (hasCritical && confidence >= 0.7) {
       return 'critical'
+    }
+
+    if (hasHigh && confidence >= 0.7) {
+      return 'high'
     }
 
     // Risk based on confidence
     if (confidence >= 0.9) {
       return 'critical'
-    } else if (confidence >= 0.75) {
+    } else if (confidence >= 0.7) {
       return 'high'
     } else if (confidence >= 0.5) {
       return 'medium'

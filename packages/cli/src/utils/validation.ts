@@ -37,6 +37,11 @@ export async function validateEnvironment(): Promise<ValidationResult> {
  * Check if a port is available
  */
 export async function checkPortAvailable(port: number): Promise<boolean> {
+  // Validate port range
+  if (!Number.isInteger(port) || port < 0 || port > 65535) {
+    return false;
+  }
+
   return new Promise((resolve) => {
     const server = net.createServer();
 

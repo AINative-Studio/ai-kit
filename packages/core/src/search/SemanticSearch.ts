@@ -10,7 +10,6 @@ import { Message } from '../types'
 import { ConversationStore } from '../store/ConversationStore'
 import {
   EmbeddingConfig,
-  MessageWithEmbedding,
   SearchOptions,
   SearchResult,
   SimilarMessageOptions,
@@ -20,7 +19,6 @@ import {
   EmbeddingCacheEntry,
   SearchStats,
   SearchFilter,
-  SimilarityScore,
   EmbeddingModel,
 } from './types'
 
@@ -49,7 +47,7 @@ export class SemanticSearch {
     this.config = {
       model: config.model ?? 'text-embedding-3-small',
       batchSize: config.batchSize ?? 100,
-      dimensions: config.dimensions,
+      dimensions: config.dimensions ?? 1536,
       maxRetries: config.maxRetries ?? 3,
       timeout: config.timeout ?? 30000,
     }
@@ -166,17 +164,19 @@ export class SemanticSearch {
           const embedding = response.data[i]?.embedding
           if (embedding) {
             batchEmbeddings[index] = embedding
-          }
 
-          // Cache the result
-          const text = uncachedTexts[i]
-          this.embeddingCache.set(this.getCacheKey(text, embedModel), {
-            text,
-            embedding,
-            model: embedModel,
-            cachedAt: Date.now(),
-            ttl: 3600000,
-          })
+            // Cache the result
+            const text = uncachedTexts[i]
+            if (text) {
+              this.embeddingCache.set(this.getCacheKey(text, embedModel), {
+                text,
+                embedding,
+                model: embedModel,
+                cachedAt: Date.now(),
+                ttl: 3600000,
+              })
+            }
+          }
         })
 
         totalPromptTokens += response.usage.prompt_tokens
@@ -210,7 +210,6 @@ export class SemanticSearch {
       topK = 10,
       threshold = 0.0,
       filter,
-      includeQuery = false,
     } = options
 
     // Generate query embedding
@@ -225,7 +224,7 @@ export class SemanticSearch {
 
     // Generate embeddings for all messages
     const messageEmbeddings = await this.generateBatchEmbeddings({
-      texts: messages.map((m) => m.content),
+      texts: messages.map((m) => this.getMessageContentAsString(m.content)),
       model: this.config.model,
       dimensions: this.config.dimensions,
     })
@@ -235,6 +234,7 @@ export class SemanticSearch {
 
     messages.forEach((message, index) => {
       const embedding = messageEmbeddings.embeddings[index]
+      if (!embedding) return
       const similarity = this.cosineSimilarity(queryEmbedding, embedding)
 
       if (similarity >= threshold) {
@@ -283,11 +283,14 @@ export class SemanticSearch {
     }
 
     // Search using the source message content
-    const results = await this.searchMessages(sourceMessage.content, {
-      topK: includeSelf ? topK : topK + 1,
-      threshold,
-      filter,
-    })
+    const results = await this.searchMessages(
+      this.getMessageContentAsString(sourceMessage.content),
+      {
+        topK: includeSelf ? topK : topK + 1,
+        threshold,
+        filter,
+      }
+    )
 
     // Filter out the source message if not included
     const filteredResults = includeSelf
@@ -347,6 +350,32 @@ export class SemanticSearch {
     this.stats.totalConversations = targetConversationIds.length
 
     return filteredResults
+  }
+
+  /**
+   * Convert message content to a string for embedding
+   */
+  private getMessageContentAsString(
+    content: Message['content']
+  ): string {
+    if (typeof content === 'string') {
+      return content
+    }
+    if (Array.isArray(content)) {
+      return content
+        .map((part) => {
+          if (typeof part === 'string') return part
+          if (part && typeof part === 'object' && 'text' in part) {
+            return (part as { text: string }).text
+          }
+          return ''
+        })
+        .join(' ')
+    }
+    if (content && typeof content === 'object' && 'text' in content) {
+      return (content as { text: string }).text
+    }
+    return String(content)
   }
 
   /**

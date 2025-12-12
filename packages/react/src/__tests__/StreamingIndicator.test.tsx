@@ -95,19 +95,19 @@ describe('StreamingIndicator', () => {
     });
 
     test('applies custom styles', () => {
-      const customStyle = { backgroundColor: 'red', padding: '20px' };
+      const customStyle = { backgroundColor: 'rgb(255, 0, 0)', padding: '20px' };
       render(<StreamingIndicator style={customStyle} />);
       const indicator = screen.getByTestId('streaming-indicator');
-      expect(indicator).toHaveStyle('background-color: red');
-      expect(indicator).toHaveStyle('padding: 20px');
+      expect(indicator).toHaveStyle({ backgroundColor: 'rgb(255, 0, 0)' });
+      expect(indicator).toHaveStyle({ padding: '20px' });
     });
 
     test('merges custom styles with default styles', () => {
       const customStyle = { marginTop: '10px' };
       render(<StreamingIndicator style={customStyle} />);
       const indicator = screen.getByTestId('streaming-indicator');
-      expect(indicator).toHaveStyle('margin-top: 10px');
-      expect(indicator).toHaveStyle('display: inline-flex');
+      expect(indicator).toHaveStyle({ marginTop: '10px' });
+      expect(indicator).toHaveStyle({ display: 'inline-flex' });
     });
   });
 

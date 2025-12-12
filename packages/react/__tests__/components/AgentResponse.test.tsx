@@ -348,7 +348,8 @@ describe('AgentResponse Component', () => {
       render(<AgentResponse data={data} registry={registry} showSteps showMetadata />);
 
       expect(screen.getByText('250ms')).toBeInTheDocument();
-      expect(screen.getByText('1')).toBeInTheDocument(); // retryCount
+      // retryCount is "1" but so is the step number, so use getByText within the metadata container
+      expect(screen.getByTestId('agent-response-tool-result-0-metadata')).toHaveTextContent('1');
     });
   });
 
@@ -547,12 +548,12 @@ describe('AgentResponse Component', () => {
         response: 'Test',
       };
 
-      const customStyle = { backgroundColor: 'red' };
+      const customStyle = { backgroundColor: 'rgb(255, 0, 0)' };
 
       render(<AgentResponse data={data} style={customStyle} />);
 
       const element = screen.getByTestId('agent-response');
-      expect(element).toHaveStyle({ backgroundColor: 'red' });
+      expect(element).toHaveStyle({ backgroundColor: 'rgb(255, 0, 0)' });
     });
 
     it('should use custom testId', () => {

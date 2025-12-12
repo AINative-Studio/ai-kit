@@ -2,6 +2,7 @@
  * StreamingResponse unit tests
  */
 
+import { vi } from 'vitest';
 import { StreamingResponse } from '../../src/streaming/StreamingResponse';
 import { SSEEventType, ResponseLike } from '../../src/streaming/types';
 
@@ -436,11 +437,11 @@ describe('StreamingResponse', () => {
 
   describe('Heartbeat', () => {
     beforeEach(() => {
-      jest.useFakeTimers();
+      vi.useFakeTimers();
     });
 
     afterEach(() => {
-      jest.useRealTimers();
+      vi.useRealTimers();
     });
 
     test('should send heartbeat when enabled', () => {
@@ -452,7 +453,7 @@ describe('StreamingResponse', () => {
       heartbeatStream.start();
       mockResponse.writtenData = [];
 
-      jest.advanceTimersByTime(1000);
+      vi.advanceTimersByTime(1000);
 
       const rawData = mockResponse.getWrittenData();
       expect(rawData).toContain(': heartbeat');
@@ -462,7 +463,7 @@ describe('StreamingResponse', () => {
       streamingResponse.start();
       mockResponse.writtenData = [];
 
-      jest.advanceTimersByTime(30000);
+      vi.advanceTimersByTime(30000);
 
       const rawData = mockResponse.getWrittenData();
       expect(rawData).not.toContain(': heartbeat');
@@ -478,7 +479,7 @@ describe('StreamingResponse', () => {
       heartbeatStream.end();
       mockResponse.writtenData = [];
 
-      jest.advanceTimersByTime(5000);
+      vi.advanceTimersByTime(5000);
 
       const rawData = mockResponse.getWrittenData();
       expect(rawData).not.toContain(': heartbeat');

@@ -9,5 +9,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: [],
+  external: ['@ainative/ai-kit-core', 'isolated-vm', 'mathjs', 'vm2'],
 })

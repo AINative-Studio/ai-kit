@@ -472,7 +472,7 @@ async function generateConfigFiles(
 ): Promise<void> {
   // Generate aikit.config.js (using .js instead of .ts for Node.js compatibility)
   const configContent = `// @ts-check
-/** @type {import('@ainative-studio/aikit-core').ProjectConfig} */
+/** @type {import('@ainative/ai-kit-core').ProjectConfig} */
 module.exports = {
   framework: '${template.framework}',
   typescript: ${options.typescript},

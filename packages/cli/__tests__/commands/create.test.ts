@@ -25,7 +25,8 @@ describe('create command', () => {
   });
 
   it('should accept project name argument', () => {
-    const args = createCommand.args;
+    // In Commander.js, registered arguments are in registeredArguments
+    const args = createCommand.registeredArguments;
     expect(args).toHaveLength(1);
     expect(args[0].name()).toBe('project-name');
   });

@@ -9,5 +9,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['svelte', 'svelte/store'],
+  external: ['svelte', 'svelte/store', '@ainative/ai-kit-core'],
 })

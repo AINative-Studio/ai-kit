@@ -11,5 +11,5 @@ export default defineConfig({
   clean: true,
   treeshake: true,
   minify: false,
-  external: ['next'],
+  external: ['next', '@ainative/ai-kit-core'],
 })
