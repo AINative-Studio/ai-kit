@@ -1091,3 +1091,293 @@
   color: #10b981;
   font-family: monospace;
 }
+
+/* =============================================================================
+   AGENT COMPONENTS
+   ============================================================================= */
+
+/* AgentStatus */
+.agent-status {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background: #1e1e1e;
+  border-left: 3px solid #6b7280;
+}
+
+.agent-status .status-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.agent-status .status-icon {
+  font-size: 1.25rem;
+}
+
+.agent-status .status-label {
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.agent-status .status-message {
+  font-size: 0.85rem;
+  color: #999;
+  padding-left: 2rem;
+}
+
+.agent-status .status-animation {
+  display: flex;
+  gap: 3px;
+  margin-left: 0.5rem;
+}
+
+.agent-status .status-animation span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: statusPulse 1.4s infinite ease-in-out both;
+}
+
+.agent-status .status-animation span:nth-child(1) { animation-delay: -0.32s; }
+.agent-status .status-animation span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes statusPulse {
+  0%, 80%, 100% { transform: scale(0.6); opacity: 0.5; }
+  40% { transform: scale(1); opacity: 1; }
+}
+
+.agent-status-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+/* ThinkingIndicator */
+.thinking-indicator {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+}
+
+.thinking-indicator.size-small { transform: scale(0.75); }
+.thinking-indicator.size-large { transform: scale(1.25); }
+
+.thinking-label {
+  font-size: 0.8rem;
+  color: #888;
+}
+
+/* Thinking Dots */
+.thinking-dots {
+  display: flex;
+  gap: 6px;
+}
+
+.thinking-dots span {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #667eea;
+  animation: thinkingBounce 1.4s infinite ease-in-out both;
+}
+
+.thinking-dots span:nth-child(1) { animation-delay: -0.32s; }
+.thinking-dots span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes thinkingBounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+
+/* Thinking Spinner */
+.thinking-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid #2a2a2a;
+  border-top-color: #667eea;
+  border-radius: 50%;
+  animation: thinkingSpin 1s linear infinite;
+}
+
+@keyframes thinkingSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Thinking Pulse */
+.thinking-pulse {
+  width: 32px;
+  height: 32px;
+  background: #667eea;
+  border-radius: 50%;
+  animation: thinkingPulseAnim 1.5s ease-in-out infinite;
+}
+
+@keyframes thinkingPulseAnim {
+  0%, 100% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+}
+
+/* Thinking Wave */
+.thinking-wave {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 32px;
+}
+
+.thinking-wave span {
+  width: 4px;
+  background: #667eea;
+  border-radius: 2px;
+  animation: thinkingWaveAnim 1.2s ease-in-out infinite;
+}
+
+.thinking-wave span:nth-child(1) { animation-delay: 0s; }
+.thinking-wave span:nth-child(2) { animation-delay: 0.1s; }
+.thinking-wave span:nth-child(3) { animation-delay: 0.2s; }
+.thinking-wave span:nth-child(4) { animation-delay: 0.3s; }
+.thinking-wave span:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes thinkingWaveAnim {
+  0%, 100% { height: 8px; }
+  50% { height: 32px; }
+}
+
+/* Thinking Brain */
+.thinking-brain {
+  font-size: 2rem;
+  animation: thinkingBrainAnim 2s ease-in-out infinite;
+}
+
+@keyframes thinkingBrainAnim {
+  0%, 100% { transform: scale(1); }
+  25% { transform: scale(1.1) rotate(-5deg); }
+  75% { transform: scale(1.1) rotate(5deg); }
+}
+
+.thinking-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  background: #1e1e1e;
+  padding: 1.5rem;
+  border-radius: 8px;
+}
+
+.thinking-demo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 80px;
+}
+
+/* AgentEventStream */
+.agent-event-stream {
+  background: #1e1e1e;
+  border-radius: 8px;
+  padding: 1rem;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.event-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.5rem;
+  background: #242424;
+  transition: background 0.2s;
+}
+
+.event-item:hover {
+  background: #2a2a2a;
+}
+
+.event-item:last-child {
+  margin-bottom: 0;
+}
+
+.event-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+.event-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.event-text {
+  font-size: 0.9rem;
+  color: #e0e0e0;
+}
+
+.event-text.thought {
+  font-style: italic;
+  color: #a78bfa;
+}
+
+.event-text.chunk {
+  color: #60a5fa;
+}
+
+.event-text.final {
+  color: #34d399;
+  font-weight: 500;
+}
+
+.event-text.error {
+  color: #f87171;
+}
+
+.event-text code {
+  background: #333;
+  padding: 0.125rem 0.375rem;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  color: #fbbf24;
+}
+
+.event-args {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #888;
+  font-family: monospace;
+}
+
+.event-result {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: #10b981;
+  background: #1a2e1a;
+  padding: 0.5rem;
+  border-radius: 4px;
+  overflow-x: auto;
+}
+
+.event-timestamp {
+  font-size: 0.75rem;
+  color: #666;
+  font-family: monospace;
+}
+
+/* Event type specific styles */
+.event-start { border-left: 3px solid #3b82f6; }
+.event-step { border-left: 3px solid #8b5cf6; }
+.event-thought { border-left: 3px solid #a78bfa; }
+.event-tool_call { border-left: 3px solid #f59e0b; }
+.event-tool_result { border-left: 3px solid #10b981; }
+.event-text_chunk { border-left: 3px solid #60a5fa; }
+.event-final_answer { border-left: 3px solid #34d399; }
+.event-error { border-left: 3px solid #ef4444; }
+.event-complete { border-left: 3px solid #22c55e; }

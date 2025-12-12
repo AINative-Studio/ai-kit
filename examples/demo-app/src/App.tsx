@@ -635,6 +635,174 @@ function FeedbackStats({
   )
 }
 
+// AgentStatus - Display agent execution state
+function AgentStatus({
+  status,
+  message,
+  showAnimation = true
+}: {
+  status: 'idle' | 'thinking' | 'working' | 'done' | 'error'
+  message?: string
+  showAnimation?: boolean
+}) {
+  const statusConfig = {
+    idle: { icon: '⏸️', label: 'Idle', color: '#6b7280' },
+    thinking: { icon: '🧠', label: 'Thinking', color: '#8b5cf6' },
+    working: { icon: '⚙️', label: 'Working', color: '#3b82f6' },
+    done: { icon: '✅', label: 'Complete', color: '#10b981' },
+    error: { icon: '❌', label: 'Error', color: '#ef4444' }
+  }
+
+  const config = statusConfig[status]
+
+  return (
+    <div className={`agent-status status-${status}`} style={{ borderColor: config.color }}>
+      <div className="status-header">
+        <span className="status-icon">{config.icon}</span>
+        <span className="status-label" style={{ color: config.color }}>{config.label}</span>
+        {showAnimation && (status === 'thinking' || status === 'working') && (
+          <span className="status-animation">
+            <span></span><span></span><span></span>
+          </span>
+        )}
+      </div>
+      {message && <div className="status-message">{message}</div>}
+    </div>
+  )
+}
+
+// ThinkingIndicator - Agent thinking animation with variants
+function ThinkingIndicator({
+  variant = 'dots',
+  label,
+  size = 'medium'
+}: {
+  variant?: 'dots' | 'spinner' | 'pulse' | 'wave' | 'brain'
+  label?: string
+  size?: 'small' | 'medium' | 'large'
+}) {
+  return (
+    <div className={`thinking-indicator variant-${variant} size-${size}`}>
+      {variant === 'dots' && (
+        <div className="thinking-dots">
+          <span></span><span></span><span></span>
+        </div>
+      )}
+      {variant === 'spinner' && (
+        <div className="thinking-spinner"></div>
+      )}
+      {variant === 'pulse' && (
+        <div className="thinking-pulse"></div>
+      )}
+      {variant === 'wave' && (
+        <div className="thinking-wave">
+          <span></span><span></span><span></span><span></span><span></span>
+        </div>
+      )}
+      {variant === 'brain' && (
+        <div className="thinking-brain">🧠</div>
+      )}
+      {label && <span className="thinking-label">{label}</span>}
+    </div>
+  )
+}
+
+// AgentEventStream - Real-time visualization of streaming agent events
+type AgentEvent =
+  | { type: 'start'; timestamp: string }
+  | { type: 'step'; step: number; timestamp: string }
+  | { type: 'thought'; content: string; step: number; timestamp: string }
+  | { type: 'tool_call'; toolName: string; args: Record<string, unknown>; step: number; timestamp: string }
+  | { type: 'tool_result'; toolName: string; result: unknown; step: number; timestamp: string }
+  | { type: 'text_chunk'; content: string; timestamp: string }
+  | { type: 'final_answer'; content: string; timestamp: string }
+  | { type: 'error'; message: string; timestamp: string }
+  | { type: 'complete'; totalSteps: number; durationMs: number; timestamp: string }
+
+function AgentEventStream({
+  events,
+  showTimestamps = false,
+  autoScroll = true
+}: {
+  events: AgentEvent[]
+  showTimestamps?: boolean
+  autoScroll?: boolean
+}) {
+  const containerRef = useState<HTMLDivElement | null>(null)[1]
+
+  useEffect(() => {
+    if (autoScroll && containerRef) {
+      // Auto-scroll would happen here
+    }
+  }, [events, autoScroll, containerRef])
+
+  const getEventIcon = (type: AgentEvent['type']) => {
+    switch (type) {
+      case 'start': return '🚀'
+      case 'step': return '📍'
+      case 'thought': return '💭'
+      case 'tool_call': return '🔧'
+      case 'tool_result': return '📦'
+      case 'text_chunk': return '📝'
+      case 'final_answer': return '✨'
+      case 'error': return '❌'
+      case 'complete': return '🏁'
+      default: return '•'
+    }
+  }
+
+  const renderEventContent = (event: AgentEvent) => {
+    switch (event.type) {
+      case 'start':
+        return <span className="event-text">Agent started</span>
+      case 'step':
+        return <span className="event-text">Step {event.step}</span>
+      case 'thought':
+        return <span className="event-text thought">{event.content}</span>
+      case 'tool_call':
+        return (
+          <span className="event-text">
+            Calling <code>{event.toolName}</code>
+            <span className="event-args">{JSON.stringify(event.args)}</span>
+          </span>
+        )
+      case 'tool_result':
+        return (
+          <span className="event-text">
+            <code>{event.toolName}</code> returned
+            <pre className="event-result">{JSON.stringify(event.result, null, 2)}</pre>
+          </span>
+        )
+      case 'text_chunk':
+        return <span className="event-text chunk">{event.content}</span>
+      case 'final_answer':
+        return <span className="event-text final">{event.content}</span>
+      case 'error':
+        return <span className="event-text error">{event.message}</span>
+      case 'complete':
+        return <span className="event-text">Completed in {event.totalSteps} steps ({event.durationMs}ms)</span>
+      default:
+        return null
+    }
+  }
+
+  return (
+    <div className="agent-event-stream">
+      {events.map((event, i) => (
+        <div key={i} className={`event-item event-${event.type}`}>
+          <span className="event-icon">{getEventIcon(event.type)}</span>
+          <div className="event-content">
+            {renderEventContent(event)}
+            {showTimestamps && (
+              <span className="event-timestamp">{event.timestamp}</span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 // AgentResponse - Multi-step agent response with thoughts
 function AgentResponse({
   data,
@@ -847,8 +1015,59 @@ function App() {
 
         {activeTab === 'agent' && (
           <section className="demo-section">
-            <h2>AgentResponse</h2>
-            <p>Multi-step agent responses with reasoning steps.</p>
+            <h2>Agent Components</h2>
+            <p>Components for building agentic AI workflows with real-time streaming events.</p>
+
+            <h3>AgentStatus</h3>
+            <p className="component-desc">Display agent execution state with animated indicators.</p>
+            <div className="agent-status-grid">
+              <AgentStatus status="idle" message="Waiting for input" />
+              <AgentStatus status="thinking" message="Analyzing the problem..." />
+              <AgentStatus status="working" message="Executing web_search tool" />
+              <AgentStatus status="done" message="Task completed successfully" />
+              <AgentStatus status="error" message="Failed to connect to API" />
+            </div>
+
+            <h3>ThinkingIndicator</h3>
+            <p className="component-desc">Animated thinking indicators with multiple variants.</p>
+            <div className="thinking-grid">
+              <div className="thinking-demo">
+                <ThinkingIndicator variant="dots" label="Dots" />
+              </div>
+              <div className="thinking-demo">
+                <ThinkingIndicator variant="spinner" label="Spinner" />
+              </div>
+              <div className="thinking-demo">
+                <ThinkingIndicator variant="pulse" label="Pulse" />
+              </div>
+              <div className="thinking-demo">
+                <ThinkingIndicator variant="wave" label="Wave" />
+              </div>
+              <div className="thinking-demo">
+                <ThinkingIndicator variant="brain" label="Brain" />
+              </div>
+            </div>
+
+            <h3>AgentEventStream</h3>
+            <p className="component-desc">Real-time visualization of streaming agent events.</p>
+            <AgentEventStream
+              events={[
+                { type: 'start', timestamp: '10:00:00' },
+                { type: 'step', step: 1, timestamp: '10:00:01' },
+                { type: 'thought', content: 'I need to search for information about AI Kit', step: 1, timestamp: '10:00:02' },
+                { type: 'tool_call', toolName: 'web_search', args: { query: 'AI Kit react library' }, step: 1, timestamp: '10:00:03' },
+                { type: 'tool_result', toolName: 'web_search', result: { results: ['AI Kit docs', 'GitHub repo'] }, step: 1, timestamp: '10:00:05' },
+                { type: 'step', step: 2, timestamp: '10:00:06' },
+                { type: 'thought', content: 'Let me analyze these results and formulate a response', step: 2, timestamp: '10:00:07' },
+                { type: 'text_chunk', content: 'AI Kit is a...', timestamp: '10:00:08' },
+                { type: 'final_answer', content: 'AI Kit is a React component library for building AI applications with streaming support, tool execution, and agent workflows.', timestamp: '10:00:10' },
+                { type: 'complete', totalSteps: 2, durationMs: 10000, timestamp: '10:00:10' }
+              ]}
+              showTimestamps={true}
+            />
+
+            <h3>AgentResponse</h3>
+            <p className="component-desc">Complete multi-step agent response with reasoning visualization.</p>
             <AgentResponse
               data={{
                 response: "Based on my research, **AI Kit** is a React component library for building AI applications. It provides streaming messages, code highlighting, and tool integration.",
