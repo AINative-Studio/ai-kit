@@ -135,6 +135,14 @@ async function generateTsConfig(
     tsConfig.compilerOptions['lib'] = ['ES2022', 'DOM', 'DOM.Iterable'];
     tsConfig.include = ['src/**/*.ts', 'src/**/*.tsx', 'src/**/*.vue'];
   }
+  if (template.framework === 'svelte') {
+    tsConfig.compilerOptions['lib'] = ['ES2022', 'DOM', 'DOM.Iterable'];
+    tsConfig.compilerOptions['moduleResolution'] = 'bundler';
+    tsConfig.compilerOptions['allowImportingTsExtensions'] = true;
+    tsConfig.compilerOptions['verbatimModuleSyntax'] = true;
+    tsConfig.extends = '@tsconfig/svelte/tsconfig.json';
+    tsConfig.include = ['src/**/*.ts', 'src/**/*.svelte'];
+  }
 
   await writeFile(
     join(options.projectPath, 'tsconfig.json'),
@@ -253,6 +261,9 @@ async function generateSourceFiles(
       break;
     case 'svelte':
       await generateSvelteFiles(options);
+      break;
+    case 'library':
+      await generateLibraryFiles(options);
       break;
     default:
       await generateNodeFiles(options);
@@ -638,6 +649,10 @@ async function generateSvelteFiles(options: GenerateProjectOptions): Promise<voi
   const srcDir = join(options.projectPath, 'src');
   await mkdir(srcDir, { recursive: true });
 
+  // Create lib directory for components
+  const libDir = join(srcDir, 'lib');
+  await mkdir(libDir, { recursive: true });
+
   // Generate index.html
   const indexHtmlContent = `<!DOCTYPE html>
 <html lang="en">
@@ -723,47 +738,85 @@ body {
 
   // Generate src/App.svelte with AI chat integration
   const appSvelteContent = `<script lang="ts">
-  import Anthropic from '@anthropic-ai/sdk';
-  import { onMount } from 'svelte';
+  import ChatComponent from './lib/ChatComponent.svelte';
+</script>
 
-  let messages: Array<{ role: 'user' | 'assistant'; content: string }> = [];
-  let input = '';
+<main class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
+  <div class="max-w-4xl mx-auto">
+    <div class="mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+        Welcome to ${options.projectName}
+      </h1>
+      <p class="text-gray-600 dark:text-gray-400">
+        AI-powered chat application built with Svelte and Claude
+      </p>
+    </div>
+
+    <ChatComponent />
+  </div>
+</main>
+
+<style>
+  :global(body) {
+    margin: 0;
+    padding: 0;
+  }
+</style>
+`;
+  await writeFile(join(srcDir, 'App.svelte'), appSvelteContent);
+
+  // Generate src/lib/ChatComponent.svelte with full AI integration
+  const chatComponentContent = `<script lang="ts">
+  import Anthropic from '@anthropic-ai/sdk';
+
+  interface Message {
+    role: 'user' | 'assistant';
+    content: string;
+  }
+
+  let messages: Message[] = [];
+  let inputMessage = '';
   let loading = false;
   let error = '';
 
   const client = new Anthropic({
     apiKey: import.meta.env.VITE_ANTHROPIC_API_KEY,
-    dangerouslyAllowBrowser: true, // Only for development
+    dangerouslyAllowBrowser: true, // Only for development - use backend proxy in production
   });
 
   async function sendMessage() {
-    if (!input.trim() || loading) return;
+    if (!inputMessage.trim() || loading) return;
 
-    const userMessage = input.trim();
-    input = '';
+    const userMessage = inputMessage.trim();
+    inputMessage = '';
     error = '';
 
     messages = [...messages, { role: 'user', content: userMessage }];
     loading = true;
 
     try {
+      if (!import.meta.env.VITE_ANTHROPIC_API_KEY) {
+        throw new Error('Please set VITE_ANTHROPIC_API_KEY in your .env file');
+      }
+
       const response = await client.messages.create({
         model: 'claude-3-5-sonnet-20241022',
         max_tokens: 1024,
-        messages: messages.map(msg => ({
+        messages: messages.map((msg) => ({
           role: msg.role,
-          content: msg.content
+          content: msg.content,
         })),
       });
 
-      const assistantMessage = response.content[0].type === 'text'
-        ? response.content[0].text
-        : 'Received non-text response';
+      const assistantMessage =
+        response.content[0].type === 'text'
+          ? response.content[0].text
+          : 'Received non-text response';
 
       messages = [...messages, { role: 'assistant', content: assistantMessage }];
-    } catch (err: any) {
-      error = err.message || 'Failed to send message';
-      console.error('Error:', err);
+    } catch (err: unknown) {
+      error = err instanceof Error ? err.message : 'Failed to get response';
+      console.error('Error sending message:', err);
     } finally {
       loading = false;
     }
@@ -777,87 +830,81 @@ body {
   }
 </script>
 
-<main class="min-h-screen bg-gray-50 dark:bg-gray-900 p-8">
-  <div class="max-w-4xl mx-auto">
-    <div class="mb-8">
-      <h1 class="text-4xl font-bold text-gray-900 dark:text-white mb-2">
-        Welcome to ${options.projectName}
-      </h1>
-      <p class="text-gray-600 dark:text-gray-400">
-        Built with Svelte, Vite, and Claude AI
-      </p>
-    </div>
+<div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+  <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+    AI Chat
+  </h2>
 
-    <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
-      <h2 class="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
-        AI Chat
-      </h2>
-
-      <div class="space-y-4 mb-4 max-h-96 overflow-y-auto">
-        {#each messages as message}
-          <div
-            class="p-4 rounded-lg {message.role === 'user'
-              ? 'bg-blue-100 dark:bg-blue-900 ml-auto max-w-md'
-              : 'bg-gray-100 dark:bg-gray-700 mr-auto max-w-md'}"
-          >
-            <p class="text-sm font-semibold mb-1 {message.role === 'user' ? 'text-blue-900 dark:text-blue-100' : 'text-gray-900 dark:text-gray-100'}">
-              {message.role === 'user' ? 'You' : 'Claude'}
-            </p>
-            <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
-              {message.content}
-            </p>
-          </div>
-        {/each}
-
-        {#if loading}
-          <div class="p-4 rounded-lg bg-gray-100 dark:bg-gray-700 mr-auto max-w-md">
-            <p class="text-sm font-semibold mb-1 text-gray-900 dark:text-gray-100">
-              Claude
-            </p>
-            <p class="text-gray-600 dark:text-gray-400">Thinking...</p>
-          </div>
-        {/if}
+  <!-- Messages Display -->
+  <div class="space-y-4 mb-4 h-96 overflow-y-auto p-4 bg-gray-50 dark:bg-gray-700 rounded">
+    {#each messages as message}
+      <div
+        class="p-3 rounded-lg {message.role === 'user'
+          ? 'bg-blue-100 dark:bg-blue-900 ml-auto max-w-[80%]'
+          : 'bg-gray-200 dark:bg-gray-600 mr-auto max-w-[80%]'}"
+      >
+        <p class="text-sm font-semibold mb-1 text-gray-900 dark:text-white">
+          {message.role === 'user' ? 'You' : 'Claude'}
+        </p>
+        <p class="text-gray-800 dark:text-gray-200 whitespace-pre-wrap">
+          {message.content}
+        </p>
       </div>
+    {/each}
 
-      {#if error}
-        <div class="mb-4 p-4 bg-red-100 dark:bg-red-900 text-red-900 dark:text-red-100 rounded-lg">
-          {error}
-        </div>
-      {/if}
-
-      <div class="flex gap-2">
-        <input
-          type="text"
-          bind:value={input}
-          on:keypress={handleKeyPress}
-          placeholder="Type your message..."
-          disabled={loading}
-          class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white disabled:opacity-50"
-        />
-        <button
-          on:click={sendMessage}
-          disabled={loading || !input.trim()}
-          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-        >
-          {loading ? 'Sending...' : 'Send'}
-        </button>
+    {#if loading}
+      <div class="flex items-center space-x-2 text-gray-600 dark:text-gray-400">
+        <div class="animate-pulse">Claude is thinking...</div>
       </div>
-
-      <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-        Note: API key is exposed in browser. Use a backend proxy for production.
-      </p>
-    </div>
+    {/if}
   </div>
-</main>
 
-<style>
-  :global(body) {
-    margin: 0;
-    padding: 0;
-  }
-</style>
+  <!-- Input Form -->
+  <div class="flex gap-2">
+    <input
+      type="text"
+      bind:value={inputMessage}
+      on:keypress={handleKeyPress}
+      placeholder="Ask Claude anything..."
+      disabled={loading}
+      class="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg
+             focus:outline-none focus:ring-2 focus:ring-blue-500
+             dark:bg-gray-700 dark:text-white disabled:opacity-50"
+    />
+    <button
+      type="button"
+      on:click={sendMessage}
+      disabled={loading || !inputMessage.trim()}
+      class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700
+             focus:outline-none focus:ring-2 focus:ring-blue-500
+             disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+    >
+      {loading ? 'Sending...' : 'Send'}
+    </button>
+  </div>
+
+  <!-- Error Display -->
+  {#if error}
+    <div class="mt-4 p-3 bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200 rounded">
+      {error}
+    </div>
+  {/if}
+
+  <!-- Info Message -->
+  <div class="mt-4 text-sm text-gray-600 dark:text-gray-400">
+    <p>
+      💡 To enable AI responses, set your <code
+        class="px-1 bg-gray-200 dark:bg-gray-700 rounded">VITE_ANTHROPIC_API_KEY</code
+      >
+      in <code class="px-1 bg-gray-200 dark:bg-gray-700 rounded">.env</code>
+    </p>
+    <p class="mt-2 text-xs text-gray-500 dark:text-gray-500">
+      ⚠️ Note: API key is exposed in browser. Use a backend proxy for production.
+    </p>
+  </div>
+</div>
 `;
-  await writeFile(join(srcDir, 'App.svelte'), appSvelteContent);
+  await writeFile(join(libDir, 'ChatComponent.svelte'), chatComponentContent);
 
   // Generate src/main.ts
   const mainTsContent = `import './app.css';
@@ -917,6 +964,79 @@ main();
   await writeFile(join(srcDir, 'index.ts'), indexContent);
 }
 
+async function generateLibraryFiles(options: GenerateProjectOptions): Promise<void> {
+  const srcDir = join(options.projectPath, 'src');
+
+  // Generate a proper library entry point with AI Kit utilities
+  const indexContent = `import { AIProvider } from '@ainative/ai-kit-core';
+
+/**
+ * Example utility function that uses AI Kit
+ * This demonstrates how to build a library on top of AI Kit
+ */
+export async function generateText(
+  provider: AIProvider,
+  prompt: string,
+  options?: {
+    maxTokens?: number;
+    temperature?: number;
+  }
+): Promise<string> {
+  const response = await provider.generate({
+    prompt,
+    maxTokens: options?.maxTokens ?? 1024,
+    temperature: options?.temperature ?? 0.7,
+  });
+
+  return response.text;
+}
+
+/**
+ * Example class-based approach for AI Kit library
+ */
+export class AIHelper {
+  constructor(private provider: AIProvider) {}
+
+  async summarize(text: string): Promise<string> {
+    return generateText(
+      this.provider,
+      \`Please summarize the following text:\\n\\n\${text}\`
+    );
+  }
+
+  async translate(text: string, targetLanguage: string): Promise<string> {
+    return generateText(
+      this.provider,
+      \`Translate the following text to \${targetLanguage}:\\n\\n\${text}\`
+    );
+  }
+
+  async analyze(text: string): Promise<string> {
+    return generateText(
+      this.provider,
+      \`Analyze the sentiment and key points in the following text:\\n\\n\${text}\`
+    );
+  }
+}
+
+/**
+ * Example types for your library
+ */
+export interface AILibraryConfig {
+  apiKey: string;
+  model?: string;
+  maxRetries?: number;
+}
+
+/**
+ * Re-export commonly used types from AI Kit
+ */
+export type { AIProvider } from '@ainative/ai-kit-core';
+`;
+
+  await writeFile(join(srcDir, 'index.ts'), indexContent);
+}
+
 async function generateConfigFiles(
   options: GenerateProjectOptions,
   template: any
@@ -931,6 +1051,23 @@ module.exports = {
 };
 `;
   await writeFile(join(options.projectPath, 'aikit.config.js'), configContent);
+
+  // Generate tsup.config.ts for library templates
+  if (template.framework === 'library') {
+    const tsupContent = `import { defineConfig } from 'tsup';
+
+export default defineConfig({
+  entry: ['src/index.ts'],
+  format: ['cjs', 'esm'],
+  dts: true,
+  clean: true,
+  sourcemap: true,
+  splitting: false,
+  treeshake: true,
+});
+`;
+    await writeFile(join(options.projectPath, 'tsup.config.ts'), tsupContent);
+  }
 
   // Generate Tailwind config for frameworks that use it
   if (['nextjs', 'react', 'vite', 'vue', 'svelte'].includes(template.framework)) {
