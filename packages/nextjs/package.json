@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-nextjs",
-  "version": "0.1.0-alpha.2",
+  "version": "0.1.0-alpha.3",
   "description": "AI Kit - Next.js utilities and helpers for AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
