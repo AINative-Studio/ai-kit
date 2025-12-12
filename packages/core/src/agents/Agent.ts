@@ -6,6 +6,7 @@
  */
 
 import { z } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
 import {
   AgentConfig,
   ToolDefinition,
@@ -347,69 +348,37 @@ export class Agent {
    * Convert Zod schema to JSON schema for LLM function calling
    */
   private zodSchemaToJsonSchema(schema: z.ZodType): Record<string, unknown> {
-    // This is a simplified conversion. In production, you'd use a library
-    // like zod-to-json-schema for complete conversion
     try {
-      if (schema instanceof z.ZodObject) {
-        const shape = schema.shape;
-        const properties: Record<string, unknown> = {};
-        const required: string[] = [];
+      // Use zod-to-json-schema library for complete, accurate conversion
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const jsonSchema = zodToJsonSchema(schema as any, {
+        target: 'openApi3',           // OpenAI-compatible format
+        $refStrategy: 'none',          // Inline all schemas (no $ref)
+        strictUnions: false,           // More permissive union handling
+        errorMessages: false,          // Exclude error messages from schema
+        markdownDescription: false,    // Use 'description' not 'markdownDescription'
+        dateStrategy: 'string',        // Convert dates to ISO strings
+        emailStrategy: 'format:email', // Use 'format: email' for z.email()
+        base64Strategy: 'contentEncoding:base64', // Base64 handling
+      }) as any;
 
-        Object.entries(shape).forEach(([key, value]) => {
-          properties[key] = this.zodTypeToJsonSchema(value as z.ZodType);
-          if (!(value as z.ZodType).isOptional()) {
-            required.push(key);
-          }
-        });
-
-        return {
-          type: 'object',
-          properties,
-          required,
-        };
+      // Remove $schema property as it's not needed for LLM function calling
+      if (jsonSchema.$schema) {
+        delete jsonSchema.$schema;
       }
 
-      return this.zodTypeToJsonSchema(schema);
+      return jsonSchema as Record<string, unknown>;
     } catch (error) {
       console.warn('Failed to convert Zod schema to JSON schema:', error);
-      return { type: 'object' };
+      // Fallback to basic object schema
+      return {
+        type: 'object',
+        properties: {},
+        additionalProperties: true
+      };
     }
   }
 
-  /**
-   * Convert individual Zod type to JSON schema type
-   */
-  private zodTypeToJsonSchema(zodType: z.ZodType): Record<string, unknown> {
-    if (zodType instanceof z.ZodString) {
-      return { type: 'string' };
-    }
-    if (zodType instanceof z.ZodNumber) {
-      return { type: 'number' };
-    }
-    if (zodType instanceof z.ZodBoolean) {
-      return { type: 'boolean' };
-    }
-    if (zodType instanceof z.ZodArray) {
-      return {
-        type: 'array',
-        items: this.zodTypeToJsonSchema(zodType.element),
-      };
-    }
-    if (zodType instanceof z.ZodObject) {
-      return this.zodSchemaToJsonSchema(zodType);
-    }
-    if (zodType instanceof z.ZodOptional || zodType instanceof z.ZodNullable) {
-      return this.zodTypeToJsonSchema(zodType.unwrap());
-    }
-    if (zodType instanceof z.ZodEnum) {
-      return {
-        type: 'string',
-        enum: zodType.options,
-      };
-    }
-
-    return { type: 'object' };
-  }
 
   /**
    * Execute a function with timeout
