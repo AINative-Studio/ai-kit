@@ -50,7 +50,7 @@
   "homepage": "https://ainative.studio/ai-kit",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AINative-Studio/ai-kit.git",
+    "url": "git+https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/vue"
   },
   "bugs": {

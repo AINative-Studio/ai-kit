@@ -48,10 +48,10 @@
   ],
   "author": "AINative Studio",
   "license": "MIT",
-  "homepage": "https://github.com/AINative-Studio/ai-kit#readme",
+  "homepage": "https://ainative.studio/ai-kit",
   "repository": {
     "type": "git",
-    "url": "https://github.com/AINative-Studio/ai-kit.git",
+    "url": "git+https://github.com/AINative-Studio/ai-kit.git",
     "directory": "packages/design-system"
   },
   "bugs": {
