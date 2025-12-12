@@ -531,6 +531,7 @@ describe('QueryMonitor', () => {
     });
 
     it('should emit alert for slow queries', () => {
+      vi.useFakeTimers();
       let alertEmitted = false;
 
       const alertMonitor = new QueryMonitor({
@@ -551,7 +552,7 @@ describe('QueryMonitor', () => {
         }
       });
 
-      // Create slow queries by reporting high llmDuration
+      // Create slow queries by simulating actual time passing
       for (let i = 0; i < 5; i++) {
         const context: QueryContext = {
           queryId: `alert-slow-${i}`,
@@ -560,7 +561,8 @@ describe('QueryMonitor', () => {
           startTime: new Date().toISOString(),
         };
         alertMonitor.startQuery(context);
-        // High llmDuration will make total duration high
+        // Advance time to simulate actual query execution
+        vi.advanceTimersByTime(600);
         alertMonitor.completeQuery(`alert-slow-${i}`, {
           tokens: { input: 10, output: 20 },
           llmDuration: 600, // 600ms LLM duration
@@ -569,11 +571,12 @@ describe('QueryMonitor', () => {
 
       // Check the stats
       const stats = alertMonitor.getStats();
-      // Since we have 5 queries with 600ms llmDuration, average should be around 600+
-      expect(stats.aggregateMetrics.avgDuration).toBeGreaterThan(0);
+      // Since we advanced time by 600ms for each query, average should be 600+
+      expect(stats.aggregateMetrics.avgDuration).toBeGreaterThan(500);
       expect(stats.aggregateMetrics.avgLLMDuration).toBe(600);
 
       alertMonitor.removeAllListeners();
+      vi.useRealTimers();
       // The alert should have been emitted since avgDuration > 500
       expect(alertEmitted).toBe(true);
     });
