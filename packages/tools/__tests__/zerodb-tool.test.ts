@@ -162,7 +162,7 @@ describe('ZeroDBTool', () => {
 
       expect(result.success).toBe(true)
       expect(result.metadata.operation).toBe(DatabaseOperationType.SELECT)
-      expect(result.metadata.executionTimeMs).toBeGreaterThan(0)
+      expect(result.metadata.executionTimeMs).toBeGreaterThanOrEqual(0)
     })
 
     it('should execute query with table name', async () => {

@@ -218,7 +218,7 @@ describe('useAIStream Vue Composable', () => {
       )
     })
 
-    it('should clear error on successful retry', async () => {
+    it('should not set error when retry succeeds', async () => {
       let callCount = 0
 
       ;(global.fetch as any).mockImplementation(() => {
@@ -250,19 +250,18 @@ describe('useAIStream Vue Composable', () => {
       )
       await nextTick()
 
-      await wrapper.vm.send('Test').catch(() => {
-        // First call expected to fail
-      })
+      await wrapper.vm.send('Test')
+      await nextTick()
 
-      // Wait for error to be set first
+      // Wait for operation to complete - error should remain null
+      // because retry succeeded before error was emitted
       await vi.waitFor(() => {
-        expect(wrapper.vm.error).not.toBeNull()
-      }, { timeout: 2000 })
+        expect(callCount).toBe(2) // First failed, second succeeded
+      }, { timeout: 3000 })
 
-      // Wait for retry to happen and clear error
-      await vi.waitFor(() => {
-        expect(wrapper.vm.error).toBeNull()
-      }, { timeout: 5000 })
+      // Error should still be null because retry succeeded
+      expect(wrapper.vm.error).toBeNull()
+      expect(wrapper.vm.isStreaming).toBe(false)
     })
   })
 
