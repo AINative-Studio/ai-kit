@@ -14,7 +14,7 @@
     "type-check": "nuxt typecheck"
   },
   "dependencies": {
-    "@ainative/ai-kit": "workspace:*",
+    "@ainative/ai-kit": "^0.1.0-alpha.3",
     "nuxt": "^3.13.0",
     "vue": "^3.4.0",
     "pinia": "^2.1.7",

@@ -18,7 +18,7 @@
     "db:seed": "cd packages/server && pnpm db:seed"
   },
   "dependencies": {
-    "@ainative/ai-kit": "workspace:*"
+    "@ainative/ai-kit": "^0.1.0-alpha.3"
   },
   "devDependencies": {
     "concurrently": "^8.2.0",

@@ -13,7 +13,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@ainative/ai-kit": "workspace:*",
+    "@ainative/ai-kit": "^0.1.0-alpha.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
