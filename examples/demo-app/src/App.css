@@ -1381,3 +1381,273 @@
 .event-final_answer { border-left: 3px solid #34d399; }
 .event-error { border-left: 3px solid #ef4444; }
 .event-complete { border-left: 3px solid #22c55e; }
+
+/* =============================================================================
+   OBSERVABILITY DASHBOARD COMPONENTS
+   ============================================================================= */
+
+/* Overview Component */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.overview-card {
+  background: #1e1e1e;
+  border: 1px solid #333;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.overview-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.overview-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.overview-icon {
+  font-size: 1.25rem;
+}
+
+.overview-title {
+  font-size: 0.85rem;
+  color: #888;
+  font-weight: 500;
+}
+
+.overview-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 0.5rem;
+}
+
+.overview-change {
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.overview-change.positive {
+  color: #10b981;
+}
+
+.overview-change.negative {
+  color: #ef4444;
+}
+
+/* UsageMetrics Component */
+.usage-metrics-chart {
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.usage-metrics-chart .chart-header {
+  margin-bottom: 1rem;
+}
+
+.usage-metrics-chart .chart-header h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.usage-metrics-chart .chart-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #ccc;
+}
+
+.legend-color {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.legend-color.requests {
+  background: #667eea;
+}
+
+.legend-color.tokens {
+  background: #10b981;
+}
+
+.line-chart-container {
+  height: 200px;
+  margin-bottom: 0.5rem;
+}
+
+.line-chart-container svg {
+  width: 100%;
+  height: 100%;
+}
+
+.chart-x-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: #666;
+}
+
+/* CostAnalysis Component */
+.cost-analysis {
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.cost-analysis .chart-header {
+  margin-bottom: 1.25rem;
+}
+
+.cost-analysis .chart-header h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.cost-analysis .chart-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #10b981;
+  font-weight: 600;
+}
+
+.cost-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cost-bar-row {
+  display: grid;
+  grid-template-columns: 120px 1fr 70px;
+  align-items: center;
+  gap: 1rem;
+}
+
+.cost-bar-label {
+  font-size: 0.85rem;
+  color: #ccc;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.cost-bar-track {
+  height: 24px;
+  background: #2a2a2a;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.cost-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.5s ease;
+}
+
+.cost-bar-value {
+  font-size: 0.85rem;
+  color: #fff;
+  font-weight: 600;
+  text-align: right;
+}
+
+/* ModelComparison Component */
+.model-comparison {
+  background: #1e1e1e;
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.model-comparison .chart-header {
+  margin-bottom: 1.25rem;
+}
+
+.model-comparison .chart-header h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+.model-comparison .chart-header p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #888;
+}
+
+.comparison-table-wrapper {
+  overflow-x: auto;
+}
+
+.comparison-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.comparison-table th {
+  text-align: left;
+  padding: 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #888;
+  border-bottom: 1px solid #333;
+  white-space: nowrap;
+}
+
+.comparison-table th:not(:first-child) {
+  text-align: right;
+}
+
+.comparison-table td {
+  padding: 0.75rem;
+  font-size: 0.9rem;
+  color: #ccc;
+  border-bottom: 1px solid #2a2a2a;
+}
+
+.comparison-table td:not(:first-child) {
+  text-align: right;
+}
+
+.comparison-table tr:hover {
+  background: #242424;
+}
+
+.comparison-table .model-name {
+  font-weight: 600;
+  color: #fff;
+}
+
+.comparison-table .success-high {
+  color: #10b981;
+  font-weight: 600;
+}
+
+.comparison-table .success-medium {
+  color: #f59e0b;
+  font-weight: 600;
+}

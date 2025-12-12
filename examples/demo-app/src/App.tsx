@@ -378,6 +378,193 @@ function UsageDashboard({
   )
 }
 
+// Overview - Key metrics dashboard with change indicators
+function Overview({
+  metrics
+}: {
+  metrics: {
+    totalRequests: number
+    totalCost: number
+    totalTokens: number
+    activeUsers: number
+    requestsChange: number
+    costChange: number
+    tokensChange: number
+    usersChange: number
+  }
+}) {
+  const cards = [
+    { title: 'Total Requests', value: metrics.totalRequests.toLocaleString(), change: metrics.requestsChange, icon: '📊' },
+    { title: 'Total Cost', value: `$${metrics.totalCost.toFixed(2)}`, change: metrics.costChange, icon: '💰' },
+    { title: 'Tokens Used', value: metrics.totalTokens.toLocaleString(), change: metrics.tokensChange, icon: '⚡' },
+    { title: 'Active Users', value: metrics.activeUsers.toLocaleString(), change: metrics.usersChange, icon: '👥' },
+  ]
+
+  return (
+    <div className="overview-grid">
+      {cards.map((card, i) => (
+        <div key={i} className="overview-card">
+          <div className="overview-card-header">
+            <span className="overview-icon">{card.icon}</span>
+            <span className="overview-title">{card.title}</span>
+          </div>
+          <div className="overview-value">{card.value}</div>
+          <div className={`overview-change ${card.change >= 0 ? 'positive' : 'negative'}`}>
+            {card.change >= 0 ? '↑' : '↓'} {Math.abs(card.change).toFixed(1)}% from last period
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+// UsageMetrics - Line chart for requests and tokens over time
+function UsageMetrics({
+  data
+}: {
+  data: Array<{ date: string; requests: number; tokens: number }>
+}) {
+  const maxRequests = Math.max(...data.map(d => d.requests))
+  const maxTokens = Math.max(...data.map(d => d.tokens))
+  const width = 100
+  const height = 50
+
+  const requestsPoints = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * width
+    const y = height - (d.requests / maxRequests) * (height - 5)
+    return `${x},${y}`
+  }).join(' ')
+
+  const tokensPoints = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * width
+    const y = height - (d.tokens / maxTokens) * (height - 5)
+    return `${x},${y}`
+  }).join(' ')
+
+  return (
+    <div className="usage-metrics-chart">
+      <div className="chart-header">
+        <h4>Usage Trends</h4>
+        <p>API requests and token consumption over time</p>
+      </div>
+      <div className="chart-legend">
+        <span className="legend-item"><span className="legend-color requests"></span> Requests</span>
+        <span className="legend-item"><span className="legend-color tokens"></span> Tokens</span>
+      </div>
+      <div className="line-chart-container">
+        <svg viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none">
+          <polyline
+            fill="none"
+            stroke="#667eea"
+            strokeWidth="2"
+            points={requestsPoints}
+          />
+          <polyline
+            fill="none"
+            stroke="#10b981"
+            strokeWidth="2"
+            points={tokensPoints}
+          />
+        </svg>
+      </div>
+      <div className="chart-x-labels">
+        {data.filter((_, i) => i % Math.ceil(data.length / 6) === 0).map((d, i) => (
+          <span key={i}>{d.date}</span>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// CostAnalysis - Bar chart for cost breakdown by model
+function CostAnalysis({
+  data
+}: {
+  data: Array<{ model: string; cost: number }>
+}) {
+  const maxCost = Math.max(...data.map(d => d.cost))
+  const totalCost = data.reduce((sum, d) => sum + d.cost, 0)
+
+  const colors = ['#667eea', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981']
+
+  return (
+    <div className="cost-analysis">
+      <div className="chart-header">
+        <h4>Cost by Model</h4>
+        <p>Total: ${totalCost.toFixed(2)}</p>
+      </div>
+      <div className="cost-bars">
+        {data.map((item, i) => (
+          <div key={i} className="cost-bar-row">
+            <div className="cost-bar-label">{item.model}</div>
+            <div className="cost-bar-track">
+              <div
+                className="cost-bar-fill"
+                style={{
+                  width: `${(item.cost / maxCost) * 100}%`,
+                  backgroundColor: colors[i % colors.length]
+                }}
+              />
+            </div>
+            <div className="cost-bar-value">${item.cost.toFixed(2)}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// ModelComparison - Table comparing model performance
+function ModelComparison({
+  data
+}: {
+  data: Array<{
+    name: string
+    requests: number
+    tokens: number
+    cost: number
+    avgLatency: number
+    successRate: number
+  }>
+}) {
+  return (
+    <div className="model-comparison">
+      <div className="chart-header">
+        <h4>Model Comparison</h4>
+        <p>Performance metrics across different AI models</p>
+      </div>
+      <div className="comparison-table-wrapper">
+        <table className="comparison-table">
+          <thead>
+            <tr>
+              <th>Model</th>
+              <th>Requests</th>
+              <th>Tokens</th>
+              <th>Cost</th>
+              <th>Avg Latency</th>
+              <th>Success Rate</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((model, i) => (
+              <tr key={i}>
+                <td className="model-name">{model.name}</td>
+                <td>{model.requests.toLocaleString()}</td>
+                <td>{model.tokens.toLocaleString()}</td>
+                <td>${model.cost.toFixed(2)}</td>
+                <td>{model.avgLatency}ms</td>
+                <td className={model.successRate >= 99 ? 'success-high' : 'success-medium'}>
+                  {model.successRate}%
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
 // SafetyGuard - Content safety visualization
 function SafetyGuard({
   input,
@@ -1170,8 +1357,65 @@ function App() {
 
         {activeTab === 'analytics' && (
           <section className="demo-section">
-            <h2>Analytics Components</h2>
-            <p>Usage tracking and cost monitoring dashboards.</p>
+            <h2>Analytics & Observability Components</h2>
+            <p>Usage tracking, cost monitoring, and performance analytics dashboards.</p>
+
+            <h3>Overview</h3>
+            <p className="component-desc">Key metrics dashboard with change indicators.</p>
+            <Overview
+              metrics={{
+                totalRequests: 45231,
+                totalCost: 1247.89,
+                totalTokens: 12456789,
+                activeUsers: 342,
+                requestsChange: 12.5,
+                costChange: -8.3,
+                tokensChange: 15.2,
+                usersChange: 5.7
+              }}
+            />
+
+            <h3>UsageMetrics</h3>
+            <p className="component-desc">Line chart visualization of API requests and token consumption.</p>
+            <UsageMetrics
+              data={[
+                { date: 'Nov 13', requests: 1200, tokens: 350000 },
+                { date: 'Nov 14', requests: 1450, tokens: 420000 },
+                { date: 'Nov 15', requests: 1100, tokens: 310000 },
+                { date: 'Nov 16', requests: 1800, tokens: 520000 },
+                { date: 'Nov 17', requests: 2100, tokens: 610000 },
+                { date: 'Nov 18', requests: 1650, tokens: 480000 },
+                { date: 'Nov 19', requests: 1900, tokens: 550000 },
+                { date: 'Nov 20', requests: 2300, tokens: 680000 },
+                { date: 'Nov 21', requests: 2150, tokens: 620000 },
+                { date: 'Nov 22', requests: 1750, tokens: 510000 },
+                { date: 'Nov 23', requests: 2400, tokens: 710000 },
+                { date: 'Nov 24', requests: 2600, tokens: 780000 }
+              ]}
+            />
+
+            <h3>CostAnalysis</h3>
+            <p className="component-desc">Bar chart showing cost breakdown by model.</p>
+            <CostAnalysis
+              data={[
+                { model: 'GPT-4 Turbo', cost: 456.78 },
+                { model: 'Claude-3 Opus', cost: 345.67 },
+                { model: 'GPT-3.5 Turbo', cost: 234.56 },
+                { model: 'Claude-3 Sonnet', cost: 123.45 },
+                { model: 'Gemini Pro', cost: 87.32 }
+              ]}
+            />
+
+            <h3>ModelComparison</h3>
+            <p className="component-desc">Performance metrics comparison across AI models.</p>
+            <ModelComparison
+              data={[
+                { name: 'GPT-4 Turbo', requests: 12543, tokens: 4567890, cost: 456.78, avgLatency: 1247, successRate: 99.2 },
+                { name: 'GPT-3.5 Turbo', requests: 23456, tokens: 6789012, cost: 234.56, avgLatency: 856, successRate: 99.8 },
+                { name: 'Claude-3 Opus', requests: 8765, tokens: 3456789, cost: 345.67, avgLatency: 1532, successRate: 98.9 },
+                { name: 'Claude-3 Sonnet', requests: 15432, tokens: 5432109, cost: 123.45, avgLatency: 982, successRate: 99.5 }
+              ]}
+            />
 
             <h3>UnknownTool</h3>
             <p className="component-desc">Fallback component for tools without registered UI.</p>
@@ -1186,7 +1430,7 @@ function App() {
             />
 
             <h3>UsageDashboard</h3>
-            <p className="component-desc">Comprehensive usage analytics and cost tracking.</p>
+            <p className="component-desc">Comprehensive usage analytics with charts.</p>
             <UsageDashboard
               data={{
                 totalRequests: 1247,
