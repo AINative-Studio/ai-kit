@@ -98,7 +98,7 @@ describe('Next.js App Router Integration', () => {
 
   describe('Streaming Responses', () => {
     it('should stream server component output', async () => {
-      const streamResponse = async function* () => {
+      const streamResponse = async function* (): AsyncGenerator<string> {
         yield 'chunk1';
         yield 'chunk2';
         yield 'chunk3';
@@ -113,7 +113,7 @@ describe('Next.js App Router Integration', () => {
     });
 
     it('should handle streaming errors', async () => {
-      const errorStream = async function* () => {
+      const errorStream = async function* (): AsyncGenerator<string> {
         yield 'chunk1';
         throw new Error('Stream error');
       };
