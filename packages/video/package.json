@@ -1,0 +1,81 @@
+{
+  "name": "@ainative/ai-kit-video",
+  "version": "0.1.0",
+  "description": "AI Kit - Video processing utilities including recording and transcription",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./recording": {
+      "types": "./dist/recording/index.d.ts",
+      "import": "./dist/recording/index.mjs",
+      "require": "./dist/recording/index.js"
+    },
+    "./processing": {
+      "types": "./dist/processing/index.d.ts",
+      "import": "./dist/processing/index.mjs",
+      "require": "./dist/processing/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ainative",
+    "ai",
+    "llm",
+    "typescript",
+    "video",
+    "transcription",
+    "whisper",
+    "recording",
+    "media",
+    "ai-kit"
+  ],
+  "author": "AINative Studio",
+  "license": "MIT",
+  "homepage": "https://ainative.studio/ai-kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AINative-Studio/ai-kit.git",
+    "directory": "packages/video"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
+  },
+  "dependencies": {
+    "openai": "^4.20.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.0",
+    "vitest": "^1.0.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
