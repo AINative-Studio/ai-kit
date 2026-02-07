@@ -4,7 +4,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue)](https://www.typescriptlang.org/)
-[![Next.js](https://img.shields.io/badge/Next.js-13%2B-black)](https://nextjs.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-13%20%7C%2014%20%7C%2015%20%7C%2016-black)](https://nextjs.org/)
 
 Next.js-specific utilities for AI Kit, providing powerful route helpers for both **App Router** (Next.js 13+) and **Pages Router** with built-in support for:
 
@@ -17,6 +17,20 @@ Next.js-specific utilities for AI Kit, providing powerful route helpers for both
 - ✅ Heartbeat support for long connections
 
 ---
+
+## Version Compatibility
+
+| Next.js Version | Support Status | Tested |
+|----------------|----------------|--------|
+| 16.x           | Full Support   | Yes    |
+| 15.x           | Full Support   | Yes    |
+| 14.x           | Full Support   | Yes    |
+| 13.x           | Full Support   | Yes    |
+
+**Requirements:**
+- Next.js: ^13.0.0 || ^14.0.0 || ^15.0.0 || ^16.0.0
+- React: ^18.0.0 || ^19.0.0
+- Node.js: >=18.0.0 (>=20.9.0 recommended for Next.js 16+)
 
 ## Installation
 
@@ -252,6 +266,16 @@ export const POST = createStreamingRoute(
   }
 )
 ```
+
+## Next.js 16 Compatibility Notes
+
+Next.js 16 introduces several breaking changes. This package is fully compatible with all of them:
+
+- **Async Request APIs**: Next.js 16 requires fully async access to `params`, `searchParams`, `cookies()`, `headers()`, and `draftMode()`. Our route helpers handle requests synchronously at the API level, which remains fully compatible.
+- **Proxy.ts replaces Middleware.ts**: Our middleware utilities (CORS, Auth, Rate Limiting, etc.) work seamlessly with both the old `middleware.ts` and new `proxy.ts` approach.
+- **Parallel Routes require explicit default.js**: This doesn't affect our route helpers.
+- **No AMP Support**: We don't rely on any AMP-specific features.
+- **Node.js 20.9.0+ Required**: Ensure your runtime meets this requirement.
 
 ## Documentation
 
