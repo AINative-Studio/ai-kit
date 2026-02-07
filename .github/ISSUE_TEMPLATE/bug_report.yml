@@ -1,0 +1,162 @@
+name: Bug Report
+description: Report a bug or unexpected behavior
+title: "[Bug]: "
+labels: ["bug", "triage"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report a bug! Please fill out the sections below.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug
+      placeholder: What happened?
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Install package '...'
+        2. Run code '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: I expected...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Instead, this happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: code
+    attributes:
+      label: Code Sample
+      description: Minimal code sample that reproduces the issue
+      render: typescript
+      placeholder: |
+        import { useAIChat } from '@ainative/ai-kit'
+
+        // Your code here
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: Relevant error messages or stack traces
+      render: shell
+      placeholder: Paste error logs here
+    validations:
+      required: false
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package is affected?
+      options:
+        - "@ainative/ai-kit-core"
+        - "@ainative/ai-kit (React)"
+        - "@ainative/ai-kit-safety"
+        - "@ainative/ai-kit-cli"
+        - "@ainative/ai-kit-video"
+        - "@ainative/ai-kit-nextjs"
+        - "@ainative/ai-kit-svelte"
+        - "@ainative/ai-kit-vue"
+        - "@ainative/ai-kit-testing"
+        - "@ainative/ai-kit-observability"
+        - "@ainative/ai-kit-tools"
+        - "@ainative/ai-kit-auth"
+        - "@ainative/ai-kit-rlhf"
+        - "@ainative/ai-kit-zerodb"
+        - "@ainative/ai-kit-design-system"
+        - "Other"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: Which version are you using?
+      placeholder: e.g., 0.0.1
+    validations:
+      required: true
+
+  - type: input
+    id: node
+    attributes:
+      label: Node.js Version
+      description: Which Node.js version?
+      placeholder: e.g., 18.19.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      options:
+        - macOS
+        - Linux
+        - Windows
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: framework
+    attributes:
+      label: Framework
+      description: Which framework are you using?
+      options:
+        - React
+        - Next.js
+        - Vue
+        - Svelte
+        - Vanilla JavaScript
+        - Other
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information
+      placeholder: Add any other context about the problem here
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched existing issues to avoid duplicates
+          required: true
+        - label: I have provided a minimal code sample that reproduces the issue
+          required: false
+        - label: I have included relevant error messages and logs
+          required: false

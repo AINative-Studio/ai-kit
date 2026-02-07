@@ -1,0 +1,69 @@
+{
+  "name": "@ainative/ai-kit-video",
+  "version": "0.1.0",
+  "description": "Video recording and processing utilities for AI Kit",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:coverage": "vitest --coverage",
+    "type-check": "tsc --noEmit",
+    "lint": "eslint src",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "ainative",
+    "ai",
+    "video",
+    "recording",
+    "picture-in-picture",
+    "pip",
+    "screen-recording",
+    "webcam",
+    "mediastream",
+    "canvas"
+  ],
+  "author": "AINative Studio",
+  "license": "MIT",
+  "homepage": "https://ainative.studio/ai-kit",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AINative-Studio/ai-kit.git",
+    "directory": "packages/video"
+  },
+  "bugs": {
+    "url": "https://github.com/AINative-Studio/ai-kit/issues"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@vitest/coverage-v8": "^1.6.0",
+    "happy-dom": "^12.10.3",
+    "jsdom": "^23.0.1",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.0",
+    "vitest": "^1.6.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
