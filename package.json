@@ -35,7 +35,18 @@
     "docs:api": "tsx scripts/generate-api-docs.ts",
     "docs:typedoc": "typedoc",
     "docs:validate": "vitest run scripts/__tests__/api-docs.test.ts",
-    "docs": "pnpm run docs:api && pnpm run docs:typedoc"
+    "docs": "pnpm run docs:api && pnpm run docs:typedoc",
+    "prepare:publish": "tsx scripts/prepare-publish.ts",
+    "restore:workspace": "tsx scripts/restore-workspace-deps.ts",
+    "validate:packages": "tsx scripts/validate-packages.ts",
+    "validate:coverage": "tsx scripts/validate-coverage.ts",
+    "changeset": "changeset",
+    "changeset:version": "changeset version",
+    "changeset:publish": "changeset publish",
+    "prepublish": "pnpm build && pnpm test && pnpm lint && pnpm type-check",
+    "release": "pnpm prepare:publish && pnpm prepublish && pnpm changeset:version && pnpm changeset:publish && pnpm restore:workspace",
+    "release:beta": "pnpm prepare:publish && pnpm prepublish && pnpm changeset:version && pnpm changeset:publish --tag beta && pnpm restore:workspace",
+    "publish:dry-run": "pnpm prepare:publish && pnpm prepublish && pnpm changeset:publish --dry-run && pnpm restore:workspace"
   },
   "devDependencies": {
     "@changesets/cli": "^2.27.1",
@@ -47,8 +58,8 @@
     "@typescript-eslint/eslint-plugin": "^8.47.0",
     "@typescript-eslint/parser": "^8.47.0",
     "@vitejs/plugin-react": "^4.2.1",
-    "@vitest/coverage-v8": "^1.6.1",
-    "@vitest/ui": "^1.6.1",
+    "@vitest/coverage-v8": "^4.0.18",
+    "@vitest/ui": "^4.0.18",
     "eslint": "^9.39.1",
     "glob": "^13.0.0",
     "jsdom": "^27.2.0",
@@ -61,7 +72,7 @@
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "^5.3.0",
-    "vitest": "^1.6.1"
+    "vitest": "^4.0.18"
   },
   "packageManager": "pnpm@8.12.0",
   "engines": {

@@ -141,3 +141,6 @@ vite.config.ts.timestamp-*
 # Coverage reports
 html/
 coverage/
+
+# Workspace dependency resolution backups
+.workspace-backup/
