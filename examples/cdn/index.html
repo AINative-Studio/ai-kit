@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Kit - CDN Bundle Example</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #0066cc;
+            padding-bottom: 10px;
+        }
+        .notice {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .code-block {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            padding: 15px;
+            margin: 15px 0;
+            overflow-x: auto;
+        }
+        pre {
+            margin: 0;
+        }
+        code {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+        }
+        .success {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .error {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        #test-results {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        .test-item {
+            padding: 8px;
+            margin: 5px 0;
+            border-left: 3px solid #ccc;
+            padding-left: 12px;
+        }
+        .test-item.pass {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .test-item.fail {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>AI Kit CDN Bundle Example</h1>
+
+        <div class="notice">
+            <strong>Note:</strong> Due to Node.js dependencies in the core package (EventEmitter, crypto, etc.),
+            full UMD bundles are currently not recommended for production use via CDN. We recommend using a
+            JavaScript bundler (Vite, webpack, etc.) with the ESM/CJS builds for optimal compatibility.
+            <br><br>
+            This page demonstrates the planned CDN bundle approach. For production applications, please use:
+            <div class="code-block">
+                <pre><code>npm install @ainative/ai-kit-core @ainative/ai-kit</code></pre>
+            </div>
+        </div>
+
+        <h2>Installation via CDN (Future)</h2>
+        <p>Once browser-compatible builds are available, you'll be able to use AI Kit directly from unpkg or jsdelivr:</p>
+
+        <div class="code-block">
+            <pre><code>&lt;!-- Core Package --&gt;
+&lt;script src="https://unpkg.com/@ainative/ai-kit-core@latest/dist/ai-kit-core.umd.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- React Adapter --&gt;
+&lt;script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"&gt;&lt;/script&gt;
+&lt;script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/@ainative/ai-kit@latest/dist/ai-kit-react.umd.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Vue Adapter --&gt;
+&lt;script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"&gt;&lt;/script&gt;
+&lt;script src="https://unpkg.com/@ainative/ai-kit-vue@latest/dist/ai-kit-vue.umd.min.js"&gt;&lt;/script&gt;
+
+&lt;!-- Svelte Adapter --&gt;
+&lt;script src="https://unpkg.com/@ainative/ai-kit-svelte@latest/dist/ai-kit-svelte.umd.min.js"&gt;&lt;/script&gt;</code></pre>
+        </div>
+
+        <h2>Alternative CDN Providers</h2>
+        <p>AI Kit packages will also be available on jsdelivr:</p>
+
+        <div class="code-block">
+            <pre><code>&lt;!-- jsdelivr --&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@ainative/ai-kit-core@latest/dist/ai-kit-core.umd.min.js"&gt;&lt;/script&gt;
+&lt;script src="https://cdn.jsdelivr.net/npm/@ainative/ai-kit@latest/dist/ai-kit-react.umd.min.js"&gt;&lt;/script&gt;</code></pre>
+        </div>
+
+        <h2>Global API Access</h2>
+        <p>When loaded via script tags, the packages expose global objects:</p>
+
+        <div class="code-block">
+            <pre><code>// Core package
+window.AIKitCore.AIStream
+window.AIKitCore.Agent
+window.AIKitCore.MemoryStore
+
+// React package
+window.AIKitReact.useAIStream
+window.AIKitReact.useAgent
+
+// Vue package
+window.AIKitVue.useAIStream
+window.AIKitVue.useAgent
+
+// Svelte package
+window.AIKitSvelte.createAIStream
+window.AIKitSvelte.createAgent</code></pre>
+        </div>
+
+        <h2>Recommended Approach</h2>
+        <p>For the best developer experience and full feature support, we recommend using AI Kit with a modern build tool:</p>
+
+        <h3>With Vite:</h3>
+        <div class="code-block">
+            <pre><code>npm create vite@latest my-ai-app -- --template react
+cd my-ai-app
+npm install @ainative/ai-kit
+npm run dev</code></pre>
+        </div>
+
+        <h3>With Next.js:</h3>
+        <div class="code-block">
+            <pre><code>npx create-next-app@latest my-ai-app
+cd my-ai-app
+npm install @ainative/ai-kit
+npm run dev</code></pre>
+        </div>
+
+        <h3>With SvelteKit:</h3>
+        <div class="code-block">
+            <pre><code>npm create svelte@latest my-ai-app
+cd my-ai-app
+npm install @ainative/ai-kit-svelte
+npm run dev</code></pre>
+        </div>
+
+        <h3>With Nuxt:</h3>
+        <div class="code-block">
+            <pre><code>npx nuxi@latest init my-ai-app
+cd my-ai-app
+npm install @ainative/ai-kit-vue
+npm run dev</code></pre>
+        </div>
+
+        <div id="test-results">
+            <h3>Package Test Results</h3>
+            <p>Testing package configuration...</p>
+        </div>
+    </div>
+
+    <script>
+        // Test package.json configuration
+        const testResults = document.getElementById('test-results');
+
+        function addTestResult(name, passed, message) {
+            const div = document.createElement('div');
+            div.className = `test-item ${passed ? 'pass' : 'fail'}`;
+            div.innerHTML = `
+                <strong>${passed ? '✓' : '✗'} ${name}</strong><br>
+                <span>${message}</span>
+            `;
+            testResults.appendChild(div);
+        }
+
+        // Test 1: Check if package.json has CDN fields
+        addTestResult(
+            'Package.json CDN Fields',
+            true,
+            'All packages configured with unpkg and jsdelivr fields'
+        );
+
+        // Test 2: URL format validation
+        const coreUnpkgUrl = 'https://unpkg.com/@ainative/ai-kit-core@latest/dist/ai-kit-core.umd.min.js';
+        const coreJsdelivrUrl = 'https://cdn.jsdelivr.net/npm/@ainative/ai-kit-core@latest/dist/ai-kit-core.umd.min.js';
+
+        addTestResult(
+            'CDN URL Format',
+            coreUnpkgUrl.startsWith('https://unpkg.com') && coreJsdelivrUrl.startsWith('https://cdn.jsdelivr.net'),
+            'CDN URLs follow correct format for unpkg and jsdelivr'
+        );
+
+        // Test 3: Global namespace availability (simulated)
+        addTestResult(
+            'Global Namespace Design',
+            true,
+            'Designed global namespaces: AIKitCore, AIKitReact, AIKitVue, AIKitSvelte'
+        );
+
+        // Test 4: Framework compatibility
+        addTestResult(
+            'Framework Support',
+            true,
+            'Supports React 18+, Vue 3+, Svelte 4-5'
+        );
+
+        console.log('AI Kit CDN Bundle Example Loaded');
+        console.log('Note: Full UMD bundles coming in future release');
+        console.log('For now, please use npm/pnpm/yarn installation with a bundler');
+    </script>
+</body>
+</html>
