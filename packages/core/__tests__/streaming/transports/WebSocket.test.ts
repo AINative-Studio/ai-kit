@@ -315,7 +315,9 @@ describe('WebSocketTransport', () => {
       })
 
       const reconnectingListener = vi.fn()
+      const errorListener = vi.fn()
       transport.on('reconnecting', reconnectingListener)
+      transport.on('error', errorListener)
 
       await transport.connect()
 

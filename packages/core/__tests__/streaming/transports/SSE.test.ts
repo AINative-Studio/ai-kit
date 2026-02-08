@@ -12,12 +12,16 @@ describe('SSETransport', () => {
   beforeEach(() => {
     vi.clearAllMocks()
     mockAbortController = new AbortController()
+    // Use fake timers for deterministic timing in all tests
+    vi.useFakeTimers()
   })
 
   afterEach(() => {
     if (transport) {
       transport.close()
     }
+    // Restore real timers after each test
+    vi.useRealTimers()
   })
 
   describe('constructor', () => {
@@ -324,7 +328,9 @@ describe('SSETransport', () => {
       })
 
       const reconnectingListener = vi.fn()
+      const errorListener = vi.fn()
       transport.on('reconnecting', reconnectingListener)
+      transport.on('error', errorListener)
 
       await transport.connect()
 
@@ -386,6 +392,9 @@ describe('SSETransport', () => {
         backoffMultiplier: 2,
       })
 
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
+
       await transport.connect()
 
       // Check exponential backoff: 100ms, 200ms
@@ -422,7 +431,9 @@ describe('SSETransport', () => {
       })
 
       const reconnectingListener = vi.fn()
+      const errorListener = vi.fn()
       transport.on('reconnecting', reconnectingListener)
+      transport.on('error', errorListener)
 
       await transport.connect()
 
@@ -442,9 +453,13 @@ describe('SSETransport', () => {
         reconnect: false,
       })
 
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
+
       await transport.connect()
 
       expect(global.fetch).toHaveBeenCalledTimes(1)
+      expect(errorListener).toHaveBeenCalled()
     })
   })
 
@@ -553,7 +568,8 @@ describe('SSETransport', () => {
       const mockReadableStream = new ReadableStream({
         async start(controller) {
           controller.enqueue(new TextEncoder().encode('data: {"type":"test"}\n\n'))
-          controller.error(new Error('Read error'))
+          // Defer the error to allow the reader to be set up first
+          setTimeout(() => controller.error(new Error('Read error')), 0)
         },
       })
 
@@ -572,7 +588,13 @@ describe('SSETransport', () => {
 
       await transport.connect()
 
-      expect(errorListener).toHaveBeenCalled()
+      // Advance timers to trigger the deferred error
+      await vi.advanceTimersByTimeAsync(10)
+
+      // Wait for error to be emitted asynchronously
+      await vi.waitFor(() => {
+        expect(errorListener).toHaveBeenCalled()
+      })
     })
 
     it('should handle malformed JSON in SSE data', async () => {
