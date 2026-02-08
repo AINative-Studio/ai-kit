@@ -420,6 +420,35 @@ export class ScreenRecorder {
   }
 
   /**
+   * Revoke a blob URL to free memory
+   *
+   * Call this method when you no longer need the blob URL to prevent memory leaks.
+   * Safe to call multiple times with the same URL.
+   *
+   * @param url - The blob URL to revoke (from RecordingResult.url)
+   *
+   * @example
+   * ```typescript
+   * const recorder = new ScreenRecorder();
+   * await recorder.startRecording();
+   * const result = await recorder.stopRecording();
+   *
+   * // Use the URL for playback or download
+   * videoElement.src = result.url;
+   *
+   * // When done, revoke to free memory
+   * recorder.revokeURL(result.url);
+   * ```
+   */
+  revokeURL(url: string): void {
+    if (!url || url.trim() === '') {
+      return;
+    }
+
+    URL.revokeObjectURL(url);
+  }
+
+  /**
    * Get supported MIME type
    * @private
    */
