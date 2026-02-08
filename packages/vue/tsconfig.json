@@ -5,6 +5,7 @@
     "rootDir": "./src",
     "jsx": "preserve",
     "types": [
+      "node",
       "vitest/globals"
     ]
   },

@@ -120,5 +120,5 @@ export function useAIStream(config: StreamConfig): UseAIStreamResult {
     retry,
     stop,
     usage,
-  }
+  } as UseAIStreamResult
 }
