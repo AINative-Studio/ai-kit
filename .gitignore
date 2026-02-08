@@ -27,3 +27,18 @@ TEST_VALIDATION_REPORT.md
 V1.0-RELEASE-APPROVAL.md
 edge-case-tests.txt
 **/manual-test-*.html
+
+# Documentation files at package root (should be in docs/)
+# These files should be in docs/ folders instead of package roots
+packages/*/BLOG_POST.md
+packages/*/CHANGELOG-DRAFT.md
+packages/*/NOTES.md
+packages/*/TODO.md
+# Exception: README.md and CHANGELOG.md at package root are allowed
+
+# Build artifacts and temporary files
+*.tsbuildinfo
+*.swp
+*.swo
+*~
+.eslintcache
