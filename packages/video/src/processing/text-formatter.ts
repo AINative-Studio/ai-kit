@@ -93,7 +93,7 @@ export class TextFormatter {
     const lowerText = text.toLowerCase();
     const firstWord = lowerText.split(/\s+/)[0];
 
-    if (TextFormatter.QUESTION_WORDS.includes(firstWord)) {
+    if (firstWord && TextFormatter.QUESTION_WORDS.includes(firstWord)) {
       return text + '?';
     }
 
@@ -121,7 +121,7 @@ export class TextFormatter {
     let result = text.charAt(0).toUpperCase() + text.slice(1);
 
     // Capitalize after sentence-ending punctuation
-    result = result.replace(/([.!?]\s+)([a-z])/g, (match, punctuation, letter) => {
+    result = result.replace(/([.!?]\s+)([a-z])/g, (_match, punctuation, letter) => {
       return punctuation + letter.toUpperCase();
     });
 
