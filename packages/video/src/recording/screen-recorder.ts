@@ -121,6 +121,7 @@ export class ScreenRecorder {
   private recordedChunks: Blob[] = [];
   private state: RecordingState = 'idle';
   private startTime: number = 0;
+  private beforeUnloadHandler: (() => void) | null = null;
 
   constructor(options: ScreenRecorderOptions = {}) {
     this.quality = options.quality || 'medium';
@@ -235,7 +236,7 @@ export class ScreenRecorder {
       width: settings.width || 0,
       height: settings.height || 0,
       frameRate: settings.frameRate || 0,
-      cursor: settings.cursor,
+      cursor: (settings as any).cursor,
     };
   }
 
@@ -299,6 +300,14 @@ export class ScreenRecorder {
           this.recordedChunks.push(event.data);
         }
       };
+
+      // Setup beforeunload handler to cleanup on page unload
+      this.beforeUnloadHandler = () => {
+        this.cleanup();
+      };
+      if (typeof window !== 'undefined') {
+        window.addEventListener('beforeunload', this.beforeUnloadHandler);
+      }
 
       // Start recording
       this.mediaRecorder.start();
@@ -482,5 +491,11 @@ export class ScreenRecorder {
 
     this.mediaRecorder = null;
     this.recordedChunks = [];
+
+    // Remove beforeunload event listener
+    if (this.beforeUnloadHandler && typeof window !== 'undefined') {
+      window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+      this.beforeUnloadHandler = null;
+    }
   }
 }

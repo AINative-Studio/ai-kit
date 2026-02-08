@@ -144,6 +144,28 @@ export function useScreenRecording(
     }
   }, [recordingState, duration]);
 
+  // Setup beforeunload handler to cleanup on page unload
+  useEffect(() => {
+    const handleBeforeUnload = () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+      if (durationIntervalRef.current) {
+        clearInterval(durationIntervalRef.current);
+      }
+    };
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    }
+
+    return () => {
+      if (typeof window !== 'undefined') {
+        window.removeEventListener('beforeunload', handleBeforeUnload);
+      }
+    };
+  }, []);
+
   // Cleanup on unmount
   useEffect(() => {
     return () => {

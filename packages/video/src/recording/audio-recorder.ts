@@ -11,6 +11,7 @@ export class AudioRecorder {
   private recording = false;
   private paused = false;
   private noiseCancellationEnabled = false;
+  private beforeUnloadHandler: (() => void) | null = null;
 
   async startRecording(options: AudioRecordingOptions = {}): Promise<MediaStream> {
     if (this.recording) {
@@ -19,7 +20,7 @@ export class AudioRecorder {
 
     const {
       microphone = true,
-      systemAudio = false,
+      systemAudio: _systemAudio = false, // Reserved for future system audio capture
       noiseCancellation = true,
       echoCancellation = true,
       sampleRate = 44100,
@@ -64,6 +65,14 @@ export class AudioRecorder {
         this.chunks.push(event.data);
       }
     };
+
+    // Setup beforeunload handler to cleanup on page unload
+    this.beforeUnloadHandler = () => {
+      this.cleanup();
+    };
+    if (typeof window !== 'undefined') {
+      window.addEventListener('beforeunload', this.beforeUnloadHandler);
+    }
 
     this.mediaRecorder.start(100); // Collect data every 100ms
     this.recording = true;
@@ -167,5 +176,11 @@ export class AudioRecorder {
     }
 
     this.analyser = null;
+
+    // Remove beforeunload event listener
+    if (this.beforeUnloadHandler && typeof window !== 'undefined') {
+      window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+      this.beforeUnloadHandler = null;
+    }
   }
 }

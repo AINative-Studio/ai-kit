@@ -56,6 +56,7 @@ const RESOLUTION_MAP: Record<Resolution, ResolutionDimensions> = {
 export class CameraRecorder {
   private stream: MediaStream | null = null
   private options: CameraRecorderOptions
+  private beforeUnloadHandler: (() => void) | null = null
 
   constructor(options: CameraRecorderOptions = {}) {
     this.options = {
@@ -79,6 +80,15 @@ export class CameraRecorder {
     try {
       const constraints = this.buildConstraints()
       this.stream = await navigator.mediaDevices.getUserMedia(constraints)
+
+      // Setup beforeunload handler to cleanup on page unload
+      this.beforeUnloadHandler = () => {
+        this.stop()
+      }
+      if (typeof window !== 'undefined') {
+        window.addEventListener('beforeunload', this.beforeUnloadHandler)
+      }
+
       return this.stream
     } catch (error) {
       // Re-throw the error to allow proper handling in tests and applications
@@ -135,6 +145,12 @@ export class CameraRecorder {
     if (this.stream) {
       this.stream.getTracks().forEach((track) => track.stop())
       this.stream = null
+    }
+
+    // Remove beforeunload event listener
+    if (this.beforeUnloadHandler && typeof window !== 'undefined') {
+      window.removeEventListener('beforeunload', this.beforeUnloadHandler)
+      this.beforeUnloadHandler = null
     }
   }
 
