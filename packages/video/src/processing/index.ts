@@ -15,3 +15,6 @@ export {
   type TimestampGranularity,
   type ResponseFormat,
 } from './transcription'
+
+export { TextFormatter } from './text-formatter'
+export type { TextFormattingOptions } from './types'
