@@ -24,7 +24,7 @@ AI Kit gives you what you actually need in production:
 
 ## The Problem with Other SDKs
 
-\`\`\`typescript
+```typescript
 // What you write with LangChain, Vercel AI SDK, etc.
 const chain = ChatPromptTemplate.fromMessages([...])
   .pipe(model)
@@ -34,11 +34,11 @@ await chain.invoke({ topic: "AI safety" })
 
 // Where's the safety? Memory? Cost tracking? Multi-agent coordination?
 // You build it yourself. Again. For every project.
-\`\`\`
+```
 
 ## The AI Kit Solution
 
-\`\`\`typescript
+```typescript
 import { AgentSwarm, createAgent } from '@ainative/ai-kit-core'
 
 // Multi-agent coordination with built-in safety and memory
@@ -60,7 +60,7 @@ const result = await swarm.execute("Research AI safety and write a report")
 // ✅ Complete execution trace
 // ✅ Cost tracking
 // ✅ Safety checks on every input/output
-\`\`\`
+```
 
 ---
 
