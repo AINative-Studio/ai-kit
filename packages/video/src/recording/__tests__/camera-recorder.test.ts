@@ -298,8 +298,8 @@ describe('CameraRecorder', () => {
         })),
       }
 
-      mockMediaStream.getTracks = vi.fn(() => [mockTrack])
-      mockMediaStream.getVideoTracks = vi.fn(() => [mockTrack])
+      mockMediaStream.getTracks = vi.fn(() => [mockTrack as unknown as MediaStreamTrack])
+      mockMediaStream.getVideoTracks = vi.fn(() => [mockTrack as unknown as MediaStreamTrack])
 
       const recorder = new CameraRecorder()
       await recorder.getStream()
@@ -317,7 +317,7 @@ describe('CameraRecorder', () => {
 
     it('should allow getting new stream after stopping', async () => {
       const recorder = new CameraRecorder()
-      const stream1 = await recorder.getStream()
+      await recorder.getStream()
 
       recorder.stop()
 

@@ -35,17 +35,20 @@ export class NoiseProcessor {
     const output = new Float32Array(input.length);
 
     for (let i = 0; i < input.length; i++) {
-      const signal = Math.abs(input[i]);
-      const noise = this.noiseProfile[i];
+      const inputVal = input[i];
+      if (inputVal === undefined) continue;
+
+      const signal = Math.abs(inputVal);
+      const noise = this.noiseProfile[i] ?? 0;
 
       // Spectral subtraction
       if (signal > noise + this.threshold) {
         // Signal is significantly above noise floor
-        output[i] = input[i];
+        output[i] = inputVal;
       } else {
         // Signal is in noise range, reduce it
         const reduction = 1 - (this.threshold / (signal + 0.0001));
-        output[i] = input[i] * Math.max(0, reduction);
+        output[i] = inputVal * Math.max(0, reduction);
       }
     }
 
@@ -70,17 +73,22 @@ export class NoiseProcessor {
 
   private updateNoiseProfile(input: Float32Array, alpha: number = 1.0): void {
     for (let i = 0; i < input.length; i++) {
-      const magnitude = Math.abs(input[i]);
+      const inputVal = input[i];
+      if (inputVal === undefined) continue;
+
+      const magnitude = Math.abs(inputVal);
 
       if (this.frameCount < this.LEARNING_FRAMES) {
         // Initial learning: average the noise
+        const currentProfile = this.noiseProfile[i] ?? 0;
         this.noiseProfile[i] =
-          (this.noiseProfile[i] * this.frameCount + magnitude) /
+          (currentProfile * this.frameCount + magnitude) /
           (this.frameCount + 1);
       } else {
         // Continuous adaptation: exponential moving average
+        const currentProfile = this.noiseProfile[i] ?? 0;
         this.noiseProfile[i] =
-          this.noiseProfile[i] * (1 - alpha) + magnitude * alpha;
+          currentProfile * (1 - alpha) + magnitude * alpha;
       }
     }
   }

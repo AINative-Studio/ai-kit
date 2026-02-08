@@ -112,11 +112,11 @@ export function withLogging(config: LoggingConfig = {}): NextMiddleware {
     } catch (error) {
       // Log error
       const duration = Date.now() - startTime;
-      await logger({
+      await Promise.resolve(logger({
         ...logInfo,
         status: 500,
         duration,
-      }).catch(console.error);
+      })).catch(console.error);
 
       throw error;
     }

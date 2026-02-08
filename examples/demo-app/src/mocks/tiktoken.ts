@@ -2,7 +2,7 @@
 export function encoding_for_model() {
   return {
     encode: (text: string) => new Uint32Array(text.length),
-    decode: (tokens: Uint32Array) => '',
+    decode: (_tokens: Uint32Array) => '',
     free: () => {},
   }
 }

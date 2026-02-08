@@ -3,8 +3,6 @@ import { ScreenRecorder } from '../screen-recorder';
 import type {
   ScreenRecorderOptions,
   ScreenRecordingQuality,
-  RecordingState,
-  RecordingResult,
 } from '../screen-recorder';
 
 // Mock MediaRecorder
@@ -74,9 +72,13 @@ describe('ScreenRecorder', () => {
       removeTrack: vi.fn(),
     } as any;
 
-    global.navigator.mediaDevices = {
-      getDisplayMedia: vi.fn().mockResolvedValue(mockStream),
-    } as any;
+    Object.defineProperty(global.navigator, 'mediaDevices', {
+      writable: true,
+      configurable: true,
+      value: {
+        getDisplayMedia: vi.fn().mockResolvedValue(mockStream),
+      }
+    });
 
     // Mock URL.createObjectURL
     global.URL.createObjectURL = vi.fn(() => 'blob:mock-url-12345');

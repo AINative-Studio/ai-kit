@@ -160,6 +160,7 @@ export class HighlightDetector {
     // Analyze each frame
     for (let i = 0; i < frames.length; i++) {
       const frame = frames[i];
+      if (!frame) continue;
       const highlights = this.analyzeFrame(frame, i, frames);
       candidates.push(...highlights);
     }
@@ -188,7 +189,7 @@ export class HighlightDetector {
   /**
    * Analyze a single frame for highlights
    */
-  private analyzeFrame(frame: VideoFrame, index: number, allFrames: VideoFrame[]): HighlightMoment[] {
+  private analyzeFrame(frame: VideoFrame, _index: number, _allFrames: VideoFrame[]): HighlightMoment[] {
     const highlights: HighlightMoment[] = [];
 
     // Visual analysis
@@ -231,19 +232,19 @@ export class HighlightDetector {
 
     // Motion detection
     if (metadata.motion !== undefined) {
-      const motionThreshold = this.getAdjustedThreshold(this.config.thresholds.motion);
+      const motionThreshold = this.getAdjustedThreshold(this.config.thresholds.motion ?? 0.7);
       if (metadata.motion >= motionThreshold) {
         features.push('high_motion');
-        confidence = Math.max(confidence, metadata.motion);
+        confidence = Math.max(confidence, metadata.motion ?? 0);
         isHighlight = true;
       }
     }
 
     // Scene change detection
     if (metadata.sceneChange) {
-      const sceneThreshold = this.getAdjustedThreshold(this.config.thresholds.sceneChange);
+      const sceneThreshold = this.getAdjustedThreshold(this.config.thresholds.sceneChange ?? 0.8);
       features.push('scene_change');
-      confidence = Math.max(confidence, sceneThreshold);
+      confidence = Math.max(confidence, sceneThreshold ?? 0);
       isHighlight = true;
     }
 
@@ -279,19 +280,19 @@ export class HighlightDetector {
    * - Silence and pauses
    *
    * @param audioFeatures - Audio features to analyze
-   * @param timestamp - Current timestamp
+   * @param _timestamp - Current timestamp
    * @returns Feature analysis result
    */
-  analyzeAudioFeatures(audioFeatures: AudioFeatures, timestamp: number): FeatureAnalysisResult {
+  analyzeAudioFeatures(audioFeatures: AudioFeatures, _timestamp: number): FeatureAnalysisResult {
     const features: string[] = [];
     let confidence = 0;
     let isHighlight = false;
 
     // Volume spike detection
-    const volumeThreshold = this.getAdjustedThreshold(this.config.thresholds.volume);
+    const volumeThreshold = this.getAdjustedThreshold(this.config.thresholds.volume ?? 0.6);
     if (audioFeatures.volume >= volumeThreshold) {
       features.push('volume_spike');
-      confidence = Math.max(confidence, audioFeatures.volume);
+      confidence = Math.max(confidence, audioFeatures.volume ?? 0);
       isHighlight = true;
     }
 
@@ -437,27 +438,49 @@ export class HighlightDetector {
 
     for (let i = 1; i < sorted.length; i++) {
       const next = sorted[i];
+      if (!next || current.endTime === undefined) continue;
+
       const gap = next.startTime - current.endTime;
 
       // Merge if gap is small and same type
-      if (gap <= maxGap && next.type === current.type) {
-        current.endTime = Math.max(current.endTime, next.endTime);
-        current.confidence = (current.confidence + next.confidence) / 2;
+      if (gap <= maxGap && next.type === current.type && next.endTime !== undefined) {
+        current.endTime = Math.max(current.endTime ?? 0, next.endTime ?? 0);
+        current.confidence = ((current.confidence ?? 0) + (next.confidence ?? 0)) / 2;
         current.features = [...new Set([...(current.features || []), ...(next.features || [])])];
       } else {
         // Validate duration constraints
-        const duration = current.endTime - current.startTime;
-        if (duration >= this.config.minDuration && duration <= this.config.maxDuration) {
-          grouped.push(current);
+        const duration = (current.endTime ?? 0) - (current.startTime ?? 0);
+        if (duration >= this.config.minDuration && duration <= this.config.maxDuration &&
+            current.startTime !== undefined && current.endTime !== undefined &&
+            current.confidence !== undefined && current.type !== undefined && current.description !== undefined) {
+          grouped.push({
+            startTime: current.startTime,
+            endTime: current.endTime,
+            confidence: current.confidence,
+            type: current.type,
+            description: current.description,
+            features: current.features,
+            metadata: current.metadata
+          });
         }
         current = { ...next };
       }
     }
 
     // Add last group
-    const duration = current.endTime - current.startTime;
-    if (duration >= this.config.minDuration && duration <= this.config.maxDuration) {
-      grouped.push(current);
+    const duration = (current.endTime ?? 0) - (current.startTime ?? 0);
+    if (duration >= this.config.minDuration && duration <= this.config.maxDuration &&
+        current.startTime !== undefined && current.endTime !== undefined &&
+        current.confidence !== undefined && current.type !== undefined && current.description !== undefined) {
+      grouped.push({
+        startTime: current.startTime,
+        endTime: current.endTime,
+        confidence: current.confidence,
+        type: current.type,
+        description: current.description,
+        features: current.features,
+        metadata: current.metadata
+      });
     }
 
     return grouped;

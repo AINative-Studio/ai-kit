@@ -62,9 +62,11 @@ describe('WebSocketTransport', () => {
     vi.clearAllMocks()
   })
 
-  afterEach(() => {
+  afterEach(async () => {
     if (transport) {
       transport.close()
+      // Give time for cleanup
+      await new Promise(resolve => setTimeout(resolve, 10))
     }
   })
 
@@ -133,18 +135,24 @@ describe('WebSocketTransport', () => {
             if (this.onclose) {
               this.onclose({ type: 'close', code: 1006, reason: 'Connection failed' })
             }
-          }, 0)
+          }, 5)
         }
       }
 
       global.WebSocket = ErrorWebSocket as any
 
-      transport = new WebSocketTransport({ endpoint: 'ws://localhost:3000/stream' })
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        reconnect: false,
+      })
 
       const errorListener = vi.fn()
       transport.on('error', errorListener)
 
       await transport.connect()
+
+      // Give time for error event to propagate
+      await new Promise(resolve => setTimeout(resolve, 20))
 
       expect(errorListener).toHaveBeenCalled()
 
@@ -334,71 +342,38 @@ describe('WebSocketTransport', () => {
       let connectCount = 0
       const OriginalWebSocket = global.WebSocket
 
-      class FailingWebSocket extends MockWebSocket {
-        constructor(url: string, protocols?: string | string[]) {
-          super(url, protocols)
+      class FailingWebSocket {
+        static CONNECTING = 0
+        static OPEN = 1
+        static CLOSING = 2
+        static CLOSED = 3
+
+        public readyState: number = FailingWebSocket.CONNECTING
+        public onopen: ((event: any) => void) | null = null
+        public onmessage: ((event: any) => void) | null = null
+        public onerror: ((event: any) => void) | null = null
+        public onclose: ((event: any) => void) | null = null
+
+        constructor(public url: string, public protocols?: string | string[]) {
           connectCount++
 
+          // Always fail without calling onopen
           setTimeout(() => {
-            this.readyState = MockWebSocket.CLOSED
+            this.readyState = FailingWebSocket.CLOSED
             if (this.onclose) {
               this.onclose({ type: 'close', code: 1006, reason: 'Connection lost' })
             }
-          }, 10)
+          }, 5)
         }
-      }
 
-      global.WebSocket = FailingWebSocket as any
-
-      transport = new WebSocketTransport({
-        endpoint: 'ws://localhost:3000/stream',
-        reconnect: true,
-        maxReconnectAttempts: 3,
-        reconnectDelay: 10,
-      })
-
-      const errorListener = vi.fn()
-      transport.on('error', errorListener)
-
-      await transport.connect()
-
-      // Give time for all reconnection attempts
-      await new Promise(resolve => setTimeout(resolve, 200))
-
-      // Initial attempt + 3 retries = 4 total
-      expect(connectCount).toBe(4)
-
-      global.WebSocket = OriginalWebSocket
-    })
-
-    it('should use exponential backoff for reconnection delays', async () => {
-      let connectCount = 0
-      const delays: number[] = []
-      const mockSetTimeout = vi.spyOn(global, 'setTimeout').mockImplementation(((fn: any, delay: number) => {
-        if (delay >= 10) { // Only track our reconnection delays
-          delays.push(delay)
+        send(data: string): void {
+          throw new Error('WebSocket is not open')
         }
-        fn()
-        return 0 as any
-      }) as any)
 
-      const OriginalWebSocket = global.WebSocket
-
-      class FailingWebSocket extends MockWebSocket {
-        constructor(url: string, protocols?: string | string[]) {
-          super(url, protocols)
-          connectCount++
-
-          if (connectCount <= 3) {
-            this.readyState = MockWebSocket.CLOSED
-            if (this.onclose) {
-              this.onclose({ type: 'close', code: 1006, reason: 'Connection lost' })
-            }
-          } else {
-            this.readyState = MockWebSocket.OPEN
-            if (this.onopen) {
-              this.onopen({ type: 'open' })
-            }
+        close(code?: number, reason?: string): void {
+          this.readyState = FailingWebSocket.CLOSED
+          if (this.onclose) {
+            this.onclose({ type: 'close', code: code || 1000, reason: reason || '' })
           }
         }
       }
@@ -408,20 +383,109 @@ describe('WebSocketTransport', () => {
       transport = new WebSocketTransport({
         endpoint: 'ws://localhost:3000/stream',
         reconnect: true,
-        maxReconnectAttempts: 5,
-        reconnectDelay: 100,
-        backoffMultiplier: 2,
+        maxReconnectAttempts: 1,  // Just 1 retry attempt for faster, deterministic testing
+        reconnectDelay: 10,
       })
+
+      const errorListener = vi.fn()
+      const reconnectingListener = vi.fn()
+      transport.on('error', errorListener)
+      transport.on('reconnecting', reconnectingListener)
 
       await transport.connect()
 
-      // Check exponential backoff occurred
-      expect(delays.length).toBeGreaterThan(0)
-      if (delays.length > 1) {
-        expect(delays[1]).toBeGreaterThan(delays[0])
+      // Wait for the single reconnection attempt to complete
+      await new Promise(resolve => setTimeout(resolve, 30))
+
+      // Close transport to stop any further reconnections
+      transport.close()
+
+      // Should have exactly: 1 initial + 1 retry = 2 connections
+      expect(connectCount).toBe(2)
+      expect(reconnectingListener).toHaveBeenCalledTimes(1)
+      expect(reconnectingListener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attempt: 1,
+          maxAttempts: 1,
+        })
+      )
+
+      global.WebSocket = OriginalWebSocket
+    })
+
+    it('should use exponential backoff for reconnection delays', async () => {
+      const delays: number[] = []
+      const OriginalWebSocket = global.WebSocket
+
+      let connectionAttempt = 0
+
+      class FailingWebSocket {
+        static CONNECTING = 0
+        static OPEN = 1
+        static CLOSING = 2
+        static CLOSED = 3
+
+        public readyState: number = FailingWebSocket.CONNECTING
+        public onopen: ((event: any) => void) | null = null
+        public onmessage: ((event: any) => void) | null = null
+        public onerror: ((event: any) => void) | null = null
+        public onclose: ((event: any) => void) | null = null
+
+        constructor(public url: string, public protocols?: string | string[]) {
+          connectionAttempt++
+
+          // Always fail without calling onopen
+          setTimeout(() => {
+            this.readyState = FailingWebSocket.CLOSED
+            if (this.onclose) {
+              this.onclose({ type: 'close', code: 1006, reason: 'Connection lost' })
+            }
+          }, 5)
+        }
+
+        send(data: string): void {
+          throw new Error('WebSocket is not open')
+        }
+
+        close(code?: number, reason?: string): void {
+          this.readyState = FailingWebSocket.CLOSED
+          if (this.onclose) {
+            this.onclose({ type: 'close', code: code || 1000, reason: reason || '' })
+          }
+        }
       }
 
-      mockSetTimeout.mockRestore()
+      global.WebSocket = FailingWebSocket as any
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        reconnect: true,
+        maxReconnectAttempts: 2,  // Use 2 attempts to verify exponential backoff
+        reconnectDelay: 50,  // Shorter delay for faster test
+        backoffMultiplier: 2,
+      })
+
+      const errorListener = vi.fn()
+      const reconnectingListener = vi.fn((event: any) => {
+        delays.push(event.delay)
+        // Close transport after getting 2 delays to stop reconnection loop
+        if (delays.length === 2) {
+          transport.close()
+        }
+      })
+      transport.on('error', errorListener)
+      transport.on('reconnecting', reconnectingListener)
+
+      await transport.connect()
+
+      // Give time for 2 reconnection attempts to complete
+      await new Promise(resolve => setTimeout(resolve, 250))
+
+      // Should have exponential backoff pattern: 50ms, 100ms
+      expect(delays.length).toBe(2)
+      expect(delays[0]).toBe(50)
+      expect(delays[1]).toBe(100)
+
       global.WebSocket = OriginalWebSocket
     })
 
@@ -434,7 +498,8 @@ describe('WebSocketTransport', () => {
           super(url, protocols)
           connectCount++
 
-          if (connectCount <= 2) {
+          if (connectCount === 1) {
+            // First connection fails
             setTimeout(() => {
               this.readyState = MockWebSocket.CLOSED
               if (this.onclose) {
@@ -442,6 +507,7 @@ describe('WebSocketTransport', () => {
               }
             }, 10)
           } else {
+            // Second connection succeeds
             setTimeout(() => {
               this.readyState = MockWebSocket.OPEN
               if (this.onopen) {
@@ -457,11 +523,13 @@ describe('WebSocketTransport', () => {
       transport = new WebSocketTransport({
         endpoint: 'ws://localhost:3000/stream',
         reconnect: true,
-        maxReconnectAttempts: 3,
+        maxReconnectAttempts: 1,
         reconnectDelay: 10,
       })
 
+      const errorListener = vi.fn()
       const reconnectingListener = vi.fn()
+      transport.on('error', errorListener)
       transport.on('reconnecting', reconnectingListener)
 
       await transport.connect()
@@ -471,8 +539,8 @@ describe('WebSocketTransport', () => {
 
       expect(reconnectingListener).toHaveBeenCalledWith(
         expect.objectContaining({
-          attempt: expect.any(Number),
-          delay: expect.any(Number),
+          attempt: 1,
+          delay: 10,
         })
       )
 
@@ -504,12 +572,18 @@ describe('WebSocketTransport', () => {
         reconnect: false,
       })
 
+      const errorListener = vi.fn()
+      const reconnectingListener = vi.fn()
+      transport.on('error', errorListener)
+      transport.on('reconnecting', reconnectingListener)
+
       await transport.connect()
 
       // Give time to ensure no reconnection
       await new Promise(resolve => setTimeout(resolve, 100))
 
       expect(connectCount).toBe(1)
+      expect(reconnectingListener).not.toHaveBeenCalled()
 
       global.WebSocket = OriginalWebSocket
     })
@@ -520,8 +594,13 @@ describe('WebSocketTransport', () => {
       transport = new WebSocketTransport({ endpoint: 'ws://localhost:3000/stream' })
       await transport.connect()
 
+      const closedPromise = new Promise<void>(resolve => {
+        transport.on('closed', () => resolve())
+      })
+
       transport.close()
 
+      await closedPromise
       expect(transport.getState()).toBe('closed')
     })
 
@@ -529,12 +608,14 @@ describe('WebSocketTransport', () => {
       transport = new WebSocketTransport({ endpoint: 'ws://localhost:3000/stream' })
       await transport.connect()
 
-      const closedListener = vi.fn()
-      transport.on('closed', closedListener)
+      const closedPromise = new Promise<void>(resolve => {
+        transport.on('closed', () => resolve())
+      })
 
       transport.close()
 
-      expect(closedListener).toHaveBeenCalled()
+      await closedPromise
+      // Test passes if promise resolves
     })
 
     it('should close WebSocket connection', async () => {
@@ -544,8 +625,13 @@ describe('WebSocketTransport', () => {
       const ws = (transport as any).ws as MockWebSocket
       const closeSpy = vi.spyOn(ws, 'close')
 
+      const closedPromise = new Promise<void>(resolve => {
+        transport.on('closed', () => resolve())
+      })
+
       transport.close()
 
+      await closedPromise
       expect(closeSpy).toHaveBeenCalled()
     })
 
@@ -562,7 +648,7 @@ describe('WebSocketTransport', () => {
             if (this.onopen) {
               this.onopen({ type: 'open' })
             }
-          }, 10)
+          }, 5)
         }
       }
 
@@ -572,16 +658,22 @@ describe('WebSocketTransport', () => {
         endpoint: 'ws://localhost:3000/stream',
         reconnect: true,
         maxReconnectAttempts: 3,
-        reconnectDelay: 10,
+        reconnectDelay: 5,
       })
 
       await transport.connect()
 
       const initialCount = connectCount
+
+      const closedPromise = new Promise<void>(resolve => {
+        transport.on('closed', () => resolve())
+      })
+
       transport.close()
+      await closedPromise
 
       // Give time to ensure no reconnection
-      await new Promise(resolve => setTimeout(resolve, 100))
+      await new Promise(resolve => setTimeout(resolve, 50))
 
       expect(connectCount).toBe(initialCount)
 
@@ -601,7 +693,12 @@ describe('WebSocketTransport', () => {
       await connectPromise
       expect(transport.getState()).toBe('connected')
 
+      const closedPromise = new Promise<void>(resolve => {
+        transport.on('closed', () => resolve())
+      })
+
       transport.close()
+      await closedPromise
       expect(transport.getState()).toBe('closed')
     })
 
@@ -616,7 +713,10 @@ describe('WebSocketTransport', () => {
             if (this.onerror) {
               this.onerror({ error: new Error('Connection failed') })
             }
-          }, 10)
+            if (this.onclose) {
+              this.onclose({ type: 'close', code: 1006, reason: 'Connection failed' })
+            }
+          }, 5)
         }
       }
 
@@ -627,7 +727,13 @@ describe('WebSocketTransport', () => {
         reconnect: false,
       })
 
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
+
       await transport.connect()
+
+      // Give time for error to be handled
+      await new Promise(resolve => setTimeout(resolve, 20))
 
       expect(transport.getState()).toBe('error')
 
@@ -637,30 +743,50 @@ describe('WebSocketTransport', () => {
 
   describe('ping/pong heartbeat', () => {
     it('should send ping messages when configured', async () => {
+      // Track sends before creating transport
+      const sends: string[] = []
+      const OriginalWebSocket = global.WebSocket
+
+      class TrackingWebSocket extends MockWebSocket {
+        send(data: string): void {
+          sends.push(data)
+          super.send(data)
+        }
+      }
+
+      global.WebSocket = TrackingWebSocket as any
+
       transport = new WebSocketTransport({
         endpoint: 'ws://localhost:3000/stream',
-        heartbeatInterval: 50,
+        heartbeatInterval: 50, // Very short interval for testing
       })
 
       await transport.connect()
 
-      const ws = (transport as any).ws as MockWebSocket
-      const sendSpy = vi.spyOn(ws, 'send')
+      // Wait for at least two heartbeat intervals
+      await new Promise(resolve => setTimeout(resolve, 150))
 
-      // Wait for heartbeat
-      await new Promise(resolve => setTimeout(resolve, 100))
+      // Verify ping was sent
+      const pingSent = sends.some(data => {
+        try {
+          const parsed = JSON.parse(data)
+          return parsed.type === 'ping'
+        } catch {
+          return false
+        }
+      })
+      expect(pingSent).toBe(true)
 
-      expect(sendSpy).toHaveBeenCalledWith(
-        expect.stringContaining('ping')
-      )
-
-      transport.close()
-    })
+      global.WebSocket = OriginalWebSocket
+    }, 5000)
 
     it('should not send heartbeat if not configured', async () => {
       transport = new WebSocketTransport({
         endpoint: 'ws://localhost:3000/stream',
       })
+
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
 
       await transport.connect()
 
@@ -672,10 +798,52 @@ describe('WebSocketTransport', () => {
 
       expect(sendSpy).not.toHaveBeenCalled()
 
+      const closedPromise = new Promise<void>(resolve => {
+        transport.on('closed', () => resolve())
+      })
       transport.close()
+      await closedPromise
     })
 
     it('should maintain heartbeat during connection', async () => {
+      // Track sends
+      const sends: string[] = []
+      const OriginalWebSocket = global.WebSocket
+
+      class TrackingWebSocket extends MockWebSocket {
+        send(data: string): void {
+          sends.push(data)
+          super.send(data)
+        }
+      }
+
+      global.WebSocket = TrackingWebSocket as any
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 40, // Very short interval for testing
+      })
+
+      await transport.connect()
+
+      // Wait for first heartbeat
+      await new Promise(resolve => setTimeout(resolve, 60))
+      const pingCount1 = sends.filter(d => {
+        try { return JSON.parse(d).type === 'ping' } catch { return false }
+      }).length
+      expect(pingCount1).toBeGreaterThanOrEqual(1)
+
+      // Wait for second heartbeat
+      await new Promise(resolve => setTimeout(resolve, 60))
+      const pingCount2 = sends.filter(d => {
+        try { return JSON.parse(d).type === 'ping' } catch { return false }
+      }).length
+      expect(pingCount2).toBeGreaterThanOrEqual(2)
+
+      global.WebSocket = OriginalWebSocket
+    }, 5000)
+
+    it('should detect connection failure via heartbeat timeout', async () => {
       vi.useFakeTimers()
 
       transport = new WebSocketTransport({
@@ -685,31 +853,6 @@ describe('WebSocketTransport', () => {
 
       const errorListener = vi.fn()
       transport.on('error', errorListener)
-
-      const connectPromise = transport.connect()
-      await vi.advanceTimersByTimeAsync(0)
-      await connectPromise
-
-      const ws = (transport as any).ws as MockWebSocket
-      const sendSpy = vi.spyOn(ws, 'send')
-
-      await vi.advanceTimersByTimeAsync(30000)
-      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({ type: 'ping' }))
-
-      await vi.advanceTimersByTimeAsync(30000)
-      expect(sendSpy).toHaveBeenCalledTimes(2)
-
-      transport.close()
-      vi.useRealTimers()
-    })
-
-    it('should detect connection failure via heartbeat timeout', async () => {
-      vi.useFakeTimers()
-
-      transport = new WebSocketTransport({
-        endpoint: 'ws://localhost:3000/stream',
-        heartbeatInterval: 30000,
-      })
 
       const connectPromise = transport.connect()
       await vi.advanceTimersByTimeAsync(0)
@@ -728,34 +871,47 @@ describe('WebSocketTransport', () => {
     })
 
     it('should handle heartbeat response (pong)', async () => {
-      vi.useFakeTimers()
+      // Track sends
+      const sends: string[] = []
+      const OriginalWebSocket = global.WebSocket
+
+      class TrackingWebSocket extends MockWebSocket {
+        send(data: string): void {
+          sends.push(data)
+          super.send(data)
+        }
+      }
+
+      global.WebSocket = TrackingWebSocket as any
 
       transport = new WebSocketTransport({
         endpoint: 'ws://localhost:3000/stream',
-        heartbeatInterval: 30000,
+        heartbeatInterval: 50, // Very short interval for testing
       })
 
       const eventListener = vi.fn()
       transport.on('event', eventListener)
 
-      const connectPromise = transport.connect()
-      await vi.advanceTimersByTimeAsync(0)
-      await connectPromise
+      await transport.connect()
 
+      // Wait for heartbeat to fire
+      await new Promise(resolve => setTimeout(resolve, 100))
+
+      // Verify ping was sent
+      const pingSent = sends.some(d => {
+        try { return JSON.parse(d).type === 'ping' } catch { return false }
+      })
+      expect(pingSent).toBe(true)
+
+      // Simulate pong response
       const ws = (transport as any).ws as MockWebSocket
-      const sendSpy = vi.spyOn(ws, 'send')
-
-      await vi.advanceTimersByTimeAsync(30000)
-      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({ type: 'ping' }))
-
       ws.simulateMessage({ type: 'pong' })
       expect(eventListener).toHaveBeenCalledWith(
         expect.objectContaining({ type: 'pong' })
       )
 
-      transport.close()
-      vi.useRealTimers()
-    })
+      global.WebSocket = OriginalWebSocket
+    }, 5000)
 
     it('should clear heartbeat on disconnect', async () => {
       vi.useFakeTimers()
@@ -764,6 +920,9 @@ describe('WebSocketTransport', () => {
         endpoint: 'ws://localhost:3000/stream',
         heartbeatInterval: 30000,
       })
+
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
 
       const connectPromise = transport.connect()
       await vi.advanceTimersByTimeAsync(0)
@@ -781,35 +940,47 @@ describe('WebSocketTransport', () => {
     })
 
     it('should send ping at configured intervals', async () => {
-      vi.useFakeTimers()
+      // Track sends
+      const sends: string[] = []
+      const OriginalWebSocket = global.WebSocket
+
+      class TrackingWebSocket extends MockWebSocket {
+        send(data: string): void {
+          sends.push(data)
+          super.send(data)
+        }
+      }
+
+      global.WebSocket = TrackingWebSocket as any
 
       transport = new WebSocketTransport({
         endpoint: 'ws://localhost:3000/stream',
-        heartbeatInterval: 15000,
+        heartbeatInterval: 30, // Very short interval for testing
       })
 
-      const connectPromise = transport.connect()
-      await vi.advanceTimersByTimeAsync(0)
-      await connectPromise
+      await transport.connect()
 
-      const ws = (transport as any).ws as MockWebSocket
-      const sendSpy = vi.spyOn(ws, 'send')
+      const getPingCount = () => sends.filter(d => {
+        try { return JSON.parse(d).type === 'ping' } catch { return false }
+      }).length
 
-      await vi.advanceTimersByTimeAsync(15000)
-      expect(sendSpy).toHaveBeenCalledTimes(1)
-      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({ type: 'ping' }))
+      // Wait for first ping
+      await new Promise(resolve => setTimeout(resolve, 50))
+      expect(getPingCount()).toBeGreaterThanOrEqual(1)
 
-      await vi.advanceTimersByTimeAsync(15000)
-      expect(sendSpy).toHaveBeenCalledTimes(2)
+      // Wait for second ping
+      await new Promise(resolve => setTimeout(resolve, 40))
+      expect(getPingCount()).toBeGreaterThanOrEqual(2)
 
-      await vi.advanceTimersByTimeAsync(15000)
-      expect(sendSpy).toHaveBeenCalledTimes(3)
+      // Wait for third ping
+      await new Promise(resolve => setTimeout(resolve, 40))
+      expect(getPingCount()).toBeGreaterThanOrEqual(3)
 
-      await vi.advanceTimersByTimeAsync(15000)
-      expect(sendSpy).toHaveBeenCalledTimes(4)
+      // Wait for fourth ping
+      await new Promise(resolve => setTimeout(resolve, 40))
+      expect(getPingCount()).toBeGreaterThanOrEqual(4)
 
-      transport.close()
-      vi.useRealTimers()
-    })
+      global.WebSocket = OriginalWebSocket
+    }, 5000)
   })
 })

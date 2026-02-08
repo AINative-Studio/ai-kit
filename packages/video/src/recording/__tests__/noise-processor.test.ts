@@ -41,8 +41,8 @@ describe('NoiseProcessor', () => {
       const output = processor.process(input);
 
       // After learning noise floor of 0.05, values close to it should be reduced
-      expect(output[0]).toBeLessThanOrEqual(input[0]);
-      expect(output[1]).toBeLessThanOrEqual(input[1]);
+      expect(output[0]).toBeLessThanOrEqual(input[0] ?? 0);
+      expect(output[1]).toBeLessThanOrEqual(input[1] ?? 0);
       // Values significantly above threshold should be preserved or minimally affected
       expect(output[2]).toBeGreaterThan(0);
       expect(output[3]).toBeGreaterThan(0);
@@ -72,7 +72,7 @@ describe('NoiseProcessor', () => {
       expect(output[0]).toBeGreaterThanOrEqual(0);
       expect(output[1]).toBeGreaterThanOrEqual(0);
       // Higher value should remain higher or equal
-      expect(output[1]).toBeGreaterThanOrEqual(output[0]);
+      expect(output[1] ?? 0).toBeGreaterThanOrEqual(output[0] ?? 0);
     });
 
     it('should clamp threshold between 0 and 1', () => {

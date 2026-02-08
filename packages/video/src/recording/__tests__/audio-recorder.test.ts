@@ -1,7 +1,6 @@
 import './setup';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AudioRecorder } from '../audio-recorder';
-import type { AudioRecordingOptions } from '../types';
 
 describe('AudioRecorder', () => {
   let recorder: AudioRecorder;
@@ -10,10 +9,14 @@ describe('AudioRecorder', () => {
     recorder = new AudioRecorder();
 
     // Mock getUserMedia
-    global.navigator.mediaDevices = {
-      getUserMedia: vi.fn(),
-      enumerateDevices: vi.fn(),
-    } as any;
+    Object.defineProperty(global.navigator, 'mediaDevices', {
+      writable: true,
+      configurable: true,
+      value: {
+        getUserMedia: vi.fn(),
+        enumerateDevices: vi.fn(),
+      }
+    });
   });
 
   describe('startRecording', () => {

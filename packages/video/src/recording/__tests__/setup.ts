@@ -33,7 +33,7 @@ beforeAll(() => {
 
     constructor(public stream: MediaStream, public options?: any) {}
 
-    start(timeslice?: number) {
+    start(_timeslice?: number) {
       this.state = 'recording';
     }
 
@@ -52,7 +52,7 @@ beforeAll(() => {
 
     requestData() {}
 
-    static isTypeSupported(type: string) {
+    static isTypeSupported(_type: string) {
       return true;
     }
   } as any;

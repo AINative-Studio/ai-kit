@@ -8,10 +8,6 @@ import {
   ScreenRecorder,
   ScreenRecorderOptions,
   RecordingResult,
-  ScreenRecordingQuality,
-  CursorMode,
-  RecordingState,
-  StreamSettings,
 } from './screen-recorder';
 import { Logger, createLogger } from '../utils/logger';
 
@@ -19,7 +15,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   private logger: Logger;
   private recordingId: string = '';
   private correlationId?: string;
-  private beforeUnloadHandler: (() => void) | null = null;
+  private instrBeforeUnloadHandler: (() => void) | null = null;
   private chunksReceived: number = 0;
 
   constructor(
@@ -35,7 +31,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   /**
    * Start recording with instrumentation
    */
-  async startRecording(): Promise<void> {
+  override async startRecording(): Promise<void> {
     this.recordingId = Logger.generateRecordingId();
     const previousState = this.getState();
 
@@ -81,12 +77,12 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
         timestamp: Date.now(),
       });
 
-      // Setup beforeunload handler
-      this.beforeUnloadHandler = () => {
-        this.cleanup();
+      // Setup beforeunload handler for instrumentation cleanup
+      this.instrBeforeUnloadHandler = () => {
+        this.cleanupInstrumentation();
       };
       if (typeof window !== 'undefined') {
-        window.addEventListener('beforeunload', this.beforeUnloadHandler);
+        window.addEventListener('beforeunload', this.instrBeforeUnloadHandler);
       }
 
       // Reset chunks counter
@@ -112,9 +108,8 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   /**
    * Stop recording with instrumentation
    */
-  async stopRecording(): Promise<RecordingResult> {
+  override async stopRecording(): Promise<RecordingResult> {
     const previousState = this.getState();
-    const startTime = Date.now();
 
     try {
       const result = await super.stopRecording();
@@ -166,7 +161,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   /**
    * Pause recording with instrumentation
    */
-  pauseRecording(): void {
+  override pauseRecording(): void {
     const previousState = this.getState();
 
     try {
@@ -194,7 +189,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   /**
    * Resume recording with instrumentation
    */
-  resumeRecording(): void {
+  override resumeRecording(): void {
     const previousState = this.getState();
 
     try {
@@ -222,7 +217,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   /**
    * Dispose with instrumentation
    */
-  dispose(): void {
+  override dispose(): void {
     try {
       super.dispose();
 
@@ -235,7 +230,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
         });
       }
 
-      this.cleanup();
+      this.cleanupInstrumentation();
     } catch (error) {
       // Silently handle disposal errors
       console.error('Error during disposal:', error);
@@ -251,7 +246,7 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
     };
 
     if (this.correlationId) {
-      data.correlationId = this.correlationId;
+      data['correlationId'] = this.correlationId;
     }
 
     return data;
@@ -274,12 +269,12 @@ export class InstrumentedScreenRecorder extends ScreenRecorder {
   }
 
   /**
-   * Cleanup resources
+   * Cleanup instrumentation resources
    */
-  private cleanup(): void {
-    if (this.beforeUnloadHandler && typeof window !== 'undefined') {
-      window.removeEventListener('beforeunload', this.beforeUnloadHandler);
-      this.beforeUnloadHandler = null;
+  private cleanupInstrumentation(): void {
+    if (this.instrBeforeUnloadHandler && typeof window !== 'undefined') {
+      window.removeEventListener('beforeunload', this.instrBeforeUnloadHandler);
+      this.instrBeforeUnloadHandler = null;
     }
   }
 }

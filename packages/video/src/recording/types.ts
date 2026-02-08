@@ -52,3 +52,40 @@ export interface PipOptions {
   borderRadius?: number;
   padding?: number;
 }
+
+// PiP Compositor Types
+export type CameraPosition = 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
+
+export interface CustomPosition {
+  x: number;
+  y: number;
+}
+
+export type PiPPosition = CameraPosition | CustomPosition;
+
+export type CompositorState = 'idle' | 'compositing' | 'stopped' | 'paused';
+
+export interface PiPCompositorOptions {
+  screenStream: MediaStream;
+  cameraStream: MediaStream;
+  position?: PiPPosition;
+  cameraSize?: number;
+  opacity?: number;
+  frameRate?: number;
+  width?: number;
+  height?: number;
+}
+
+export interface PiPCompositorEvents {
+  stateChange: CompositorState;
+  configChange: {
+    position?: PiPPosition;
+    cameraSize?: number;
+    opacity?: number;
+  };
+  error: Error;
+  start: undefined;
+  stop: undefined;
+  pause: undefined;
+  resume: undefined;
+}

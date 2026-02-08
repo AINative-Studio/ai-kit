@@ -65,12 +65,12 @@
   "devDependencies": {
     "@testing-library/svelte": "^4.0.5",
     "@types/node": "^20.10.0",
-    "@vitest/coverage-v8": "^1.6.0",
+    "@vitest/coverage-v8": "^4.0.18",
     "jsdom": "^23.0.1",
     "svelte": "^4.2.8",
     "tsup": "^8.0.1",
     "typescript": "^5.3.0",
-    "vitest": "^1.6.0"
+    "vitest": "^4.0.18"
   },
   "publishConfig": {
     "access": "public",

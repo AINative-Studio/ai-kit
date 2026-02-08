@@ -1,0 +1,145 @@
+
+  describe('edge cases', () => {
+    it('should cleanup resources on close', async () => {
+      vi.useFakeTimers()
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 50,
+      })
+
+      const connectPromise = transport.connect()
+      await vi.advanceTimersByTimeAsync(0)
+      await connectPromise
+
+      const ws = (transport as any).ws as MockWebSocket
+      const closeSpy = vi.spyOn(ws, 'close')
+      const clearIntervalSpy = vi.spyOn(global, 'clearInterval')
+      const clearTimeoutSpy = vi.spyOn(global, 'clearTimeout')
+
+      // Verify resource cleanup on close
+      transport.close()
+
+      // Verify WebSocket closed
+      expect(closeSpy).toHaveBeenCalledWith(1000, 'Normal closure')
+      expect((transport as any).ws).toBeUndefined()
+
+      // Verify heartbeat cleared
+      expect(clearIntervalSpy).toHaveBeenCalled()
+      expect((transport as any).heartbeatInterval).toBeUndefined()
+
+      // Verify state updated
+      expect(transport.getState()).toBe('closed')
+      expect((transport as any).intentionallyClosed).toBe(true)
+
+      clearIntervalSpy.mockRestore()
+      clearTimeoutSpy.mockRestore()
+      vi.useRealTimers()
+    })
+
+    it('should handle WebSocket upgrade failure', async () => {
+      const OriginalWebSocket = global.WebSocket
+
+      // Mock WebSocket constructor to throw (simulating upgrade failure)
+      class UpgradeFailureWebSocket {
+        constructor(url: string, protocols?: string | string[]) {
+          throw new Error('Protocol upgrade failed')
+        }
+      }
+
+      global.WebSocket = UpgradeFailureWebSocket as any
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        reconnect: false,
+      })
+
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
+
+      // Should not throw, but emit error event
+      await transport.connect()
+
+      // Wait a bit for error to propagate
+      await new Promise(resolve => setTimeout(resolve, 50))
+
+      expect(errorListener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          error: expect.any(Error),
+          recoverable: true,
+        })
+      )
+      expect(transport.getState()).toBe('error')
+
+      global.WebSocket = OriginalWebSocket
+    })
+
+    it('should handle reconnection without race conditions', async () => {
+      vi.useFakeTimers()
+
+      let connectCount = 0
+      const OriginalWebSocket = global.WebSocket
+
+      class FailingWebSocket extends MockWebSocket {
+        constructor(url: string, protocols?: string | string[]) {
+          super(url, protocols)
+          connectCount++
+
+          setTimeout(() => {
+            this.readyState = MockWebSocket.CLOSED
+            if (this.onclose) {
+              this.onclose({ type: 'close', code: 1006, reason: 'Connection failed' })
+            }
+          }, 0)
+        }
+      }
+
+      global.WebSocket = FailingWebSocket as any
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        reconnect: true,
+        maxReconnectAttempts: 3,
+        reconnectDelay: 100,
+      })
+
+      const errorListener = vi.fn()
+      const reconnectingListener = vi.fn()
+      transport.on('error', errorListener)
+      transport.on('reconnecting', reconnectingListener)
+
+      const connectPromise = transport.connect()
+
+      // Trigger initial connection failure
+      await vi.advanceTimersByTimeAsync(0)
+
+      // Complete all reconnection attempts
+      // Attempt 1: 100ms delay
+      await vi.advanceTimersByTimeAsync(100)
+      await vi.advanceTimersByTimeAsync(0)
+
+      // Attempt 2: 200ms delay (exponential backoff)
+      await vi.advanceTimersByTimeAsync(200)
+      await vi.advanceTimersByTimeAsync(0)
+
+      // Attempt 3: 400ms delay (exponential backoff)
+      await vi.advanceTimersByTimeAsync(400)
+      await vi.advanceTimersByTimeAsync(0)
+
+      await connectPromise
+
+      // Verify reconnection behavior:
+      // - Initial attempt + 3 reconnects = 4 total
+      // - shouldReconnect() method prevents attempts beyond maxReconnectAttempts
+      expect(connectCount).toBe(4)
+
+      // Verify reconnecting event was emitted for each reconnection attempt
+      expect(reconnectingListener).toHaveBeenCalledTimes(3)
+
+      // Verify errors were emitted
+      expect(errorListener).toHaveBeenCalled()
+
+      global.WebSocket = OriginalWebSocket
+      vi.useRealTimers()
+    })
+  })

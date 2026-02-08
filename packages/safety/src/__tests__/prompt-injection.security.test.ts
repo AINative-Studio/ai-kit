@@ -248,7 +248,7 @@ describe('Prompt Injection Detector Security Tests', () => {
       const longText = 'safe text '.repeat(10000) // 100KB+
       const startTime = Date.now()
 
-      const result = detector.detect(longText)
+      const _result = detector.detect(longText)
 
       const executionTime = Date.now() - startTime
       expect(executionTime).toBeLessThan(5000) // Should complete in under 5 seconds

@@ -2,16 +2,16 @@
  * In-memory storage for usage events
  */
 
-import type { UsageEvent, UsageFilters, UsageStorage } from './types';
+import type { UsageRecord, UsageFilter, StorageBackend } from './types';
 
-export class MemoryStorage implements UsageStorage {
-  private events: UsageEvent[] = [];
+export class MemoryStorage implements StorageBackend {
+  private events: UsageRecord[] = [];
 
-  async save(event: UsageEvent): Promise<void> {
+  async save(event: UsageRecord): Promise<void> {
     this.events.push(event);
   }
 
-  async getEvents(filters: UsageFilters = {}): Promise<UsageEvent[]> {
+  async getEvents(filters: UsageFilter = {}): Promise<UsageRecord[]> {
     let filtered = [...this.events];
 
     if (filters.userId) {

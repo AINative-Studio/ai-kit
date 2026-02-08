@@ -116,9 +116,12 @@ class MemoryStorage implements RateLimitStorage {
  * Redis storage implementation (optional)
  */
 class RedisStorage implements RateLimitStorage {
-  private client: any;
+  // @ts-ignore - Reserved for future Redis client implementation
+  // @ts-ignore - Reserved for future Redis client
+  private _client: any;
 
-  constructor(options: { host: string; port: number; password?: string; db?: number }) {
+  // @ts-ignore - Stub implementation parameter intentionally unused
+  constructor(_options: { host: string; port: number; password?: string; db?: number }) {
     // This would be implemented with an actual Redis client
     // For now, we'll throw an error to indicate Redis support needs to be added
     throw new Error(
@@ -126,47 +129,58 @@ class RedisStorage implements RateLimitStorage {
     );
   }
 
-  async get(key: string): Promise<any> {
+  // @ts-ignore - Stub implementation parameter intentionally unused
+  async get(_key: string): Promise<any> {
     throw new Error('Not implemented');
   }
 
-  async set(key: string, value: any, ttl?: number): Promise<void> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async set(_key: string, _value: any, _ttl?: number): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  async increment(key: string, amount?: number): Promise<number> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async increment(_key: string, _amount?: number): Promise<number> {
     throw new Error('Not implemented');
   }
 
-  async delete(key: string): Promise<void> {
+  // @ts-ignore - Stub implementation parameter intentionally unused
+  async delete(_key: string): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  async mget(keys: string[]): Promise<any[]> {
+  // @ts-ignore - Stub implementation parameter intentionally unused
+  async mget(_keys: string[]): Promise<any[]> {
     throw new Error('Not implemented');
   }
 
-  async mset(entries: Array<[string, any]>, ttl?: number): Promise<void> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async mset(_entries: Array<[string, any]>, _ttl?: number): Promise<void> {
     throw new Error('Not implemented');
   }
 
-  async lpush(key: string, value: any): Promise<number> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async lpush(_key: string, _value: any): Promise<number> {
     throw new Error('Not implemented');
   }
 
-  async lrange(key: string, start: number, stop: number): Promise<any[]> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async lrange(_key: string, _start: number, _stop: number): Promise<any[]> {
     throw new Error('Not implemented');
   }
 
-  async lrem(key: string, count: number, value: any): Promise<number> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async lrem(_key: string, _count: number, _value: any): Promise<number> {
     throw new Error('Not implemented');
   }
 
-  async llen(key: string): Promise<number> {
+  // @ts-ignore - Stub implementation parameter intentionally unused
+  async llen(_key: string): Promise<number> {
     throw new Error('Not implemented');
   }
 
-  async expire(key: string, ttl: number): Promise<void> {
+  // @ts-ignore - Stub implementation parameters intentionally unused
+  async expire(_key: string, _ttl: number): Promise<void> {
     throw new Error('Not implemented');
   }
 }

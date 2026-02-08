@@ -2,7 +2,6 @@ import type {
   PiPCompositorOptions,
   PiPPosition,
   CameraPosition,
-  CustomPosition,
   CompositorState,
   PiPCompositorEvents,
 } from './types';
@@ -41,6 +40,7 @@ export class PiPCompositor {
 
   private initializeCanvas(width?: number, height?: number): void {
     const screenTrack = this.screenStream.getVideoTracks()[0];
+    if (!screenTrack) throw new Error('No video track found in screen stream');
     const screenSettings = screenTrack.getSettings();
 
     this.canvas = document.createElement('canvas');

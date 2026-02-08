@@ -1,29 +1,28 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { transcribeAudio, TranscriptionOptions, formatSegments, extractSpeakers, estimateTranscriptionCost } from '../transcription'
-import OpenAI from 'openai'
 
+// Create a mock function outside the mock factory
+const mockCreate = vi.fn()
+
+// Mock OpenAI as a constructor function
 vi.mock('openai', () => {
-  const mockCreate = vi.fn()
-  return {
-    default: vi.fn(() => ({
-      audio: {
-        transcriptions: {
-          create: mockCreate,
-        },
+  const MockOpenAI = class {
+    audio = {
+      transcriptions: {
+        create: mockCreate,
       },
-    })),
-    mockCreate,
+    }
+  }
+
+  return {
+    default: MockOpenAI,
   }
 })
 
 describe('Whisper Transcription', () => {
-  let mockCreate: ReturnType<typeof vi.fn>
-
   beforeEach(() => {
     vi.clearAllMocks()
-    const OpenAIModule = vi.mocked(OpenAI)
-    const instance = new OpenAIModule()
-    mockCreate = instance.audio.transcriptions.create as ReturnType<typeof vi.fn>
+    mockCreate.mockClear()
   })
 
   describe('transcribeAudio', () => {
@@ -72,7 +71,7 @@ describe('Whisper Transcription', () => {
 
       expect(result.segments).toBeDefined()
       expect(result.segments).toHaveLength(2)
-      expect(result.segments?.[0].start).toBe(0.0)
+      expect(result.segments?.[0]?.start).toBe(0.0)
     })
 
     it('should support language parameter', async () => {

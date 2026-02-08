@@ -11,6 +11,7 @@
  * Refs #67
  */
 
+import { PatternPriority } from "../pii-types"
 import { describe, it, expect } from 'vitest'
 import { PIIDetector } from '../PIIDetector'
 import { PIIType, Region } from '../types'
@@ -134,7 +135,7 @@ describe('PII Detector Security Tests', () => {
 
       for (const pattern of maliciousPatterns) {
         const startTime = Date.now()
-        const result = detector.detect(pattern)
+        const _result = detector.detect(pattern)
         const executionTime = Date.now() - startTime
 
         expect(executionTime).toBeLessThan(1000)
@@ -151,7 +152,7 @@ describe('PII Detector Security Tests', () => {
           id: 'invalid-pattern',
           name: 'Invalid',
           pattern: /(?:a+)+b/, // Catastrophic backtracking pattern
-          priority: 1,
+          priority: PatternPriority.LOW,
           enabled: true,
         })
       }).toThrow()
@@ -165,7 +166,7 @@ describe('PII Detector Security Tests', () => {
           id: 'invalid id with spaces',
           name: 'Invalid',
           pattern: /test/g,
-          priority: 1,
+          priority: PatternPriority.LOW,
           enabled: true,
         })
       }).toThrow()
@@ -178,7 +179,7 @@ describe('PII Detector Security Tests', () => {
         id: 'safe-pattern',
         name: 'Safe Pattern',
         pattern: /\[REDACTED\]/g,
-        priority: 1,
+        priority: PatternPriority.LOW,
         enabled: true,
       })
 

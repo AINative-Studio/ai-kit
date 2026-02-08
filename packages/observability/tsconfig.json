@@ -14,10 +14,12 @@
     "noUnusedParameters": false,
     "noPropertyAccessFromIndexSignature": false,
     "lib": [
+      "ES2020",
       "DOM",
       "DOM.Iterable"
     ],
     "types": [
+      "node",
       "vitest/globals"
     ]
   },

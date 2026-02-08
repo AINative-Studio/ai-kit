@@ -918,7 +918,7 @@ function AgentEventStream({
   const containerRef = useState<HTMLDivElement | null>(null)[1]
 
   useEffect(() => {
-    if (autoScroll && containerRef) {
+    if (autoScroll && containerRef && typeof containerRef === 'function') {
       // Auto-scroll would happen here
     }
   }, [events, autoScroll, containerRef])

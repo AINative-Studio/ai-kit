@@ -51,7 +51,6 @@ describe('ScreenRecorder Instrumentation', () => {
   let logger: Logger;
   let loggerDebugSpy: any;
   let loggerInfoSpy: any;
-  let loggerWarnSpy: any;
   let loggerErrorSpy: any;
 
   beforeEach(() => {
@@ -84,9 +83,13 @@ describe('ScreenRecorder Instrumentation', () => {
       removeTrack: vi.fn(),
     } as any;
 
-    global.navigator.mediaDevices = {
-      getDisplayMedia: vi.fn().mockResolvedValue(mockStream),
-    } as any;
+    Object.defineProperty(global.navigator, 'mediaDevices', {
+      writable: true,
+      configurable: true,
+      value: {
+        getDisplayMedia: vi.fn().mockResolvedValue(mockStream),
+      }
+    });
 
     // Mock URL.createObjectURL
     global.URL.createObjectURL = vi.fn(() => 'blob:mock-url-12345');
@@ -96,7 +99,6 @@ describe('ScreenRecorder Instrumentation', () => {
     logger = new Logger({ enabled: true });
     loggerDebugSpy = vi.spyOn(logger, 'debug');
     loggerInfoSpy = vi.spyOn(logger, 'info');
-    loggerWarnSpy = vi.spyOn(logger, 'warn');
     loggerErrorSpy = vi.spyOn(logger, 'error');
 
     // Create recorder with logger

@@ -131,8 +131,8 @@ export class Logger {
     const logData = { ...data };
 
     // Add timestamp if configured
-    if (this.config.includeTimestamp && !logData.timestamp) {
-      logData.timestamp = Date.now();
+    if (this.config.includeTimestamp && !logData['timestamp']) {
+      logData['timestamp'] = Date.now();
     }
 
     // Format log message
@@ -158,7 +158,7 @@ export class Logger {
       level: levelName,
       event,
       data: logData,
-      timestamp: logData.timestamp || Date.now(),
+      timestamp: logData['timestamp'] || Date.now(),
     });
   }
 

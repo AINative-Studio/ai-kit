@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediaStream Cleanup Test - Issue #134</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .test-section {
+            background: white;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        h2 {
+            color: #666;
+            margin-top: 0;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #45a049;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .danger {
+            background: #f44336;
+        }
+        .danger:hover {
+            background: #da190b;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            background: #e3f2fd;
+        }
+        .success {
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        .error {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        .instructions {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        .instructions strong {
+            display: block;
+            margin-bottom: 10px;
+        }
+        .instructions ol {
+            margin: 10px 0;
+        }
+        video {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <h1>MediaStream Cleanup Test - Issue #134</h1>
+    <p>This page tests that camera/microphone resources are properly released when navigating away or closing the tab.</p>
+
+    <div class="instructions">
+        <strong>Testing Instructions:</strong>
+        <ol>
+            <li>Click "Start Camera" or "Start Screen Recording"</li>
+            <li>Verify the camera LED turns on (or screen sharing icon appears)</li>
+            <li>Close this tab or navigate away</li>
+            <li><strong>EXPECTED RESULT:</strong> Camera LED should turn off immediately</li>
+            <li><strong>FAILURE MODE:</strong> If LED stays on, beforeunload handler is not working</li>
+        </ol>
+    </div>
+
+    <!-- Camera Test -->
+    <div class="test-section">
+        <h2>Camera Recording Test</h2>
+        <div id="camera-status" class="status">Camera not started</div>
+        <button id="camera-start">Start Camera</button>
+        <button id="camera-stop" disabled>Stop Camera</button>
+        <br>
+        <video id="camera-preview" autoplay muted></video>
+    </div>
+
+    <!-- Screen Recording Test -->
+    <div class="test-section">
+        <h2>Screen Recording Test</h2>
+        <div id="screen-status" class="status">Screen recording not started</div>
+        <button id="screen-start">Start Screen Recording</button>
+        <button id="screen-stop" disabled>Stop Screen Recording</button>
+        <br>
+        <video id="screen-preview" autoplay muted></video>
+    </div>
+
+    <!-- Audio Recording Test -->
+    <div class="test-section">
+        <h2>Audio Recording Test</h2>
+        <div id="audio-status" class="status">Audio not started</div>
+        <button id="audio-start">Start Audio</button>
+        <button id="audio-stop" disabled>Stop Audio</button>
+    </div>
+
+    <!-- Test Results -->
+    <div class="test-section">
+        <h2>Test Results</h2>
+        <div id="test-results" class="status">
+            No tests run yet
+        </div>
+    </div>
+
+    <!-- Dangerous Test -->
+    <div class="test-section">
+        <h2>Leak Test (Old Behavior)</h2>
+        <div class="instructions">
+            <strong>Warning:</strong> This button starts a camera stream WITHOUT cleanup handlers to demonstrate the problem this fix solves.
+        </div>
+        <button id="leak-test" class="danger">Start Leaky Camera (No Cleanup)</button>
+        <div id="leak-status" class="status">Not started</div>
+    </div>
+
+    <script>
+        // Camera Test
+        let cameraStream = null;
+        let cameraBeforeUnloadHandler = null;
+
+        document.getElementById('camera-start').addEventListener('click', async () => {
+            try {
+                cameraStream = await navigator.mediaDevices.getUserMedia({
+                    video: { width: 1280, height: 720 },
+                    audio: false
+                });
+
+                // Setup beforeunload handler
+                cameraBeforeUnloadHandler = () => {
+                    if (cameraStream) {
+                        cameraStream.getTracks().forEach(track => track.stop());
+                        cameraStream = null;
+                    }
+                };
+                window.addEventListener('beforeunload', cameraBeforeUnloadHandler);
+
+                document.getElementById('camera-preview').srcObject = cameraStream;
+                document.getElementById('camera-status').textContent = 'Camera active - with beforeunload cleanup';
+                document.getElementById('camera-status').className = 'status success';
+                document.getElementById('camera-start').disabled = true;
+                document.getElementById('camera-stop').disabled = false;
+
+                updateTestResults('Camera test ready - close tab to verify cleanup');
+            } catch (error) {
+                document.getElementById('camera-status').textContent = 'Error: ' + error.message;
+                document.getElementById('camera-status').className = 'status error';
+            }
+        });
+
+        document.getElementById('camera-stop').addEventListener('click', () => {
+            if (cameraStream) {
+                cameraStream.getTracks().forEach(track => track.stop());
+                cameraStream = null;
+            }
+            if (cameraBeforeUnloadHandler) {
+                window.removeEventListener('beforeunload', cameraBeforeUnloadHandler);
+                cameraBeforeUnloadHandler = null;
+            }
+            document.getElementById('camera-preview').srcObject = null;
+            document.getElementById('camera-status').textContent = 'Camera stopped';
+            document.getElementById('camera-status').className = 'status';
+            document.getElementById('camera-start').disabled = false;
+            document.getElementById('camera-stop').disabled = true;
+        });
+
+        // Screen Recording Test
+        let screenStream = null;
+        let screenBeforeUnloadHandler = null;
+
+        document.getElementById('screen-start').addEventListener('click', async () => {
+            try {
+                screenStream = await navigator.mediaDevices.getDisplayMedia({
+                    video: true,
+                    audio: false
+                });
+
+                // Setup beforeunload handler
+                screenBeforeUnloadHandler = () => {
+                    if (screenStream) {
+                        screenStream.getTracks().forEach(track => track.stop());
+                        screenStream = null;
+                    }
+                };
+                window.addEventListener('beforeunload', screenBeforeUnloadHandler);
+
+                document.getElementById('screen-preview').srcObject = screenStream;
+                document.getElementById('screen-status').textContent = 'Screen recording active - with beforeunload cleanup';
+                document.getElementById('screen-status').className = 'status success';
+                document.getElementById('screen-start').disabled = true;
+                document.getElementById('screen-stop').disabled = false;
+
+                updateTestResults('Screen recording test ready - close tab to verify cleanup');
+            } catch (error) {
+                document.getElementById('screen-status').textContent = 'Error: ' + error.message;
+                document.getElementById('screen-status').className = 'status error';
+            }
+        });
+
+        document.getElementById('screen-stop').addEventListener('click', () => {
+            if (screenStream) {
+                screenStream.getTracks().forEach(track => track.stop());
+                screenStream = null;
+            }
+            if (screenBeforeUnloadHandler) {
+                window.removeEventListener('beforeunload', screenBeforeUnloadHandler);
+                screenBeforeUnloadHandler = null;
+            }
+            document.getElementById('screen-preview').srcObject = null;
+            document.getElementById('screen-status').textContent = 'Screen recording stopped';
+            document.getElementById('screen-status').className = 'status';
+            document.getElementById('screen-start').disabled = false;
+            document.getElementById('screen-stop').disabled = true;
+        });
+
+        // Audio Recording Test
+        let audioStream = null;
+        let audioBeforeUnloadHandler = null;
+
+        document.getElementById('audio-start').addEventListener('click', async () => {
+            try {
+                audioStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: false
+                });
+
+                // Setup beforeunload handler
+                audioBeforeUnloadHandler = () => {
+                    if (audioStream) {
+                        audioStream.getTracks().forEach(track => track.stop());
+                        audioStream = null;
+                    }
+                };
+                window.addEventListener('beforeunload', audioBeforeUnloadHandler);
+
+                document.getElementById('audio-status').textContent = 'Audio active - with beforeunload cleanup';
+                document.getElementById('audio-status').className = 'status success';
+                document.getElementById('audio-start').disabled = true;
+                document.getElementById('audio-stop').disabled = false;
+
+                updateTestResults('Audio test ready - close tab to verify cleanup');
+            } catch (error) {
+                document.getElementById('audio-status').textContent = 'Error: ' + error.message;
+                document.getElementById('audio-status').className = 'status error';
+            }
+        });
+
+        document.getElementById('audio-stop').addEventListener('click', () => {
+            if (audioStream) {
+                audioStream.getTracks().forEach(track => track.stop());
+                audioStream = null;
+            }
+            if (audioBeforeUnloadHandler) {
+                window.removeEventListener('beforeunload', audioBeforeUnloadHandler);
+                audioBeforeUnloadHandler = null;
+            }
+            document.getElementById('audio-status').textContent = 'Audio stopped';
+            document.getElementById('audio-status').className = 'status';
+            document.getElementById('audio-start').disabled = false;
+            document.getElementById('audio-stop').disabled = true;
+        });
+
+        // Leak Test (demonstrates the problem)
+        let leakyStream = null;
+
+        document.getElementById('leak-test').addEventListener('click', async () => {
+            try {
+                // NO beforeunload handler - this is the old broken behavior
+                leakyStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: false
+                });
+
+                document.getElementById('leak-status').textContent = 'Leaky camera active - NO cleanup on page close! (This is the bug)';
+                document.getElementById('leak-status').className = 'status error';
+
+                updateTestResults('DANGER: Leaky stream active - camera will stay on after closing tab!');
+            } catch (error) {
+                document.getElementById('leak-status').textContent = 'Error: ' + error.message;
+                document.getElementById('leak-status').className = 'status';
+            }
+        });
+
+        function updateTestResults(message) {
+            const results = document.getElementById('test-results');
+            const timestamp = new Date().toLocaleTimeString();
+            results.innerHTML = `[${timestamp}] ${message}`;
+            results.className = 'status success';
+        }
+
+        // Global beforeunload listener to catch any active streams
+        window.addEventListener('beforeunload', () => {
+            console.log('Page unloading - beforeunload handlers should cleanup all streams');
+        });
+    </script>
+</body>
+</html>

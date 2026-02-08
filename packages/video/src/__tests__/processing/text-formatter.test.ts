@@ -122,8 +122,8 @@ describe('TextFormatter', () => {
       const result = formatter.formatSegments(segments);
 
       expect(result.length).toBe(2);
-      expect(result[0].text.charAt(0)).toBe('H');
-      expect(result[1].text.charAt(0)).toBe('H');
+      expect(result[0]?.text.charAt(0)).toBe('H');
+      expect(result[1]?.text.charAt(0)).toBe('H');
     });
 
     it('preserves timestamps', () => {
@@ -133,8 +133,8 @@ describe('TextFormatter', () => {
 
       const result = formatter.formatSegments(segments);
 
-      expect(result[0].start).toBe(1.5);
-      expect(result[0].end).toBe(3.2);
+      expect(result[0]?.start).toBe(1.5);
+      expect(result[0]?.end).toBe(3.2);
     });
 
     it('preserves confidence scores', () => {
@@ -144,7 +144,7 @@ describe('TextFormatter', () => {
 
       const result = formatter.formatSegments(segments);
 
-      expect(result[0].confidence).toBe(0.95);
+      expect(result[0]?.confidence).toBe(0.95);
     });
 
     it('preserves speaker identifiers', () => {
@@ -154,7 +154,7 @@ describe('TextFormatter', () => {
 
       const result = formatter.formatSegments(segments);
 
-      expect(result[0].speaker).toBe('Speaker 1');
+      expect(result[0]?.speaker).toBe('Speaker 1');
     });
 
     it('handles empty segments array', () => {
@@ -172,8 +172,8 @@ describe('TextFormatter', () => {
 
       const result = formatter.formatSegments(segments);
 
-      expect(result[0].text.charAt(0)).toBe('H');
-      expect(result[0].text.endsWith('.')).toBe(true);
+      expect(result[0]?.text.charAt(0)).toBe('H');
+      expect(result[0]?.text.endsWith('.')).toBe(true);
     });
   });
 

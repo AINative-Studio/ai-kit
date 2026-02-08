@@ -1,2 +1,2 @@
 export { VideoRecorder, type VideoRecorderProps } from './VideoRecorder';
-export default from './VideoRecorder';
+export { VideoRecorder as default } from './VideoRecorder';
