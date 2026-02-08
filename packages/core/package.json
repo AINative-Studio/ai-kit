@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-core",
-  "version": "0.1.4",
+  "version": "0.2.0",
   "description": "Framework-agnostic core for AI Kit - streaming, agents, state management, and LLM primitives",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",

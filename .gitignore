@@ -13,19 +13,28 @@ coverage/
 .ainative/
 .claude/
 
-# Temporary files and reports
-*.bak
-*.backup
-*-BACKUP-*
-AGENT-*.md
-ISSUE-*.md
-PR*_FIX_REPORT.md
-PRODUCTION-READINESS*.md
-PRODUCTION-READINESS*.txt
-SECURITY-FIX-REPORT.md
-TEST_VALIDATION_REPORT.md
-V1.0-RELEASE-APPROVAL.md
-edge-case-tests.txt
+# Temporary files and reports (root directory only)
+/*.bak
+/*.backup
+/*-BACKUP-*
+/AGENT-*.md
+/ISSUE-*.md
+/*-SUMMARY.md
+/*-IMPLEMENTATION*.md
+/*-COMPLETE.md
+/*-ARCHITECTURE.md
+/PARALLEL_*.md
+/STREAMING-*.md
+/CDN_*.md
+/INTEGRATION_*.md
+/ZEROLOCAL_*.md
+/PR*_FIX_REPORT.md
+/PRODUCTION-READINESS*.md
+/PRODUCTION-READINESS*.txt
+/SECURITY-FIX-REPORT.md
+/TEST_VALIDATION_REPORT.md
+/V1.0-RELEASE-APPROVAL.md
+/edge-case-tests.txt
 **/manual-test-*.html
 
 # Documentation files at package root (should be in docs/)

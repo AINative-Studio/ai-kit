@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-video",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "AI Kit - Video processing utilities including recording and transcription",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
