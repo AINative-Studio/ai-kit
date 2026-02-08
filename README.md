@@ -12,6 +12,7 @@
 AI Kit is **not a framework replacement**. It's the critical infrastructure that makes existing frameworks (Next.js, Svelte, Vue, etc.) AI-native by providing:
 
 - **Streaming primitives** - Handle real-time LLM responses elegantly
+- **Video recording primitives** - Screen, camera, and audio recording with AI transcription
 - **Agent orchestration** - Coordinate multi-step AI workflows
 - **Tool/component mapping** - Bridge LLM outputs to UI components
 - **State management** - Handle conversation context and memory
@@ -20,7 +21,7 @@ AI Kit is **not a framework replacement**. It's the critical infrastructure that
 
 ## The Problem
 
-```tsx
+\`\`\`tsx
 // What developers write today (100+ lines of boilerplate)
 const [messages, setMessages] = useState([])
 const [isStreaming, setIsStreaming] = useState(false)
@@ -47,11 +48,11 @@ async function chat(prompt) {
 }
 
 // Track costs? Monitor latency? Handle errors? Retry logic? Cache? Good luck.
-```
+\`\`\`
 
 ## The Solution
 
-```tsx
+\`\`\`tsx
 import { useAIChat } from '@ainative/ai-kit'
 
 const { messages, append, isLoading, stop } = useAIChat({
@@ -61,21 +62,21 @@ const { messages, append, isLoading, stop } = useAIChat({
 })
 
 // That's it. Done.
-```
+\`\`\`
 
 ## Quick Start
 
-```bash
+\`\`\`bash
 # Install with your package manager
 npm install @ainative/ai-kit @ainative/ai-kit-core
 
 # Or use the CLI to scaffold a new project
 npx @ainative/ai-kit-cli create my-ai-app
-```
+\`\`\`
 
 ### Example: Streaming Chat with React
 
-```tsx
+\`\`\`tsx
 import { useAIChat, ChatMessage, ChatInput, StreamingMessage } from '@ainative/ai-kit'
 
 function Chat() {
@@ -106,11 +107,11 @@ function Chat() {
     </div>
   )
 }
-```
+\`\`\`
 
 ### Example: Agent with Tools
 
-```tsx
+\`\`\`tsx
 import { AgentExecutor } from '@ainative/ai-kit-core/agents'
 
 const agent = new AgentExecutor({
@@ -122,11 +123,11 @@ const agent = new AgentExecutor({
 })
 
 const result = await agent.run('What is the GDP of France?')
-```
+\`\`\`
 
 ### Example: Safety & Security
 
-```tsx
+\`\`\`tsx
 import { PromptInjectionDetector, PIIDetector, JailbreakDetector } from '@ainative/ai-kit-safety'
 
 const injectionDetector = new PromptInjectionDetector()
@@ -149,54 +150,154 @@ if (injection.isInjection || jailbreak.isJailbreak) {
 const response = "Contact john.doe@example.com"
 const redacted = await piiDetector.detectAndRedact(response)
 console.log(redacted.redactedText) // "Contact [EMAIL REDACTED]"
-```
+\`\`\`
+
+### Example: Video Recording with AI Transcription
+
+\`\`\`tsx
+import { VideoRecorder, useScreenRecording } from '@ainative/ai-kit'
+
+// Simple component with built-in UI
+function RecordingDemo() {
+  return (
+    <VideoRecorder
+      mode="screen"
+      quality="high"
+      onRecordingComplete={(blob) => {
+        uploadToStorage(blob)
+      }}
+    />
+  )
+}
+
+// Or use the hook for custom implementations
+function CustomRecorder() {
+  const {
+    startRecording,
+    stopRecording,
+    pauseRecording,
+    resumeRecording,
+    recordingState,
+    duration,
+  } = useScreenRecording({
+    quality: 'ultra',
+    includeAudio: true,
+    onStop: async (blob) => {
+      const transcription = await transcribeVideo(blob)
+      const highlights = await generateHighlights(transcription)
+    },
+  })
+
+  return (
+    <div>
+      <button onClick={startRecording}>Start</button>
+      <button onClick={pauseRecording}>Pause</button>
+      <button onClick={stopRecording}>Stop</button>
+      <span>Duration: {duration}s</span>
+      <span>State: {recordingState}</span>
+    </div>
+  )
+}
+\`\`\`
+
+### Example: Beta Testing Program
+
+\`\`\`tsx
+import { BetaSignupManager, BetaFeedbackManager } from '@ainative/ai-kit-core/beta'
+
+// Collect beta signups with rate limiting
+const betaSignup = new BetaSignupManager({
+  rateLimitWindow: 60000,
+  maxRequestsPerEmail: 5,
+})
+
+const result = await betaSignup.signup({
+  email: 'user@example.com',
+  name: 'Jane Developer',
+  metadata: { source: 'landing-page' },
+})
+
+// Collect user feedback
+const betaFeedback = new BetaFeedbackManager()
+
+await betaFeedback.submitFeedback({
+  email: 'user@example.com',
+  rating: 5,
+  comment: 'Great video recording features!',
+  category: 'feature-request',
+})
+\`\`\`
 
 ## Packages
 
 | Package | Description | Status | Tests |
 |---------|-------------|--------|-------|
-| `@ainative/ai-kit-core` | Framework-agnostic core (streaming, agents, state) | ✅ Stable | 1,014 |
-| `@ainative/ai-kit` | React hooks and components | ✅ Stable | 382 |
-| `@ainative/ai-kit-safety` | Safety guardrails (injection, PII, jailbreak) | ✅ Stable | 349 |
-| `@ainative/ai-kit-cli` | CLI for scaffolding projects | ✅ Stable | 237 |
-| `@ainative/ai-kit-testing` | Testing utilities and mocks | ✅ Available | ✓ |
-| `@ainative/ai-kit-observability` | Monitoring and query tracking | ✅ Available | ✓ |
-| `@ainative/ai-kit-tools` | Built-in agent tools | ✅ Available | ✓ |
-| `@ainative/ai-kit-nextjs` | Next.js utilities | 🚧 Beta | ✓ |
-| `@ainative/ai-kit-svelte` | Svelte adapter | 🚧 Beta | ✓ |
-| `@ainative/ai-kit-vue` | Vue adapter | 🚧 Beta | ✓ |
-| `@ainative/ai-kit-auth` | AINative Auth integration | 🚧 Beta | ✓ |
-| `@ainative/ai-kit-rlhf` | RLHF data collection | 🚧 Beta | ✓ |
-| `@ainative/ai-kit-zerodb` | ZeroDB vector database integration | 🚧 Beta | ✓ |
-| `@ainative/ai-kit-design-system` | Design system utilities | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-core\` | Framework-agnostic core (streaming, agents, state, video, beta) | ✅ Stable | 1,014 |
+| \`@ainative/ai-kit\` | React hooks and components (chat, video recording) | ✅ Stable | 382 |
+| \`@ainative/ai-kit-video\` | Video recording primitives (screen, camera, audio) | ✅ Stable | ✓ |
+| \`@ainative/ai-kit-safety\` | Safety guardrails (injection, PII, jailbreak) | ✅ Stable | 349 |
+| \`@ainative/ai-kit-cli\` | CLI for scaffolding projects | ✅ Stable | 237 |
+| \`@ainative/ai-kit-testing\` | Testing utilities and mocks | ✅ Available | ✓ |
+| \`@ainative/ai-kit-observability\` | Monitoring and query tracking | ✅ Available | ✓ |
+| \`@ainative/ai-kit-tools\` | Built-in agent tools | ✅ Available | ✓ |
+| \`@ainative/ai-kit-nextjs\` | Next.js utilities | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-svelte\` | Svelte adapter | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-vue\` | Vue adapter | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-auth\` | AINative Auth integration | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-rlhf\` | RLHF data collection | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-zerodb\` | ZeroDB vector database integration | 🚧 Beta | ✓ |
+| \`@ainative/ai-kit-design-system\` | Design system utilities | 🚧 Beta | ✓ |
+
+## Features
+
+### Video Recording & Processing
+
+- **Screen Recording** - Capture screen with system audio and microphone
+- **Camera Recording** - Record from webcam with audio
+- **Audio Recording** - High-quality audio capture with noise cancellation
+- **Picture-in-Picture** - PiP mode for video playback
+- **AI Transcription** - Automatic transcription of recorded videos
+- **AI Highlights** - Generate key moments and summaries
+- **Quality Presets** - Low, medium, high, and ultra quality settings
+- **React Components** - \`<VideoRecorder>\` component with built-in UI
+- **React Hooks** - \`useScreenRecording\` hook for custom implementations
+
+### Beta Testing System
+
+- **Beta Signup Management** - Email validation with rate limiting
+- **Feedback Collection** - Structured feedback with 1-5 star ratings
+- **Category Tagging** - Organize feedback by feature/bug/improvement
+- **Metadata Support** - Track signup source, user segments, and custom data
+- **Rate Limiting** - Per-email and global rate limiting to prevent abuse
 
 ## Test Coverage
 
 All packages have comprehensive test coverage:
 
-```
+\`\`\`
 Total: ~2,000 tests passing
 
 ├── @ainative/ai-kit-core       1,014 tests ✅
 ├── @ainative/ai-kit-safety       349 tests ✅
 ├── @ainative/ai-kit (React)      382 tests ✅
 └── @ainative/ai-kit-cli          237 tests ✅
-```
+\`\`\`
 
 Run tests:
-```bash
+\`\`\`bash
 pnpm test              # Run all tests
 pnpm test:coverage     # With coverage report
 pnpm test:ui           # Interactive UI
-```
+\`\`\`
 
 ## Project Structure
 
-```
+\`\`\`
 ai-kit/
 ├── packages/
 │   ├── core/              # Framework-agnostic core
 │   ├── react/             # React hooks & components
+│   ├── video/             # Video recording primitives
 │   ├── safety/            # Safety & security guardrails
 │   ├── cli/               # CLI tools
 │   ├── testing/           # Testing utilities
@@ -220,11 +321,11 @@ ai-kit/
 │   └── aikit-backlog.md   # Development Backlog
 ├── scripts/               # Build & utility scripts
 └── examples/              # Example applications
-```
+\`\`\`
 
 ## Development
 
-```bash
+\`\`\`bash
 # Prerequisites
 node --version  # v18+ required
 pnpm --version  # v8+ required
@@ -246,11 +347,11 @@ pnpm dev
 
 # Generate API documentation
 pnpm docs
-```
+\`\`\`
 
 ## CLI Usage
 
-```bash
+\`\`\`bash
 # Create a new AI Kit project
 npx @ainative/ai-kit-cli create my-app
 
@@ -262,7 +363,7 @@ npx @ainative/ai-kit-cli add auth
 npx @ainative/ai-kit-cli create my-app --template react-chat
 npx @ainative/ai-kit-cli create my-app --template nextjs-ai
 npx @ainative/ai-kit-cli create my-app --template agent-system
-```
+\`\`\`
 
 ## Workshops & Learning
 
@@ -283,6 +384,15 @@ We provide workshop materials for learning AI Kit:
 - [API Reference](./docs/api/)
 
 ## Recent Updates
+
+### February 2026
+- **Video Recording System** - Complete video recording primitives with screen, camera, and audio support
+- **AI Transcription & Highlights** - Automatic transcription and highlight generation for recorded videos
+- **Beta Testing Program** - Comprehensive beta signup and feedback collection system
+- **React Components** - VideoRecorder component and useScreenRecording hook
+- **Picture-in-Picture Support** - PiP mode for enhanced video playback experience
+- **Noise Cancellation** - Advanced audio processing with spectral subtraction
+- **Quality Presets** - Low, medium, high, and ultra quality recording options
 
 ### December 2024
 - All packages now have comprehensive test coverage (~2,000 tests)
