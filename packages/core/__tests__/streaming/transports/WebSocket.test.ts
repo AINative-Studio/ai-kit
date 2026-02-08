@@ -674,5 +674,142 @@ describe('WebSocketTransport', () => {
 
       transport.close()
     })
+
+    it('should maintain heartbeat during connection', async () => {
+      vi.useFakeTimers()
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 30000,
+      })
+
+      const errorListener = vi.fn()
+      transport.on('error', errorListener)
+
+      const connectPromise = transport.connect()
+      await vi.advanceTimersByTimeAsync(0)
+      await connectPromise
+
+      const ws = (transport as any).ws as MockWebSocket
+      const sendSpy = vi.spyOn(ws, 'send')
+
+      await vi.advanceTimersByTimeAsync(30000)
+      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({ type: 'ping' }))
+
+      await vi.advanceTimersByTimeAsync(30000)
+      expect(sendSpy).toHaveBeenCalledTimes(2)
+
+      transport.close()
+      vi.useRealTimers()
+    })
+
+    it('should detect connection failure via heartbeat timeout', async () => {
+      vi.useFakeTimers()
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 30000,
+      })
+
+      const connectPromise = transport.connect()
+      await vi.advanceTimersByTimeAsync(0)
+      await connectPromise
+
+      const ws = (transport as any).ws as MockWebSocket
+      const sendSpy = vi.spyOn(ws, 'send')
+
+      ws.readyState = MockWebSocket.CLOSED
+
+      await vi.advanceTimersByTimeAsync(30000)
+      expect(sendSpy).not.toHaveBeenCalled()
+
+      transport.close()
+      vi.useRealTimers()
+    })
+
+    it('should handle heartbeat response (pong)', async () => {
+      vi.useFakeTimers()
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 30000,
+      })
+
+      const eventListener = vi.fn()
+      transport.on('event', eventListener)
+
+      const connectPromise = transport.connect()
+      await vi.advanceTimersByTimeAsync(0)
+      await connectPromise
+
+      const ws = (transport as any).ws as MockWebSocket
+      const sendSpy = vi.spyOn(ws, 'send')
+
+      await vi.advanceTimersByTimeAsync(30000)
+      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({ type: 'ping' }))
+
+      ws.simulateMessage({ type: 'pong' })
+      expect(eventListener).toHaveBeenCalledWith(
+        expect.objectContaining({ type: 'pong' })
+      )
+
+      transport.close()
+      vi.useRealTimers()
+    })
+
+    it('should clear heartbeat on disconnect', async () => {
+      vi.useFakeTimers()
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 30000,
+      })
+
+      const connectPromise = transport.connect()
+      await vi.advanceTimersByTimeAsync(0)
+      await connectPromise
+
+      const ws = (transport as any).ws as MockWebSocket
+      const sendSpy = vi.spyOn(ws, 'send')
+
+      transport.close()
+
+      await vi.advanceTimersByTimeAsync(30000)
+      expect(sendSpy).not.toHaveBeenCalled()
+
+      vi.useRealTimers()
+    })
+
+    it('should send ping at configured intervals', async () => {
+      vi.useFakeTimers()
+
+      transport = new WebSocketTransport({
+        endpoint: 'ws://localhost:3000/stream',
+        heartbeatInterval: 15000,
+      })
+
+      const connectPromise = transport.connect()
+      await vi.advanceTimersByTimeAsync(0)
+      await connectPromise
+
+      const ws = (transport as any).ws as MockWebSocket
+      const sendSpy = vi.spyOn(ws, 'send')
+
+      await vi.advanceTimersByTimeAsync(15000)
+      expect(sendSpy).toHaveBeenCalledTimes(1)
+      expect(sendSpy).toHaveBeenCalledWith(JSON.stringify({ type: 'ping' }))
+
+      await vi.advanceTimersByTimeAsync(15000)
+      expect(sendSpy).toHaveBeenCalledTimes(2)
+
+      await vi.advanceTimersByTimeAsync(15000)
+      expect(sendSpy).toHaveBeenCalledTimes(3)
+
+      await vi.advanceTimersByTimeAsync(15000)
+      expect(sendSpy).toHaveBeenCalledTimes(4)
+
+      transport.close()
+      vi.useRealTimers()
+    })
   })
 })
