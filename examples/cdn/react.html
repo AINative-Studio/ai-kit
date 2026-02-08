@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Kit CDN Example - React</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chat-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: #f7fafc;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: 2rem;
+        }
+
+        .message.assistant {
+            background: white;
+            border: 1px solid #e2e8f0;
+            margin-right: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .info h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .info code {
+            background: #edf2f7;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            color: #718096;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <!-- Load React and ReactDOM from CDN -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+
+    <!-- Load AI Kit Core from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@ainative/ai-kit-core@latest/dist/cdn/core.min.js"
+            crossorigin="anonymous"></script>
+
+    <!-- Load AI Kit React from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@ainative/ai-kit@latest/dist/cdn/react.min.js"
+            crossorigin="anonymous"></script>
+
+    <!-- Babel Standalone for JSX transformation (development only) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <script type="text/babel">
+        const { useState, useRef, useEffect } = React;
+
+        function ChatMessage({ message, isUser }) {
+            return (
+                <div className={`message ${isUser ? 'user' : 'assistant'}`}>
+                    {message}
+                </div>
+            );
+        }
+
+        function ChatApp() {
+            const [messages, setMessages] = useState([
+                { text: 'Welcome to AI Kit React! This example uses CDN bundles without any build step.', isUser: false }
+            ]);
+            const [input, setInput] = useState('');
+            const [isLoading, setIsLoading] = useState(false);
+            const chatContainerRef = useRef(null);
+
+            useEffect(() => {
+                if (chatContainerRef.current) {
+                    chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+                }
+            }, [messages]);
+
+            const sendMessage = async () => {
+                const text = input.trim();
+                if (!text) return;
+
+                // Add user message
+                setMessages(prev => [...prev, { text, isUser: true }]);
+                setInput('');
+                setIsLoading(true);
+
+                try {
+                    // Simulate AI response
+                    await new Promise(resolve => setTimeout(resolve, 1000));
+
+                    // Add assistant response
+                    setMessages(prev => [...prev, {
+                        text: `Echo: ${text}`,
+                        isUser: false
+                    }]);
+                } catch (error) {
+                    console.error('Error:', error);
+                    setMessages(prev => [...prev, {
+                        text: 'Error: Failed to get response',
+                        isUser: false
+                    }]);
+                } finally {
+                    setIsLoading(false);
+                }
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            };
+
+            return (
+                <div className="container">
+                    <h1>AI Kit CDN Example</h1>
+                    <span className="badge">React + CDN</span>
+
+                    <div className="chat-container" ref={chatContainerRef}>
+                        {messages.map((msg, idx) => (
+                            <ChatMessage
+                                key={idx}
+                                message={msg.text}
+                                isUser={msg.isUser}
+                            />
+                        ))}
+                        {isLoading && (
+                            <div className="message assistant loading">
+                                Thinking...
+                            </div>
+                        )}
+                    </div>
+
+                    <div className="input-group">
+                        <input
+                            type="text"
+                            value={input}
+                            onChange={(e) => setInput(e.target.value)}
+                            onKeyPress={handleKeyPress}
+                            placeholder="Type your message..."
+                            disabled={isLoading}
+                        />
+                        <button onClick={sendMessage} disabled={isLoading}>
+                            Send
+                        </button>
+                    </div>
+
+                    <div className="info">
+                        <h3>Using AI Kit React from CDN</h3>
+                        <p>This example loads React and AI Kit from CDN without any build tools.</p>
+                        <p style={{ marginTop: '0.5rem' }}>
+                            <strong>Loaded:</strong>{' '}
+                            <code>React</code>,{' '}
+                            <code>AIKitCore</code>,{' '}
+                            <code>AIKitReact</code>
+                        </p>
+                        <p style={{ marginTop: '0.5rem', fontSize: '0.875rem', color: '#718096' }}>
+                            Note: In production, compile JSX using a build tool for better performance.
+                        </p>
+                    </div>
+                </div>
+            );
+        }
+
+        // Render the app
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<ChatApp />);
+
+        console.log('AI Kit loaded:', {
+            React: typeof React !== 'undefined',
+            AIKitCore: typeof AIKitCore !== 'undefined',
+            AIKitReact: typeof AIKitReact !== 'undefined'
+        });
+    </script>
+</body>
+</html>

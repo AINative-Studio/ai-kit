@@ -1,34 +1,29 @@
 /**
- * WebSocket transport implementation
- * Provides bi-directional streaming with automatic reconnection
+ * Enhanced WebSocket transport implementation
+ * Provides bi-directional streaming with automatic reconnection and backpressure handling
  */
 
-import { EventEmitter } from 'events'
+import { BaseTransport } from './BaseTransport'
 import type {
-  Transport,
   TransportConfig,
-  TransportState,
   TransportEvent,
-  TransportErrorEvent,
-  ReconnectEvent,
+  TransportType,
 } from './types'
 
 /**
  * WebSocket Transport
  * Implements streaming over WebSocket with automatic reconnection
  */
-export class WebSocketTransport extends EventEmitter implements Transport {
-  private config: TransportConfig
-  private state: TransportState = 'idle'
+export class WebSocketTransport extends BaseTransport {
+  public readonly type: TransportType = 'websocket'
+
   private ws?: WebSocket
-  private reconnectAttempt = 0
-  private reconnectTimeout?: NodeJS.Timeout
-  private intentionallyClosed = false
   private heartbeatInterval?: NodeJS.Timeout
+  private heartbeatTimeoutId?: NodeJS.Timeout
+  private lastPongReceived?: number
+  private sendQueue: any[] = []
 
   constructor(config: TransportConfig) {
-    super()
-
     // Convert HTTP(S) URLs to WS(S)
     let endpoint = config.endpoint
     if (endpoint.startsWith('http://')) {
@@ -37,15 +32,10 @@ export class WebSocketTransport extends EventEmitter implements Transport {
       endpoint = endpoint.replace('https://', 'wss://')
     }
 
-    this.config = {
-      reconnect: true,
-      maxReconnectAttempts: 3,
-      reconnectDelay: 1000,
-      backoffMultiplier: 2,
-      maxReconnectDelay: 30000,
+    super({
       ...config,
       endpoint,
-    }
+    })
   }
 
   /**
@@ -56,11 +46,15 @@ export class WebSocketTransport extends EventEmitter implements Transport {
     return this.performConnect()
   }
 
-  private performConnect(): Promise<void> {
+  /**
+   * Perform the actual connection
+   */
+  protected performConnect(): Promise<void> {
     return new Promise((resolve, reject) => {
       try {
         this.state = 'connecting'
         this.emit('connecting')
+        this.log('Connecting to WebSocket endpoint')
 
         // Create WebSocket with optional protocols
         this.ws = new WebSocket(
@@ -73,16 +67,31 @@ export class WebSocketTransport extends EventEmitter implements Transport {
           this.ws.binaryType = this.config.binaryType
         }
 
+        // Setup connection timeout
+        const connectionTimeout = setTimeout(() => {
+          if (this.ws && this.ws.readyState === WebSocket.CONNECTING) {
+            this.ws.close()
+            reject(new Error('WebSocket connection timeout'))
+          }
+        }, this.config.timeout || 30000)
+
         // Setup event handlers
         this.ws.onopen = () => {
+          clearTimeout(connectionTimeout)
           this.state = 'connected'
+          this.connectedAt = Date.now()
           this.emit('connected')
+          this.log('Connected successfully')
+
           this.reconnectAttempt = 0
 
           // Start heartbeat if configured
           if (this.config.heartbeatInterval) {
             this.startHeartbeat()
           }
+
+          // Process queued messages
+          this.processSendQueue()
 
           resolve()
         }
@@ -92,16 +101,14 @@ export class WebSocketTransport extends EventEmitter implements Transport {
         }
 
         this.ws.onerror = (event) => {
+          clearTimeout(connectionTimeout)
           if (!this.intentionallyClosed) {
-            const transportError: TransportErrorEvent = {
-              error: new Error('WebSocket error'),
-              recoverable: true,
-            }
-            this.emit('error', transportError)
+            this.handleError(new Error('WebSocket error'))
           }
         }
 
         this.ws.onclose = (event) => {
+          clearTimeout(connectionTimeout)
           this.stopHeartbeat()
 
           if (this.intentionallyClosed) {
@@ -111,33 +118,24 @@ export class WebSocketTransport extends EventEmitter implements Transport {
           }
 
           this.state = 'error'
-          const transportError: TransportErrorEvent = {
-            error: new Error(`WebSocket closed: ${event.code} ${event.reason}`),
-            recoverable: true,
-            code: event.code,
-          }
-          this.emit('error', transportError)
+          this.handleError(
+            new Error(`WebSocket closed: ${event.code} ${event.reason}`)
+          )
 
           if (this.config.reconnect && this.shouldReconnect()) {
-            // Schedule reconnection asynchronously
             this.scheduleReconnect().catch(() => {
-              // Ignore errors - they're already handled
+              // Error already handled
             })
           }
           resolve()
         }
       } catch (error) {
         this.state = 'error'
-        const transportError: TransportErrorEvent = {
-          error: error as Error,
-          recoverable: true,
-        }
-        this.emit('error', transportError)
+        this.handleError(error as Error)
 
         if (this.config.reconnect && this.shouldReconnect()) {
-          // Schedule reconnection asynchronously
           this.scheduleReconnect().catch(() => {
-            // Ignore errors - they're already handled
+            // Error already handled
           })
         }
         resolve()
@@ -146,51 +144,123 @@ export class WebSocketTransport extends EventEmitter implements Transport {
   }
 
   /**
-   * Handle incoming WebSocket message
+   * Handle incoming WebSocket message with buffering
    */
-  private handleMessage(data: string | ArrayBuffer): void {
+  private handleMessage(data: string | ArrayBuffer | Blob): void {
+    const startTime = Date.now()
+
     try {
-      // Handle string messages (JSON)
-      const messageStr = typeof data === 'string' ? data : new TextDecoder().decode(data)
+      // Handle different data types
+      let messageStr: string
+
+      if (typeof data === 'string') {
+        messageStr = data
+      } else if (data instanceof ArrayBuffer) {
+        messageStr = new TextDecoder().decode(data)
+      } else if (data instanceof Blob) {
+        // For Blob, we need to read it asynchronously
+        data.text().then((text) => {
+          this.processMessage(text, startTime)
+        })
+        return
+      } else {
+        messageStr = String(data)
+      }
+
+      this.processMessage(messageStr, startTime)
+    } catch (error) {
+      this.handleError(new Error(`Failed to process message: ${error}`))
+    }
+  }
+
+  /**
+   * Process message after conversion to string
+   */
+  private processMessage(messageStr: string, startTime: number): void {
+    try {
       const parsed = JSON.parse(messageStr)
 
-      // Check for special message types
+      // Handle special message types
       if (parsed.type === 'done') {
+        this.log('Received done signal')
         this.emit('done')
         return
       }
 
       if (parsed.type === 'error') {
-        const transportError: TransportErrorEvent = {
-          error: new Error(parsed.error || 'Unknown error'),
-          recoverable: true,
-        }
-        this.emit('error', transportError)
+        this.handleError(new Error(parsed.error || 'Unknown error'))
         return
       }
 
-      // Emit regular event
-      this.emit('event', parsed as TransportEvent)
+      // Handle pong response (heartbeat)
+      if (parsed.type === 'pong') {
+        this.lastPongReceived = Date.now()
+        this.log('Received pong')
+        // Still emit as regular event for backwards compatibility
+        this.bufferMessage(parsed as TransportEvent)
+        return
+      }
+
+      // Buffer regular messages
+      this.bufferMessage(parsed as TransportEvent)
+
+      this.trackLatency(Date.now() - startTime)
     } catch (error) {
       // Handle malformed JSON
-      const transportError: TransportErrorEvent = {
-        error: new Error(`Failed to parse message: ${data}`),
-        recoverable: true,
-      }
-      this.emit('error', transportError)
+      this.handleError(new Error(`Failed to parse message: ${messageStr}`))
     }
   }
 
   /**
-   * Send data through the transport
+   * Send data through the transport with queuing
    */
   async send(data: any): Promise<void> {
+    const startTime = Date.now()
+
+    // Queue message if not connected
     if (!this.ws || this.ws.readyState !== WebSocket.OPEN) {
-      throw new Error('WebSocket is not connected')
+      this.log('Queueing message - not connected', 'warn')
+      this.sendQueue.push(data)
+
+      // Throw if explicitly disconnected
+      if (this.state === 'closed' || this.state === 'error') {
+        throw new Error('WebSocket is not connected')
+      }
+      return
     }
 
-    const message = JSON.stringify(data)
-    this.ws.send(message)
+    try {
+      const message = JSON.stringify(data)
+      this.ws.send(message)
+      this.messagesSent++
+      this.trackLatency(Date.now() - startTime)
+      this.log(`Sent message: ${message.substring(0, 100)}...`)
+    } catch (error) {
+      this.handleError(error as Error)
+      // Queue for retry
+      this.sendQueue.push(data)
+      throw error
+    }
+  }
+
+  /**
+   * Process queued send messages
+   */
+  private processSendQueue(): void {
+    if (this.sendQueue.length === 0) {
+      return
+    }
+
+    this.log(`Processing ${this.sendQueue.length} queued messages`)
+
+    const queue = [...this.sendQueue]
+    this.sendQueue = []
+
+    for (const data of queue) {
+      this.send(data).catch((error) => {
+        this.log(`Failed to send queued message: ${error.message}`, 'error')
+      })
+    }
   }
 
   /**
@@ -212,65 +282,43 @@ export class WebSocketTransport extends EventEmitter implements Transport {
       this.ws = undefined
     }
 
+    this.sendQueue = []
+    this.messageBuffer.clear()
     this.emit('closed')
+    this.log('Connection closed')
   }
 
   /**
-   * Get current transport state
-   */
-  getState(): TransportState {
-    return this.state
-  }
-
-  /**
-   * Check if should attempt reconnection
-   */
-  private shouldReconnect(): boolean {
-    const maxAttempts = this.config.maxReconnectAttempts ?? 3
-    return this.reconnectAttempt < maxAttempts
-  }
-
-  /**
-   * Schedule reconnection with exponential backoff
-   */
-  private scheduleReconnect(): Promise<void> {
-    this.reconnectAttempt++
-    this.state = 'reconnecting'
-
-    const baseDelay = this.config.reconnectDelay ?? 1000
-    const multiplier = this.config.backoffMultiplier ?? 2
-    const maxDelay = this.config.maxReconnectDelay ?? 30000
-
-    const delay = Math.min(
-      baseDelay * Math.pow(multiplier, this.reconnectAttempt - 1),
-      maxDelay
-    )
-
-    const reconnectEvent: ReconnectEvent = {
-      attempt: this.reconnectAttempt,
-      delay,
-      maxAttempts: this.config.maxReconnectAttempts,
-    }
-    this.emit('reconnecting', reconnectEvent)
-
-    return new Promise((resolve, reject) => {
-      this.reconnectTimeout = setTimeout(() => {
-        this.performConnect().then(resolve).catch(reject)
-      }, delay)
-    })
-  }
-
-  /**
-   * Start heartbeat/ping interval
+   * Start heartbeat/ping interval with timeout detection
    */
   private startHeartbeat(): void {
     if (!this.config.heartbeatInterval) {
       return
     }
 
+    this.log(`Starting heartbeat with ${this.config.heartbeatInterval}ms interval`)
+    this.lastPongReceived = Date.now()
+
     this.heartbeatInterval = setInterval(() => {
       if (this.ws && this.ws.readyState === WebSocket.OPEN) {
+        // Check if last pong was received within 2x heartbeat interval
+        const timeSinceLastPong = Date.now() - (this.lastPongReceived || 0)
+        const timeout = (this.config.heartbeatInterval || 0) * 2
+
+        if (timeSinceLastPong > timeout) {
+          this.log('Heartbeat timeout - connection may be dead', 'warn')
+          this.handleError(new Error('Heartbeat timeout'))
+
+          // Force reconnection
+          if (this.ws) {
+            this.ws.close(1006, 'Heartbeat timeout')
+          }
+          return
+        }
+
+        // Send ping
         this.ws.send(JSON.stringify({ type: 'ping' }))
+        this.log('Sent ping')
       }
     }, this.config.heartbeatInterval)
   }
@@ -283,5 +331,26 @@ export class WebSocketTransport extends EventEmitter implements Transport {
       clearInterval(this.heartbeatInterval)
       this.heartbeatInterval = undefined
     }
+
+    if (this.heartbeatTimeoutId) {
+      clearTimeout(this.heartbeatTimeoutId)
+      this.heartbeatTimeoutId = undefined
+    }
+
+    this.log('Heartbeat stopped')
+  }
+
+  /**
+   * Get WebSocket ready state
+   */
+  getReadyState(): number | undefined {
+    return this.ws?.readyState
+  }
+
+  /**
+   * Get number of queued messages
+   */
+  getQueueSize(): number {
+    return this.sendQueue.length
   }
 }

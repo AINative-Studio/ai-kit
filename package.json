@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:cdn": "tsx scripts/build-cdn-bundles.ts",
     "dev": "turbo run dev",
     "test": "turbo run test",
     "test:coverage": "vitest run --coverage",

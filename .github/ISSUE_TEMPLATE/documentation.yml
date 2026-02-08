@@ -1,0 +1,152 @@
+name: Documentation Improvement
+description: Suggest improvements or report issues with AI Kit documentation
+title: "[Docs]: "
+labels: ["documentation", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve our documentation! Please provide details about what needs to be updated or clarified.
+
+  - type: dropdown
+    id: doc-type
+    attributes:
+      label: Documentation Type
+      description: What type of documentation needs improvement?
+      options:
+        - "API Reference"
+        - "Getting Started Guide"
+        - "Tutorial"
+        - "Code Example"
+        - "README"
+        - "TypeScript Types"
+        - "Migration Guide"
+        - "Troubleshooting"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What kind of documentation issue is this?
+      options:
+        - "Missing Information"
+        - "Incorrect Information"
+        - "Unclear/Confusing"
+        - "Outdated"
+        - "Typo/Grammar"
+        - "Code Example Not Working"
+        - "Missing Code Example"
+        - "Broken Link"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which AI Kit package is this documentation related to?
+      options:
+        - "@ainative/ai-kit-core"
+        - "@ainative/ai-kit-react"
+        - "@ainative/ai-kit-nextjs"
+        - "@ainative/ai-kit-tools"
+        - "@ainative/ai-kit-testing"
+        - "@ainative/ai-kit-vue"
+        - "@ainative/ai-kit-svelte"
+        - "@ainative/ai-kit-cli"
+        - "@ainative/ai-kit-video"
+        - "@ainative/ai-kit-community"
+        - "General/Repository"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: input
+    id: doc-location
+    attributes:
+      label: Documentation Location
+      description: Where is the documentation that needs improvement?
+      placeholder: "URL or file path (e.g., https://github.com/.../README.md or packages/core/README.md)"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-content
+    attributes:
+      label: Current Documentation
+      description: What does the current documentation say? (Copy/paste or quote the relevant section)
+      placeholder: "The current documentation states..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: issue-description
+    attributes:
+      label: Issue Description
+      description: What is wrong or missing with the current documentation?
+      placeholder: "The documentation doesn't explain..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: suggested-improvement
+    attributes:
+      label: Suggested Improvement
+      description: How should the documentation be improved?
+      placeholder: "The documentation should explain..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-content
+    attributes:
+      label: Proposed Content
+      description: If applicable, provide the exact text or code example you'd like to see
+      placeholder: |
+        ```typescript
+        // Example code
+        ```
+
+        Or proposed text...
+    validations:
+      required: false
+
+  - type: dropdown
+    id: audience
+    attributes:
+      label: Target Audience
+      description: Who would benefit most from this documentation improvement?
+      options:
+        - "Beginners"
+        - "Intermediate Users"
+        - "Advanced Users"
+        - "All Users"
+    validations:
+      required: false
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Any other context, screenshots, or examples that would help
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided the location of the documentation that needs improvement
+          required: true
+        - label: I am willing to submit a PR to improve this documentation
+          required: false

@@ -1,41 +1,29 @@
 /**
- * Server-Sent Events (SSE) transport implementation
- * Provides streaming over HTTP with automatic reconnection
+ * Enhanced Server-Sent Events (SSE) transport implementation
+ * Provides streaming over HTTP with automatic reconnection and backpressure handling
  */
 
-import { EventEmitter } from 'events'
+import { BaseTransport } from './BaseTransport'
 import type {
-  Transport,
   TransportConfig,
-  TransportState,
   TransportEvent,
-  TransportErrorEvent,
-  ReconnectEvent,
+  TransportType,
 } from './types'
 
 /**
  * SSE Transport
  * Implements streaming over HTTP using Server-Sent Events
  */
-export class SSETransport extends EventEmitter implements Transport {
-  private config: TransportConfig
-  private state: TransportState = 'idle'
+export class SSETransport extends BaseTransport {
+  public readonly type: TransportType = 'sse'
+
   private abortController?: AbortController
   private reader?: ReadableStreamDefaultReader<Uint8Array>
-  private reconnectAttempt = 0
-  private reconnectTimeout?: NodeJS.Timeout
-  private intentionallyClosed = false
+  private lastEventId?: string
 
   constructor(config: TransportConfig) {
-    super()
-    this.config = {
-      reconnect: true,
-      maxReconnectAttempts: 3,
-      reconnectDelay: 1000,
-      backoffMultiplier: 2,
-      maxReconnectDelay: 30000,
-      ...config,
-    }
+    super(config)
+    this.lastEventId = config.lastEventId
   }
 
   /**
@@ -46,24 +34,41 @@ export class SSETransport extends EventEmitter implements Transport {
     await this.performConnect()
   }
 
-  private async performConnect(): Promise<void> {
+  /**
+   * Perform the actual connection
+   */
+  protected async performConnect(): Promise<void> {
     try {
       this.state = 'connecting'
       this.emit('connecting')
+      this.log('Connecting to SSE endpoint')
 
       this.abortController = new AbortController()
 
       const headers: HeadersInit = {
         'Accept': 'text/event-stream',
         'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
         ...this.config.headers,
       }
 
-      const response = await fetch(this.config.endpoint, {
+      // Include Last-Event-ID for resuming streams
+      if (this.lastEventId) {
+        headers['Last-Event-ID'] = this.lastEventId
+      }
+
+      const fetchOptions: RequestInit = {
         method: 'POST',
         headers,
         signal: this.abortController.signal,
-      })
+      }
+
+      // Add credentials for CORS if configured
+      if (this.config.withCredentials) {
+        fetchOptions.credentials = 'include'
+      }
+
+      const response = await fetch(this.config.endpoint, fetchOptions)
 
       if (!response.ok) {
         const errorText = await response.text()
@@ -77,7 +82,9 @@ export class SSETransport extends EventEmitter implements Transport {
       }
 
       this.state = 'connected'
+      this.connectedAt = Date.now()
       this.emit('connected')
+      this.log('Connected successfully')
 
       this.reconnectAttempt = 0
       await this.readStream(response.body)
@@ -87,34 +94,37 @@ export class SSETransport extends EventEmitter implements Transport {
       }
 
       this.state = 'error'
-      const transportError: TransportErrorEvent = {
-        error: error as Error,
-        recoverable: true,
-      }
-      this.emit('error', transportError)
+      this.handleError(error as Error)
 
       if (this.config.reconnect && this.shouldReconnect()) {
-        // Schedule reconnection asynchronously (don't await)
-        this.scheduleReconnect().catch(() => {
-          // Ignore errors - they're already handled
-        })
+        await this.scheduleReconnect()
       }
     }
   }
 
   /**
-   * Read and parse SSE stream
+   * Read and parse SSE stream with backpressure handling
    */
   private async readStream(body: ReadableStream<Uint8Array>): Promise<void> {
     this.reader = body.getReader()
     const decoder = new TextDecoder()
     let buffer = ''
+    let eventType = ''
+    let eventData = ''
 
     try {
       while (true) {
+        // Check backpressure before reading more data
+        if (this.messageBuffer.isHighWater() && !this.paused) {
+          this.log('Backpressure detected, pausing stream read', 'warn')
+          // Wait a bit before reading more
+          await new Promise((resolve) => setTimeout(resolve, 100))
+        }
+
         const { done, value } = await this.reader.read()
 
         if (done) {
+          this.log('Stream ended')
           this.emit('done')
           break
         }
@@ -124,22 +134,26 @@ export class SSETransport extends EventEmitter implements Transport {
         buffer = lines.pop() || ''
 
         for (const line of lines) {
-          this.parseSseLine(line)
+          const result = this.parseSseLine(line, eventType, eventData)
+          if (result) {
+            eventType = result.eventType
+            eventData = result.eventData
+
+            // If we completed an event, process it
+            if (result.complete && eventData) {
+              this.handleSseData(eventData, eventType)
+              eventData = ''
+              eventType = ''
+            }
+          }
         }
       }
     } catch (error) {
       if (!this.intentionallyClosed) {
-        const transportError: TransportErrorEvent = {
-          error: error as Error,
-          recoverable: true,
-        }
-        this.emit('error', transportError)
+        this.handleError(error as Error)
 
         if (this.config.reconnect && this.shouldReconnect()) {
-          // Schedule reconnection asynchronously (don't await)
-          this.scheduleReconnect().catch(() => {
-            // Ignore errors - they're already handled
-          })
+          await this.scheduleReconnect()
         }
       }
     }
@@ -147,70 +161,140 @@ export class SSETransport extends EventEmitter implements Transport {
 
   /**
    * Parse individual SSE line
+   * Returns updated event state and completion flag
    */
-  private parseSseLine(line: string): void {
-    if (!line.trim() || line.startsWith(':')) {
-      return
+  private parseSseLine(
+    line: string,
+    currentEventType: string,
+    currentEventData: string
+  ): { eventType: string; eventData: string; complete: boolean } | null {
+    // Empty line signals end of event
+    if (!line.trim()) {
+      return {
+        eventType: currentEventType,
+        eventData: currentEventData,
+        complete: true,
+      }
+    }
+
+    // Comment line
+    if (line.startsWith(':')) {
+      return null
     }
 
     const colonIndex = line.indexOf(':')
     if (colonIndex === -1) {
-      return
+      return null
     }
 
     const field = line.substring(0, colonIndex).trim()
     const value = line.substring(colonIndex + 1).trim()
 
-    if (field === 'data') {
-      this.handleSseData(value)
+    switch (field) {
+      case 'event':
+        return {
+          eventType: value,
+          eventData: currentEventData,
+          complete: false,
+        }
+
+      case 'data':
+        // Append data (SSE allows multiple data lines)
+        const newData = currentEventData ? `${currentEventData}\n${value}` : value
+        return {
+          eventType: currentEventType,
+          eventData: newData,
+          complete: false,
+        }
+
+      case 'id':
+        // Store event ID for resumption
+        this.lastEventId = value
+        return {
+          eventType: currentEventType,
+          eventData: currentEventData,
+          complete: false,
+        }
+
+      case 'retry':
+        // Server suggests retry interval (in milliseconds)
+        const retryMs = parseInt(value, 10)
+        if (!isNaN(retryMs)) {
+          this.config.reconnectDelay = retryMs
+          this.log(`Server set retry interval to ${retryMs}ms`)
+        }
+        return {
+          eventType: currentEventType,
+          eventData: currentEventData,
+          complete: false,
+        }
+
+      default:
+        return null
     }
-    // Handle other SSE fields (event, id, retry) if needed in the future
   }
 
   /**
-   * Handle SSE data field
+   * Handle SSE data field with buffering
    */
-  private handleSseData(data: string): void {
+  private handleSseData(data: string, eventType?: string): void {
+    const startTime = Date.now()
+
     // Check for [DONE] signal (OpenAI convention)
     if (data === '[DONE]') {
+      this.log('Received [DONE] signal')
       this.emit('done')
       return
     }
 
     try {
       const parsed = JSON.parse(data)
-      this.emit('event', parsed as TransportEvent)
+
+      // Add event type to parsed data if specified
+      const event: TransportEvent = eventType
+        ? { ...parsed, __eventType: eventType }
+        : parsed
+
+      // Buffer the message (handles backpressure)
+      this.bufferMessage(event)
+
+      this.trackLatency(Date.now() - startTime)
     } catch (error) {
-      // Silently ignore malformed JSON to match test expectations
-      const transportError: TransportErrorEvent = {
-        error: new Error(`Failed to parse SSE data: ${data}`),
-        recoverable: true,
-      }
-      this.emit('error', transportError)
+      // Silently handle malformed JSON but emit error event
+      this.handleError(new Error(`Failed to parse SSE data: ${data}`))
     }
   }
 
   /**
    * Send data through the transport
+   * For SSE, we send data through a new request
    */
   async send(data: any): Promise<void> {
     if (this.state !== 'connected') {
       throw new Error('Transport is not connected')
     }
 
-    // For SSE, we send data through the initial request
-    // This method allows re-sending if needed
-    const headers: HeadersInit = {
-      'Accept': 'text/event-stream',
-      'Content-Type': 'application/json',
-      ...this.config.headers,
-    }
+    const startTime = Date.now()
 
-    await fetch(this.config.endpoint, {
-      method: 'POST',
-      headers,
-      body: JSON.stringify(data),
-    })
+    try {
+      const headers: HeadersInit = {
+        'Accept': 'text/event-stream',
+        'Content-Type': 'application/json',
+        ...this.config.headers,
+      }
+
+      await fetch(this.config.endpoint, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify(data),
+      })
+
+      this.messagesSent++
+      this.trackLatency(Date.now() - startTime)
+    } catch (error) {
+      this.handleError(error as Error)
+      throw error
+    }
   }
 
   /**
@@ -226,7 +310,9 @@ export class SSETransport extends EventEmitter implements Transport {
     }
 
     if (this.reader) {
-      this.reader.cancel()
+      this.reader.cancel().catch(() => {
+        // Ignore cancellation errors
+      })
       this.reader = undefined
     }
 
@@ -235,56 +321,15 @@ export class SSETransport extends EventEmitter implements Transport {
       this.abortController = undefined
     }
 
+    this.messageBuffer.clear()
     this.emit('closed')
+    this.log('Connection closed')
   }
 
   /**
-   * Get current transport state
+   * Get last event ID for resumption
    */
-  getState(): TransportState {
-    return this.state
-  }
-
-  /**
-   * Check if should attempt reconnection
-   */
-  private shouldReconnect(): boolean {
-    const maxAttempts = this.config.maxReconnectAttempts ?? 3
-    return this.reconnectAttempt < maxAttempts
-  }
-
-  /**
-   * Schedule reconnection with exponential backoff
-   */
-  private async scheduleReconnect(): Promise<void> {
-    this.reconnectAttempt++
-    this.state = 'reconnecting'
-
-    const baseDelay = this.config.reconnectDelay ?? 1000
-    const multiplier = this.config.backoffMultiplier ?? 2
-    const maxDelay = this.config.maxReconnectDelay ?? 30000
-
-    const delay = Math.min(
-      baseDelay * Math.pow(multiplier, this.reconnectAttempt - 1),
-      maxDelay
-    )
-
-    const reconnectEvent: ReconnectEvent = {
-      attempt: this.reconnectAttempt,
-      delay,
-      maxAttempts: this.config.maxReconnectAttempts,
-    }
-    this.emit('reconnecting', reconnectEvent)
-
-    return new Promise((resolve) => {
-      this.reconnectTimeout = setTimeout(async () => {
-        try {
-          await this.performConnect()
-        } catch (error) {
-          // Error already handled in performConnect
-        }
-        resolve()
-      }, delay)
-    })
+  getLastEventId(): string | undefined {
+    return this.lastEventId
   }
 }

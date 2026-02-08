@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Package Integration Tests</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .test-section {
+      margin: 20px 0;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    video, canvas {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #000;
+      margin: 10px 0;
+    }
+
+    button {
+      margin: 5px;
+      padding: 10px 20px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    .status {
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 4px;
+    }
+
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+    }
+
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+    }
+
+    .status.info {
+      background-color: #d1ecf1;
+      color: #0c5460;
+    }
+
+    .metrics {
+      font-family: monospace;
+      background-color: #f5f5f5;
+      padding: 10px;
+      border-radius: 4px;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+  <h1>Video Package Integration Tests</h1>
+
+  <div class="test-section" id="screen-recording">
+    <h2>Screen Recording</h2>
+    <div id="screen-status" class="status info">Ready</div>
+    <button id="start-screen-recording">Start Screen Recording</button>
+    <button id="pause-screen-recording" disabled>Pause</button>
+    <button id="resume-screen-recording" disabled>Resume</button>
+    <button id="stop-screen-recording" disabled>Stop</button>
+    <video id="screen-playback" controls style="display: none;"></video>
+    <div id="screen-metrics" class="metrics" style="display: none;"></div>
+  </div>
+
+  <div class="test-section" id="camera-recording">
+    <h2>Camera Recording</h2>
+    <div id="camera-status" class="status info">Ready</div>
+    <button id="start-camera">Start Camera</button>
+    <button id="stop-camera" disabled>Stop Camera</button>
+    <video id="camera-preview" autoplay muted style="display: none;"></video>
+    <div id="camera-metrics" class="metrics" style="display: none;"></div>
+  </div>
+
+  <div class="test-section" id="audio-recording">
+    <h2>Audio Recording</h2>
+    <div id="audio-status" class="status info">Ready</div>
+    <button id="start-audio">Start Audio</button>
+    <button id="pause-audio" disabled>Pause</button>
+    <button id="resume-audio" disabled>Resume</button>
+    <button id="stop-audio" disabled>Stop</button>
+    <canvas id="audio-visualizer" width="600" height="100" style="display: none;"></canvas>
+    <audio id="audio-playback" controls style="display: none;"></audio>
+    <div id="audio-metrics" class="metrics" style="display: none;"></div>
+  </div>
+
+  <div class="test-section" id="stream-manipulation">
+    <h2>Stream Manipulation</h2>
+    <div id="stream-status" class="status info">Ready</div>
+    <button id="get-devices">Get Devices</button>
+    <button id="test-constraints">Test Constraints</button>
+    <button id="test-track-manipulation">Test Track Manipulation</button>
+    <div id="stream-output" style="margin-top: 10px;"></div>
+  </div>
+
+  <script type="module">
+    // Global state for test coordination
+    window.testState = {
+      screenRecorder: null,
+      cameraRecorder: null,
+      audioRecorder: null,
+      streams: [],
+      recordings: [],
+      errors: [],
+    };
+
+    // Helper to update status
+    function updateStatus(elementId, message, type = 'info') {
+      const el = document.getElementById(elementId);
+      el.textContent = message;
+      el.className = `status ${type}`;
+    }
+
+    // Helper to update metrics
+    function updateMetrics(elementId, metrics) {
+      const el = document.getElementById(elementId);
+      el.innerHTML = Object.entries(metrics)
+        .map(([key, value]) => `${key}: ${value}`)
+        .join('<br>');
+      el.style.display = 'block';
+    }
+
+    // Screen Recording Handlers
+    document.getElementById('start-screen-recording').addEventListener('click', async () => {
+      try {
+        updateStatus('screen-status', 'Starting screen recording...', 'info');
+
+        // Store recorder instance for tests to access
+        const { ScreenRecorder } = await import('/dist/index.mjs');
+        window.testState.screenRecorder = new ScreenRecorder({
+          quality: 'medium',
+          cursor: 'always',
+          audio: false,
+        });
+
+        await window.testState.screenRecorder.startRecording();
+
+        document.getElementById('start-screen-recording').disabled = true;
+        document.getElementById('pause-screen-recording').disabled = false;
+        document.getElementById('stop-screen-recording').disabled = false;
+
+        updateStatus('screen-status', 'Recording...', 'success');
+      } catch (error) {
+        updateStatus('screen-status', `Error: ${error.message}`, 'error');
+        window.testState.errors.push(error);
+      }
+    });
+
+    document.getElementById('pause-screen-recording').addEventListener('click', () => {
+      try {
+        window.testState.screenRecorder.pauseRecording();
+        document.getElementById('pause-screen-recording').disabled = true;
+        document.getElementById('resume-screen-recording').disabled = false;
+        updateStatus('screen-status', 'Paused', 'info');
+      } catch (error) {
+        updateStatus('screen-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('resume-screen-recording').addEventListener('click', () => {
+      try {
+        window.testState.screenRecorder.resumeRecording();
+        document.getElementById('pause-screen-recording').disabled = false;
+        document.getElementById('resume-screen-recording').disabled = true;
+        updateStatus('screen-status', 'Recording...', 'success');
+      } catch (error) {
+        updateStatus('screen-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('stop-screen-recording').addEventListener('click', async () => {
+      try {
+        updateStatus('screen-status', 'Stopping...', 'info');
+        const result = await window.testState.screenRecorder.stopRecording();
+
+        window.testState.recordings.push(result);
+
+        const video = document.getElementById('screen-playback');
+        video.src = result.url;
+        video.style.display = 'block';
+
+        updateMetrics('screen-metrics', {
+          duration: `${result.duration}ms`,
+          size: `${(result.size / 1024 / 1024).toFixed(2)}MB`,
+          type: result.blob.type,
+        });
+
+        document.getElementById('start-screen-recording').disabled = false;
+        document.getElementById('pause-screen-recording').disabled = true;
+        document.getElementById('resume-screen-recording').disabled = true;
+        document.getElementById('stop-screen-recording').disabled = true;
+
+        updateStatus('screen-status', 'Recording complete', 'success');
+      } catch (error) {
+        updateStatus('screen-status', `Error: ${error.message}`, 'error');
+        window.testState.errors.push(error);
+      }
+    });
+
+    // Camera Handlers
+    document.getElementById('start-camera').addEventListener('click', async () => {
+      try {
+        updateStatus('camera-status', 'Starting camera...', 'info');
+
+        const { CameraRecorder } = await import('/dist/index.mjs');
+        window.testState.cameraRecorder = new CameraRecorder({
+          resolution: '720p',
+          audio: false,
+        });
+
+        const stream = await window.testState.cameraRecorder.getStream();
+        window.testState.streams.push(stream);
+
+        const video = document.getElementById('camera-preview');
+        video.srcObject = stream;
+        video.style.display = 'block';
+
+        const settings = window.testState.cameraRecorder.getSettings();
+        updateMetrics('camera-metrics', {
+          width: settings.width,
+          height: settings.height,
+          frameRate: settings.frameRate || 'N/A',
+          facingMode: settings.facingMode || 'N/A',
+        });
+
+        document.getElementById('start-camera').disabled = true;
+        document.getElementById('stop-camera').disabled = false;
+
+        updateStatus('camera-status', 'Camera active', 'success');
+      } catch (error) {
+        updateStatus('camera-status', `Error: ${error.message}`, 'error');
+        window.testState.errors.push(error);
+      }
+    });
+
+    document.getElementById('stop-camera').addEventListener('click', () => {
+      try {
+        window.testState.cameraRecorder.stop();
+
+        const video = document.getElementById('camera-preview');
+        video.srcObject = null;
+        video.style.display = 'none';
+
+        document.getElementById('start-camera').disabled = false;
+        document.getElementById('stop-camera').disabled = true;
+
+        updateStatus('camera-status', 'Camera stopped', 'info');
+      } catch (error) {
+        updateStatus('camera-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    // Audio Handlers
+    let audioVisualizerInterval;
+
+    document.getElementById('start-audio').addEventListener('click', async () => {
+      try {
+        updateStatus('audio-status', 'Starting audio...', 'info');
+
+        const { AudioRecorder } = await import('/dist/index.mjs');
+        window.testState.audioRecorder = new AudioRecorder();
+
+        await window.testState.audioRecorder.startRecording({
+          noiseCancellation: true,
+          echoCancellation: true,
+        });
+
+        const canvas = document.getElementById('audio-visualizer');
+        canvas.style.display = 'block';
+        const ctx = canvas.getContext('2d');
+
+        // Audio level visualization
+        audioVisualizerInterval = setInterval(() => {
+          const level = window.testState.audioRecorder.getAudioLevel();
+
+          ctx.fillStyle = '#f0f0f0';
+          ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+          ctx.fillStyle = '#4CAF50';
+          ctx.fillRect(0, 0, canvas.width * level, canvas.height);
+
+          updateMetrics('audio-metrics', {
+            level: level.toFixed(3),
+            isRecording: window.testState.audioRecorder.isRecording(),
+            isPaused: window.testState.audioRecorder.isPaused(),
+          });
+        }, 100);
+
+        document.getElementById('start-audio').disabled = true;
+        document.getElementById('pause-audio').disabled = false;
+        document.getElementById('stop-audio').disabled = false;
+
+        updateStatus('audio-status', 'Recording...', 'success');
+      } catch (error) {
+        updateStatus('audio-status', `Error: ${error.message}`, 'error');
+        window.testState.errors.push(error);
+      }
+    });
+
+    document.getElementById('pause-audio').addEventListener('click', () => {
+      try {
+        window.testState.audioRecorder.pauseRecording();
+        document.getElementById('pause-audio').disabled = true;
+        document.getElementById('resume-audio').disabled = false;
+        updateStatus('audio-status', 'Paused', 'info');
+      } catch (error) {
+        updateStatus('audio-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('resume-audio').addEventListener('click', () => {
+      try {
+        window.testState.audioRecorder.resumeRecording();
+        document.getElementById('pause-audio').disabled = false;
+        document.getElementById('resume-audio').disabled = true;
+        updateStatus('audio-status', 'Recording...', 'success');
+      } catch (error) {
+        updateStatus('audio-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('stop-audio').addEventListener('click', async () => {
+      try {
+        clearInterval(audioVisualizerInterval);
+        updateStatus('audio-status', 'Stopping...', 'info');
+
+        const blob = await window.testState.audioRecorder.stopRecording();
+        window.testState.recordings.push({ blob, type: 'audio' });
+
+        const audio = document.getElementById('audio-playback');
+        audio.src = URL.createObjectURL(blob);
+        audio.style.display = 'block';
+
+        document.getElementById('start-audio').disabled = false;
+        document.getElementById('pause-audio').disabled = true;
+        document.getElementById('resume-audio').disabled = true;
+        document.getElementById('stop-audio').disabled = true;
+
+        updateStatus('audio-status', 'Recording complete', 'success');
+      } catch (error) {
+        updateStatus('audio-status', `Error: ${error.message}`, 'error');
+        window.testState.errors.push(error);
+      }
+    });
+
+    // Stream Manipulation Handlers
+    document.getElementById('get-devices').addEventListener('click', async () => {
+      try {
+        const devices = await navigator.mediaDevices.enumerateDevices();
+
+        const output = document.getElementById('stream-output');
+        output.innerHTML = '<h3>Devices:</h3>' + devices.map(device =>
+          `<div><strong>${device.kind}</strong>: ${device.label || 'Unknown'} (${device.deviceId.substring(0, 8)}...)</div>`
+        ).join('');
+
+        window.testState.devices = devices;
+        updateStatus('stream-status', `Found ${devices.length} devices`, 'success');
+      } catch (error) {
+        updateStatus('stream-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('test-constraints').addEventListener('click', async () => {
+      try {
+        const constraints = {
+          video: {
+            width: { min: 640, ideal: 1280, max: 1920 },
+            height: { min: 480, ideal: 720, max: 1080 },
+            frameRate: { ideal: 30 },
+          },
+          audio: {
+            echoCancellation: true,
+            noiseSuppression: true,
+          }
+        };
+
+        const stream = await navigator.mediaDevices.getUserMedia(constraints);
+        window.testState.streams.push(stream);
+
+        const videoTrack = stream.getVideoTracks()[0];
+        const settings = videoTrack.getSettings();
+
+        const output = document.getElementById('stream-output');
+        output.innerHTML = '<h3>Constraint Test Results:</h3>' +
+          `<div>Width: ${settings.width}</div>` +
+          `<div>Height: ${settings.height}</div>` +
+          `<div>Frame Rate: ${settings.frameRate || 'N/A'}</div>` +
+          `<div>Aspect Ratio: ${settings.aspectRatio || 'N/A'}</div>`;
+
+        // Cleanup
+        stream.getTracks().forEach(track => track.stop());
+
+        updateStatus('stream-status', 'Constraint test complete', 'success');
+      } catch (error) {
+        updateStatus('stream-status', `Error: ${error.message}`, 'error');
+      }
+    });
+
+    document.getElementById('test-track-manipulation').addEventListener('click', async () => {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
+        });
+
+        window.testState.streams.push(stream);
+
+        const videoTracks = stream.getVideoTracks();
+        const audioTracks = stream.getAudioTracks();
+
+        // Test track manipulation
+        const results = [];
+
+        // Enable/disable tracks
+        videoTracks[0].enabled = false;
+        results.push(`Video track disabled: ${!videoTracks[0].enabled}`);
+
+        videoTracks[0].enabled = true;
+        results.push(`Video track re-enabled: ${videoTracks[0].enabled}`);
+
+        // Test muting
+        audioTracks[0].enabled = false;
+        results.push(`Audio track muted: ${!audioTracks[0].enabled}`);
+
+        // Test constraints
+        await videoTracks[0].applyConstraints({
+          width: { ideal: 640 },
+          height: { ideal: 480 },
+        });
+
+        const newSettings = videoTracks[0].getSettings();
+        results.push(`New resolution: ${newSettings.width}x${newSettings.height}`);
+
+        const output = document.getElementById('stream-output');
+        output.innerHTML = '<h3>Track Manipulation Results:</h3>' +
+          results.map(r => `<div>${r}</div>`).join('');
+
+        // Cleanup
+        stream.getTracks().forEach(track => track.stop());
+
+        updateStatus('stream-status', 'Track manipulation test complete', 'success');
+      } catch (error) {
+        updateStatus('stream-status', `Error: ${error.message}`, 'error');
+      }
+    });
+  </script>
+</body>
+</html>

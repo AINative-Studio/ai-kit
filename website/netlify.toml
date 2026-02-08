@@ -1,0 +1,75 @@
+# Netlify configuration for AI Kit marketing site
+# Implements strict Content Security Policy and security headers
+
+[build]
+  publish = "."
+  command = "echo 'No build step required - static site'"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # Content Security Policy - Strict security headers
+    Content-Security-Policy = """
+      default-src 'self'; \
+      script-src 'self' https://fonts.googleapis.com; \
+      style-src 'self' https://fonts.googleapis.com; \
+      font-src 'self' https://fonts.gstatic.com; \
+      img-src 'self' data: https:; \
+      connect-src 'self'; \
+      frame-ancestors 'none'; \
+      base-uri 'self'; \
+      form-action 'self'; \
+      upgrade-insecure-requests
+    """
+
+    # X-Frame-Options - Prevent clickjacking
+    X-Frame-Options = "DENY"
+
+    # X-Content-Type-Options - Prevent MIME sniffing
+    X-Content-Type-Options = "nosniff"
+
+    # Referrer-Policy - Control referrer information
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+    # Permissions-Policy - Control browser features
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), payment=(), usb=(), magnetometer=(), gyroscope=(), accelerometer=()"
+
+    # Strict-Transport-Security - Force HTTPS (31536000 seconds = 1 year)
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+
+    # X-XSS-Protection - Legacy XSS protection (for older browsers)
+    X-XSS-Protection = "1; mode=block"
+
+    # Cache-Control for static assets
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    # Don't cache HTML files
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "text/css; charset=utf-8"
+
+[[headers]]
+  for = "/*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Content-Type = "application/javascript; charset=utf-8"
+
+# Redirect rules
+[[redirects]]
+  from = "/index.html"
+  to = "/"
+  status = 301
+  force = true
+
+# 404 handling
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 404
