@@ -1,0 +1,2576 @@
+{
+  "summary": {
+    "totalFiles": 156,
+    "totalCovered": 87,
+    "totalUncovered": 69,
+    "overallCoverage": 55.769230769230774,
+    "timestamp": "2026-02-08T02:25:15.024Z"
+  },
+  "packages": [
+    {
+      "name": "auth",
+      "totalFiles": 0,
+      "coveredFiles": 0,
+      "uncoveredFiles": 0,
+      "coverage": 0,
+      "files": []
+    },
+    {
+      "name": "community",
+      "totalFiles": 0,
+      "coveredFiles": 0,
+      "uncoveredFiles": 0,
+      "coverage": 0,
+      "files": []
+    },
+    {
+      "name": "design-system",
+      "totalFiles": 0,
+      "coveredFiles": 0,
+      "uncoveredFiles": 0,
+      "coverage": 0,
+      "files": []
+    },
+    {
+      "name": "rlhf",
+      "totalFiles": 0,
+      "coveredFiles": 0,
+      "uncoveredFiles": 0,
+      "coverage": 0,
+      "files": []
+    },
+    {
+      "name": "zerodb",
+      "totalFiles": 0,
+      "coveredFiles": 0,
+      "uncoveredFiles": 0,
+      "coverage": 0,
+      "files": []
+    },
+    {
+      "name": "observability",
+      "totalFiles": 21,
+      "coveredFiles": 6,
+      "uncoveredFiles": 15,
+      "coverage": 28.57142857142857,
+      "files": [
+        {
+          "package": "observability",
+          "file": "AlertManager.ts",
+          "relativePath": "src/alerts/AlertManager.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/alerts/AlertManager.test.ts"
+          ],
+          "linesOfCode": 531,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "InstrumentationManager.ts",
+          "relativePath": "src/instrumentation/InstrumentationManager.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/instrumentation/InstrumentationManager.test.ts"
+          ],
+          "linesOfCode": 894,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "interceptors.ts",
+          "relativePath": "src/instrumentation/interceptors.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/instrumentation/interceptors.test.ts"
+          ],
+          "linesOfCode": 492,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "QueryMonitor.ts",
+          "relativePath": "src/monitoring/QueryMonitor.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/monitoring/QueryMonitor.test.ts"
+          ],
+          "linesOfCode": 938,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "CostAnalysis.tsx",
+          "relativePath": "src/react/components/CostAnalysis.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 77,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "ModelComparison.tsx",
+          "relativePath": "src/react/components/ModelComparison.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 134,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "Overview.tsx",
+          "relativePath": "src/react/components/Overview.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 86,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "UsageMetrics.tsx",
+          "relativePath": "src/react/components/UsageMetrics.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 99,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "ReportGenerator.ts",
+          "relativePath": "src/reporting/ReportGenerator.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/reporting/ReportGenerator.test.ts"
+          ],
+          "linesOfCode": 708,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "UsageTrackerAdapter.ts",
+          "relativePath": "src/reporting/UsageTrackerAdapter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 27,
+          "complexity": "low",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "CSVFormatter.ts",
+          "relativePath": "src/reporting/formatters/CSVFormatter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 304,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "HTMLFormatter.ts",
+          "relativePath": "src/reporting/formatters/HTMLFormatter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 592,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "JSONFormatter.ts",
+          "relativePath": "src/reporting/formatters/JSONFormatter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 12,
+          "complexity": "low",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "MarkdownFormatter.ts",
+          "relativePath": "src/reporting/formatters/MarkdownFormatter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 350,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "FileStorage.ts",
+          "relativePath": "src/tracking/FileStorage.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 84,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "InMemoryStorage.ts",
+          "relativePath": "src/tracking/InMemoryStorage.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 64,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "MemoryStorage.ts",
+          "relativePath": "src/tracking/MemoryStorage.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 56,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "UsageTracker.ts",
+          "relativePath": "src/tracking/UsageTracker.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/tracking/UsageTracker.test.ts"
+          ],
+          "linesOfCode": 266,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "pricing.ts",
+          "relativePath": "src/tracking/pricing.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 266,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "utils.ts",
+          "relativePath": "src/tracking/utils.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 357,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "observability",
+          "file": "id.ts",
+          "relativePath": "src/utils/id.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 32,
+          "complexity": "low",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "testing",
+      "totalFiles": 17,
+      "coveredFiles": 5,
+      "uncoveredFiles": 12,
+      "coverage": 29.411764705882355,
+      "files": [
+        {
+          "package": "testing",
+          "file": "conversations.ts",
+          "relativePath": "src/fixtures/conversations.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 191,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "usageRecords.ts",
+          "relativePath": "src/fixtures/usageRecords.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 172,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "networkHelpers.ts",
+          "relativePath": "src/helpers/networkHelpers.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 180,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "streamHelpers.ts",
+          "relativePath": "src/helpers/streamHelpers.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 279,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "testMessages.ts",
+          "relativePath": "src/helpers/testMessages.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/helpers/testMessages.test.ts"
+          ],
+          "linesOfCode": 117,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "toHaveCost.ts",
+          "relativePath": "src/matchers/toHaveCost.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/matchers/toHaveCost.test.ts"
+          ],
+          "linesOfCode": 131,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "toHaveError.ts",
+          "relativePath": "src/matchers/toHaveError.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 160,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "toHaveStreamed.ts",
+          "relativePath": "src/matchers/toHaveStreamed.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/matchers/toHaveStreamed.test.ts"
+          ],
+          "linesOfCode": 122,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "toMatchTokenCount.ts",
+          "relativePath": "src/matchers/toMatchTokenCount.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 161,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "MockAIStream.ts",
+          "relativePath": "src/mocks/MockAIStream.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/mocks/MockAIStream.test.ts"
+          ],
+          "linesOfCode": 260,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "MockAgentExecutor.ts",
+          "relativePath": "src/mocks/MockAgentExecutor.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 363,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "MockLLMProvider.ts",
+          "relativePath": "src/mocks/MockLLMProvider.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/mocks/MockLLMProvider.test.ts"
+          ],
+          "linesOfCode": 203,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "MockUsageTracker.ts",
+          "relativePath": "src/mocks/MockUsageTracker.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 397,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "assertions.ts",
+          "relativePath": "src/test-utils/assertions.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 162,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "fixtures.ts",
+          "relativePath": "src/test-utils/fixtures.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 314,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "helpers.ts",
+          "relativePath": "src/test-utils/helpers.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 383,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "testing",
+          "file": "setup.ts",
+          "relativePath": "src/test-utils/setup.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 131,
+          "complexity": "medium",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "react",
+      "totalFiles": 16,
+      "coveredFiles": 7,
+      "uncoveredFiles": 9,
+      "coverage": 43.75,
+      "files": [
+        {
+          "package": "react",
+          "file": "AgentResponse.tsx",
+          "relativePath": "src/components/AgentResponse.tsx",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/components/AgentResponse.test.tsx"
+          ],
+          "linesOfCode": 457,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "CodeBlock.tsx",
+          "relativePath": "src/components/CodeBlock.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 131,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "MarkdownRenderer.tsx",
+          "relativePath": "src/components/MarkdownRenderer.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 262,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "ProgressBar.tsx",
+          "relativePath": "src/components/ProgressBar.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 220,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "StreamingIndicator.tsx",
+          "relativePath": "src/components/StreamingIndicator.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 174,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "StreamingMessage.tsx",
+          "relativePath": "src/components/StreamingMessage.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 388,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "StreamingToolResult.tsx",
+          "relativePath": "src/components/StreamingToolResult.tsx",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/components/StreamingToolResult.test.tsx"
+          ],
+          "linesOfCode": 504,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "ToolResult.tsx",
+          "relativePath": "src/components/ToolResult.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 301,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "UnknownTool.tsx",
+          "relativePath": "src/components/UnknownTool.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 298,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "UsageDashboard.tsx",
+          "relativePath": "src/components/UsageDashboard.tsx",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/components/UsageDashboard.test.tsx"
+          ],
+          "linesOfCode": 1060,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "VideoRecorder.tsx",
+          "relativePath": "src/components/VideoRecorder/VideoRecorder.tsx",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 229,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "useConversation.ts",
+          "relativePath": "src/hooks/useConversation.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/hooks/useConversation.test.tsx"
+          ],
+          "linesOfCode": 355,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "react",
+          "file": "useScreenRecording.ts",
+          "relativePath": "src/hooks/useScreenRecording.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 168,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "react",
+          "file": "ComponentRegistry.ts",
+          "relativePath": "src/registry/ComponentRegistry.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/registry/ComponentRegistry.test.tsx"
+          ],
+          "linesOfCode": 384,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "useComponentRegistry.ts",
+          "relativePath": "src/registry/useComponentRegistry.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/registry/useComponentRegistry.test.tsx"
+          ],
+          "linesOfCode": 262,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "react",
+          "file": "useAIStream.ts",
+          "relativePath": "src/useAIStream.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/useAIStream.test.tsx"
+          ],
+          "linesOfCode": 122,
+          "complexity": "medium",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "video",
+      "totalFiles": 9,
+      "coveredFiles": 5,
+      "uncoveredFiles": 4,
+      "coverage": 55.55555555555556,
+      "files": [
+        {
+          "package": "video",
+          "file": "highlight-detector.ts",
+          "relativePath": "src/processing/highlight-detector.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 570,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "video",
+          "file": "text-formatter.ts",
+          "relativePath": "src/processing/text-formatter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 264,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "video",
+          "file": "transcription.ts",
+          "relativePath": "src/processing/transcription.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/processing/__tests__/transcription.test.ts"
+          ],
+          "linesOfCode": 274,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "video",
+          "file": "audio-recorder.ts",
+          "relativePath": "src/recording/audio-recorder.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/recording/__tests__/audio-recorder.test.ts"
+          ],
+          "linesOfCode": 172,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "video",
+          "file": "camera-recorder.ts",
+          "relativePath": "src/recording/camera-recorder.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/recording/__tests__/camera-recorder.test.ts"
+          ],
+          "linesOfCode": 183,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "video",
+          "file": "noise-processor.ts",
+          "relativePath": "src/recording/noise-processor.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/recording/__tests__/noise-processor.test.ts"
+          ],
+          "linesOfCode": 88,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "video",
+          "file": "pip-compositor.ts",
+          "relativePath": "src/recording/pip-compositor.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 230,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "video",
+          "file": "pip-recorder.ts",
+          "relativePath": "src/recording/pip-recorder.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 303,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "video",
+          "file": "screen-recorder.ts",
+          "relativePath": "src/recording/screen-recorder.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/recording/__tests__/screen-recorder.test.ts"
+          ],
+          "linesOfCode": 458,
+          "complexity": "high",
+          "criticalPath": true
+        }
+      ]
+    },
+    {
+      "name": "core",
+      "totalFiles": 50,
+      "coveredFiles": 30,
+      "uncoveredFiles": 20,
+      "coverage": 60,
+      "files": [
+        {
+          "package": "core",
+          "file": "Agent.ts",
+          "relativePath": "src/agents/Agent.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/agents/Agent.test.ts"
+          ],
+          "linesOfCode": 415,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "AgentExecutor.ts",
+          "relativePath": "src/agents/AgentExecutor.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/agents/AgentExecutor.test.ts"
+          ],
+          "linesOfCode": 610,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "AgentSwarm.ts",
+          "relativePath": "src/agents/AgentSwarm.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/agents/AgentSwarm.test.ts"
+          ],
+          "linesOfCode": 831,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "StreamingAgentExecutor.ts",
+          "relativePath": "src/agents/StreamingAgentExecutor.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/agents/StreamingAgentExecutor.test.ts"
+          ],
+          "linesOfCode": 654,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "AnthropicProvider.ts",
+          "relativePath": "src/agents/llm/AnthropicProvider.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 337,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "LLMProvider.ts",
+          "relativePath": "src/agents/llm/LLMProvider.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 60,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "OpenAIProvider.ts",
+          "relativePath": "src/agents/llm/OpenAIProvider.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 285,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "AINativeAuthProvider.ts",
+          "relativePath": "src/auth/AINativeAuthProvider.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/auth/AINativeAuthProvider.test.ts"
+          ],
+          "linesOfCode": 770,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "beta-feedback.ts",
+          "relativePath": "src/beta/beta-feedback.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/beta/__tests__/beta-feedback.test.ts"
+          ],
+          "linesOfCode": 101,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "beta-signup.ts",
+          "relativePath": "src/beta/beta-signup.ts",
+          "hasTests": true,
+          "testFiles": [
+            "src/beta/__tests__/beta-signup.test.ts"
+          ],
+          "linesOfCode": 153,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "browser.ts",
+          "relativePath": "src/browser.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 218,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "ContextManager.ts",
+          "relativePath": "src/context/ContextManager.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/context/ContextManager.test.ts"
+          ],
+          "linesOfCode": 493,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "TokenCounter.ts",
+          "relativePath": "src/context/TokenCounter.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/context/TokenCounter.test.ts"
+          ],
+          "linesOfCode": 359,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "DesignConstraints.ts",
+          "relativePath": "src/design/DesignConstraints.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/design/DesignConstraints.test.ts"
+          ],
+          "linesOfCode": 1251,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "templates.ts",
+          "relativePath": "src/design/templates.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 673,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "FactExtractor.ts",
+          "relativePath": "src/memory/FactExtractor.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/memory/FactExtractor.test.ts"
+          ],
+          "linesOfCode": 253,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "InMemoryMemoryStore.ts",
+          "relativePath": "src/memory/InMemoryMemoryStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 303,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "MemoryStore.ts",
+          "relativePath": "src/memory/MemoryStore.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/memory/MemoryStore.test.ts"
+          ],
+          "linesOfCode": 290,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "RedisMemoryStore.ts",
+          "relativePath": "src/memory/RedisMemoryStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 381,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "UserMemory.ts",
+          "relativePath": "src/memory/UserMemory.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/memory/UserMemory.test.ts"
+          ],
+          "linesOfCode": 536,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "ZeroDBMemoryStore.ts",
+          "relativePath": "src/memory/ZeroDBMemoryStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 384,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "RLHFInstrumentation.ts",
+          "relativePath": "src/rlhf/RLHFInstrumentation.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/rlhf/RLHFInstrumentation.test.ts"
+          ],
+          "linesOfCode": 759,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "RLHFLogger.ts",
+          "relativePath": "src/rlhf/RLHFLogger.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/rlhf/RLHFLogger.test.ts"
+          ],
+          "linesOfCode": 677,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "LocalStorage.ts",
+          "relativePath": "src/rlhf/storage/LocalStorage.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 445,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "MemoryStorage.ts",
+          "relativePath": "src/rlhf/storage/MemoryStorage.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 377,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "ZeroDBStorage.ts",
+          "relativePath": "src/rlhf/storage/ZeroDBStorage.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 354,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "SemanticSearch.ts",
+          "relativePath": "src/search/SemanticSearch.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/search/SemanticSearch.test.ts"
+          ],
+          "linesOfCode": 572,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "server.ts",
+          "relativePath": "src/server.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 32,
+          "complexity": "low",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "InMemorySessionStore.ts",
+          "relativePath": "src/session/InMemorySessionStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 293,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "RedisSessionStore.ts",
+          "relativePath": "src/session/RedisSessionStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 317,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "SessionManager.ts",
+          "relativePath": "src/session/SessionManager.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/session/SessionManager.test.ts"
+          ],
+          "linesOfCode": 563,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "ZeroDBSessionStore.ts",
+          "relativePath": "src/session/ZeroDBSessionStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 378,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "ConversationStore.ts",
+          "relativePath": "src/store/ConversationStore.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 157,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "MemoryStore.ts",
+          "relativePath": "src/store/MemoryStore.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/store/MemoryStore.test.ts"
+          ],
+          "linesOfCode": 234,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "RedisStore.ts",
+          "relativePath": "src/store/RedisStore.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/store/RedisStore.test.ts"
+          ],
+          "linesOfCode": 269,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "ZeroDBStore.ts",
+          "relativePath": "src/store/ZeroDBStore.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/store/ZeroDBStore.test.ts"
+          ],
+          "linesOfCode": 337,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "createStore.ts",
+          "relativePath": "src/store/createStore.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/store/createStore.test.ts"
+          ],
+          "linesOfCode": 198,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "AIStream.ts",
+          "relativePath": "src/streaming/AIStream.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/streaming/AIStream.test.ts"
+          ],
+          "linesOfCode": 334,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "StreamingResponse.ts",
+          "relativePath": "src/streaming/StreamingResponse.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/streaming/StreamingResponse.test.ts"
+          ],
+          "linesOfCode": 326,
+          "complexity": "high",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "AnthropicAdapter.ts",
+          "relativePath": "src/streaming/adapters/AnthropicAdapter.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/streaming/adapters/AnthropicAdapter.test.ts"
+          ],
+          "linesOfCode": 173,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "OpenAIAdapter.ts",
+          "relativePath": "src/streaming/adapters/OpenAIAdapter.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/streaming/adapters/OpenAIAdapter.test.ts"
+          ],
+          "linesOfCode": 124,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "ProviderAdapter.ts",
+          "relativePath": "src/streaming/adapters/ProviderAdapter.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 60,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "token-counter.ts",
+          "relativePath": "src/streaming/token-counter.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/streaming/token-counter.test.ts"
+          ],
+          "linesOfCode": 130,
+          "complexity": "medium",
+          "criticalPath": true
+        },
+        {
+          "package": "core",
+          "file": "ConversationSummarizer.ts",
+          "relativePath": "src/summarization/ConversationSummarizer.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/summarization/ConversationSummarizer.test.ts"
+          ],
+          "linesOfCode": 745,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "extractive.ts",
+          "relativePath": "src/summarization/extractive.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/summarization/extractive.test.ts"
+          ],
+          "linesOfCode": 291,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "utils.ts",
+          "relativePath": "src/types/utils.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 706,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "RateLimiter.ts",
+          "relativePath": "src/utils/RateLimiter.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/utils/RateLimiter.test.ts"
+          ],
+          "linesOfCode": 629,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "id.ts",
+          "relativePath": "src/utils/id.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 21,
+          "complexity": "low",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "QueryBuilder.ts",
+          "relativePath": "src/zerodb/QueryBuilder.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 251,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "core",
+          "file": "ZeroDBClient.ts",
+          "relativePath": "src/zerodb/ZeroDBClient.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/zerodb/ZeroDBClient.test.ts"
+          ],
+          "linesOfCode": 538,
+          "complexity": "high",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "cli",
+      "totalFiles": 23,
+      "coveredFiles": 14,
+      "uncoveredFiles": 9,
+      "coverage": 60.86956521739131,
+      "files": [
+        {
+          "package": "cli",
+          "file": "add.ts",
+          "relativePath": "src/commands/add.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/add.test.ts"
+          ],
+          "linesOfCode": 180,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "build.ts",
+          "relativePath": "src/commands/build.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/build.test.ts"
+          ],
+          "linesOfCode": 148,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "create.ts",
+          "relativePath": "src/commands/create.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/create.test.ts"
+          ],
+          "linesOfCode": 294,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "deploy.ts",
+          "relativePath": "src/commands/deploy.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/deploy.test.ts"
+          ],
+          "linesOfCode": 242,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "dev.ts",
+          "relativePath": "src/commands/dev.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/dev.test.ts"
+          ],
+          "linesOfCode": 154,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "prompt.ts",
+          "relativePath": "src/commands/prompt.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/prompt.test.ts"
+          ],
+          "linesOfCode": 508,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "test.ts",
+          "relativePath": "src/commands/test.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/test.test.ts"
+          ],
+          "linesOfCode": 132,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "upgrade.ts",
+          "relativePath": "src/commands/upgrade.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/commands/upgrade.test.ts"
+          ],
+          "linesOfCode": 237,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "loader.ts",
+          "relativePath": "src/config/loader.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/config/loader.test.ts"
+          ],
+          "linesOfCode": 78,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "batch.ts",
+          "relativePath": "src/prompt/batch.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 367,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "comparator.ts",
+          "relativePath": "src/prompt/comparator.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 365,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "history.ts",
+          "relativePath": "src/prompt/history.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 449,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "optimizer.ts",
+          "relativePath": "src/prompt/optimizer.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 451,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "tester.ts",
+          "relativePath": "src/prompt/tester.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 414,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "utils.ts",
+          "relativePath": "src/prompt/utils.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 222,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "registry.ts",
+          "relativePath": "src/templates/registry.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/templates/registry.test.ts"
+          ],
+          "linesOfCode": 482,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "docker.ts",
+          "relativePath": "src/utils/docker.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 75,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "generators.ts",
+          "relativePath": "src/utils/generators.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/utils/generators.test.ts"
+          ],
+          "linesOfCode": 416,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "git.ts",
+          "relativePath": "src/utils/git.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/utils/git.test.ts"
+          ],
+          "linesOfCode": 126,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "package-manager.ts",
+          "relativePath": "src/utils/package-manager.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/utils/package-manager.test.ts"
+          ],
+          "linesOfCode": 156,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "template-generator.ts",
+          "relativePath": "src/utils/template-generator.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 1098,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "validation.ts",
+          "relativePath": "src/utils/validation.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/utils/validation.test.ts"
+          ],
+          "linesOfCode": 121,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "cli",
+          "file": "vscode.ts",
+          "relativePath": "src/utils/vscode.ts",
+          "hasTests": false,
+          "testFiles": [],
+          "linesOfCode": 80,
+          "complexity": "medium",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "nextjs",
+      "totalFiles": 6,
+      "coveredFiles": 6,
+      "uncoveredFiles": 0,
+      "coverage": 100,
+      "files": [
+        {
+          "package": "nextjs",
+          "file": "compose.ts",
+          "relativePath": "src/middleware/compose.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/middleware/compose.test.ts"
+          ],
+          "linesOfCode": 213,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "nextjs",
+          "file": "withAuth.ts",
+          "relativePath": "src/middleware/withAuth.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/middleware/withAuth.test.ts"
+          ],
+          "linesOfCode": 254,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "nextjs",
+          "file": "withCORS.ts",
+          "relativePath": "src/middleware/withCORS.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/middleware/withCORS.test.ts"
+          ],
+          "linesOfCode": 318,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "nextjs",
+          "file": "withLogging.ts",
+          "relativePath": "src/middleware/withLogging.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/middleware/withLogging.test.ts"
+          ],
+          "linesOfCode": 348,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "nextjs",
+          "file": "withRateLimit.ts",
+          "relativePath": "src/middleware/withRateLimit.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/middleware/withRateLimit.test.ts"
+          ],
+          "linesOfCode": 267,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "nextjs",
+          "file": "route-helpers.ts",
+          "relativePath": "src/route-helpers.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/route-helpers.test.ts"
+          ],
+          "linesOfCode": 701,
+          "complexity": "high",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "safety",
+      "totalFiles": 4,
+      "coveredFiles": 4,
+      "uncoveredFiles": 0,
+      "coverage": 100,
+      "files": [
+        {
+          "package": "safety",
+          "file": "ContentModerator.ts",
+          "relativePath": "src/ContentModerator.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/ContentModerator.test.ts"
+          ],
+          "linesOfCode": 959,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "safety",
+          "file": "JailbreakDetector.ts",
+          "relativePath": "src/JailbreakDetector.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/JailbreakDetector.test.ts"
+          ],
+          "linesOfCode": 771,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "safety",
+          "file": "PIIDetector.ts",
+          "relativePath": "src/PIIDetector.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/PIIDetector.test.ts"
+          ],
+          "linesOfCode": 1090,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "safety",
+          "file": "PromptInjectionDetector.ts",
+          "relativePath": "src/PromptInjectionDetector.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/PromptInjectionDetector.test.ts"
+          ],
+          "linesOfCode": 718,
+          "complexity": "high",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "svelte",
+      "totalFiles": 1,
+      "coveredFiles": 1,
+      "uncoveredFiles": 0,
+      "coverage": 100,
+      "files": [
+        {
+          "package": "svelte",
+          "file": "createAIStream.ts",
+          "relativePath": "src/createAIStream.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/createAIStream.test.ts"
+          ],
+          "linesOfCode": 155,
+          "complexity": "medium",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "tools",
+      "totalFiles": 7,
+      "coveredFiles": 7,
+      "uncoveredFiles": 0,
+      "coverage": 100,
+      "files": [
+        {
+          "package": "tools",
+          "file": "calculator.ts",
+          "relativePath": "src/calculator.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/calculator.test.ts"
+          ],
+          "linesOfCode": 406,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "tools",
+          "file": "code-interpreter.ts",
+          "relativePath": "src/code-interpreter.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/code-interpreter.test.ts"
+          ],
+          "linesOfCode": 426,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "tools",
+          "file": "design-token-extractor.ts",
+          "relativePath": "src/design-token-extractor.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/design-token-extractor.test.ts"
+          ],
+          "linesOfCode": 1932,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "tools",
+          "file": "design-validator.ts",
+          "relativePath": "src/design-validator.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/design-validator.test.ts"
+          ],
+          "linesOfCode": 1542,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "tools",
+          "file": "web-search.ts",
+          "relativePath": "src/web-search.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/web-search.test.ts"
+          ],
+          "linesOfCode": 567,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "tools",
+          "file": "zerodb-query.ts",
+          "relativePath": "src/zerodb-query.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/zerodb-query.test.ts"
+          ],
+          "linesOfCode": 648,
+          "complexity": "high",
+          "criticalPath": false
+        },
+        {
+          "package": "tools",
+          "file": "zerodb-tool.ts",
+          "relativePath": "src/zerodb-tool.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/zerodb-tool.test.ts"
+          ],
+          "linesOfCode": 1010,
+          "complexity": "high",
+          "criticalPath": false
+        }
+      ]
+    },
+    {
+      "name": "vue",
+      "totalFiles": 2,
+      "coveredFiles": 2,
+      "uncoveredFiles": 0,
+      "coverage": 100,
+      "files": [
+        {
+          "package": "vue",
+          "file": "useAIStream.ts",
+          "relativePath": "src/useAIStream.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/useAIStream.test.ts"
+          ],
+          "linesOfCode": 143,
+          "complexity": "medium",
+          "criticalPath": false
+        },
+        {
+          "package": "vue",
+          "file": "useConversation.ts",
+          "relativePath": "src/useConversation.ts",
+          "hasTests": true,
+          "testFiles": [
+            "__tests__/useConversation.test.ts"
+          ],
+          "linesOfCode": 272,
+          "complexity": "high",
+          "criticalPath": false
+        }
+      ]
+    }
+  ],
+  "uncoveredFiles": [
+    {
+      "package": "core",
+      "file": "ZeroDBSessionStore.ts",
+      "relativePath": "src/session/ZeroDBSessionStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 378,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "core",
+      "file": "AnthropicProvider.ts",
+      "relativePath": "src/agents/llm/AnthropicProvider.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 337,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "core",
+      "file": "RedisSessionStore.ts",
+      "relativePath": "src/session/RedisSessionStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 317,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "video",
+      "file": "pip-recorder.ts",
+      "relativePath": "src/recording/pip-recorder.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 303,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "core",
+      "file": "InMemorySessionStore.ts",
+      "relativePath": "src/session/InMemorySessionStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 293,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "core",
+      "file": "OpenAIProvider.ts",
+      "relativePath": "src/agents/llm/OpenAIProvider.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 285,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "video",
+      "file": "pip-compositor.ts",
+      "relativePath": "src/recording/pip-compositor.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 230,
+      "complexity": "high",
+      "criticalPath": true
+    },
+    {
+      "package": "react",
+      "file": "useScreenRecording.ts",
+      "relativePath": "src/hooks/useScreenRecording.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 168,
+      "complexity": "medium",
+      "criticalPath": true
+    },
+    {
+      "package": "core",
+      "file": "LLMProvider.ts",
+      "relativePath": "src/agents/llm/LLMProvider.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 60,
+      "complexity": "medium",
+      "criticalPath": true
+    },
+    {
+      "package": "core",
+      "file": "ProviderAdapter.ts",
+      "relativePath": "src/streaming/adapters/ProviderAdapter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 60,
+      "complexity": "medium",
+      "criticalPath": true
+    },
+    {
+      "package": "cli",
+      "file": "template-generator.ts",
+      "relativePath": "src/utils/template-generator.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 1098,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "utils.ts",
+      "relativePath": "src/types/utils.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 706,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "templates.ts",
+      "relativePath": "src/design/templates.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 673,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "HTMLFormatter.ts",
+      "relativePath": "src/reporting/formatters/HTMLFormatter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 592,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "video",
+      "file": "highlight-detector.ts",
+      "relativePath": "src/processing/highlight-detector.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 570,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "optimizer.ts",
+      "relativePath": "src/prompt/optimizer.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 451,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "history.ts",
+      "relativePath": "src/prompt/history.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 449,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "LocalStorage.ts",
+      "relativePath": "src/rlhf/storage/LocalStorage.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 445,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "tester.ts",
+      "relativePath": "src/prompt/tester.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 414,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "MockUsageTracker.ts",
+      "relativePath": "src/mocks/MockUsageTracker.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 397,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "StreamingMessage.tsx",
+      "relativePath": "src/components/StreamingMessage.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 388,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "ZeroDBMemoryStore.ts",
+      "relativePath": "src/memory/ZeroDBMemoryStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 384,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "helpers.ts",
+      "relativePath": "src/test-utils/helpers.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 383,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "RedisMemoryStore.ts",
+      "relativePath": "src/memory/RedisMemoryStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 381,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "MemoryStorage.ts",
+      "relativePath": "src/rlhf/storage/MemoryStorage.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 377,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "batch.ts",
+      "relativePath": "src/prompt/batch.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 367,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "comparator.ts",
+      "relativePath": "src/prompt/comparator.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 365,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "MockAgentExecutor.ts",
+      "relativePath": "src/mocks/MockAgentExecutor.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 363,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "utils.ts",
+      "relativePath": "src/tracking/utils.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 357,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "ZeroDBStorage.ts",
+      "relativePath": "src/rlhf/storage/ZeroDBStorage.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 354,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "MarkdownFormatter.ts",
+      "relativePath": "src/reporting/formatters/MarkdownFormatter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 350,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "fixtures.ts",
+      "relativePath": "src/test-utils/fixtures.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 314,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "CSVFormatter.ts",
+      "relativePath": "src/reporting/formatters/CSVFormatter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 304,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "InMemoryMemoryStore.ts",
+      "relativePath": "src/memory/InMemoryMemoryStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 303,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "ToolResult.tsx",
+      "relativePath": "src/components/ToolResult.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 301,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "UnknownTool.tsx",
+      "relativePath": "src/components/UnknownTool.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 298,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "streamHelpers.ts",
+      "relativePath": "src/helpers/streamHelpers.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 279,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "pricing.ts",
+      "relativePath": "src/tracking/pricing.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 266,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "video",
+      "file": "text-formatter.ts",
+      "relativePath": "src/processing/text-formatter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 264,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "MarkdownRenderer.tsx",
+      "relativePath": "src/components/MarkdownRenderer.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 262,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "QueryBuilder.ts",
+      "relativePath": "src/zerodb/QueryBuilder.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 251,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "VideoRecorder.tsx",
+      "relativePath": "src/components/VideoRecorder/VideoRecorder.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 229,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "utils.ts",
+      "relativePath": "src/prompt/utils.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 222,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "ProgressBar.tsx",
+      "relativePath": "src/components/ProgressBar.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 220,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "browser.ts",
+      "relativePath": "src/browser.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 218,
+      "complexity": "high",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "conversations.ts",
+      "relativePath": "src/fixtures/conversations.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 191,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "networkHelpers.ts",
+      "relativePath": "src/helpers/networkHelpers.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 180,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "StreamingIndicator.tsx",
+      "relativePath": "src/components/StreamingIndicator.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 174,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "usageRecords.ts",
+      "relativePath": "src/fixtures/usageRecords.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 172,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "assertions.ts",
+      "relativePath": "src/test-utils/assertions.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 162,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "toMatchTokenCount.ts",
+      "relativePath": "src/matchers/toMatchTokenCount.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 161,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "toHaveError.ts",
+      "relativePath": "src/matchers/toHaveError.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 160,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "ConversationStore.ts",
+      "relativePath": "src/store/ConversationStore.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 157,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "ModelComparison.tsx",
+      "relativePath": "src/react/components/ModelComparison.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 134,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "testing",
+      "file": "setup.ts",
+      "relativePath": "src/test-utils/setup.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 131,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "react",
+      "file": "CodeBlock.tsx",
+      "relativePath": "src/components/CodeBlock.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 131,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "UsageMetrics.tsx",
+      "relativePath": "src/react/components/UsageMetrics.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 99,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "Overview.tsx",
+      "relativePath": "src/react/components/Overview.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 86,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "FileStorage.ts",
+      "relativePath": "src/tracking/FileStorage.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 84,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "vscode.ts",
+      "relativePath": "src/utils/vscode.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 80,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "CostAnalysis.tsx",
+      "relativePath": "src/react/components/CostAnalysis.tsx",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 77,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "cli",
+      "file": "docker.ts",
+      "relativePath": "src/utils/docker.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 75,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "InMemoryStorage.ts",
+      "relativePath": "src/tracking/InMemoryStorage.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 64,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "MemoryStorage.ts",
+      "relativePath": "src/tracking/MemoryStorage.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 56,
+      "complexity": "medium",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "id.ts",
+      "relativePath": "src/utils/id.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 32,
+      "complexity": "low",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "server.ts",
+      "relativePath": "src/server.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 32,
+      "complexity": "low",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "UsageTrackerAdapter.ts",
+      "relativePath": "src/reporting/UsageTrackerAdapter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 27,
+      "complexity": "low",
+      "criticalPath": false
+    },
+    {
+      "package": "core",
+      "file": "id.ts",
+      "relativePath": "src/utils/id.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 21,
+      "complexity": "low",
+      "criticalPath": false
+    },
+    {
+      "package": "observability",
+      "file": "JSONFormatter.ts",
+      "relativePath": "src/reporting/formatters/JSONFormatter.ts",
+      "hasTests": false,
+      "testFiles": [],
+      "linesOfCode": 12,
+      "complexity": "low",
+      "criticalPath": false
+    }
+  ]
+}
