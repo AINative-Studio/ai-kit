@@ -15,20 +15,14 @@
 export * from './browser'
 
 // Server-only: Redis-based stores
-export {
-  RedisStore,
-  type RedisStoreConfig,
-} from './store/RedisStore'
+export { RedisStore } from './store/RedisStore'
+export type { RedisStoreConfig } from './store/types'
 
-export {
-  RedisSessionStore,
-  type RedisSessionConfig,
-} from './session/RedisSessionStore'
+export { RedisSessionStore } from './session/RedisSessionStore'
+export type { RedisSessionConfig } from './session/types'
 
-export {
-  RedisMemoryStore,
-  type RedisMemoryStoreConfig,
-} from './memory/RedisMemoryStore'
+export { RedisMemoryStore } from './memory/RedisMemoryStore'
+export type { RedisMemoryStoreConfig } from './memory/types'
 
 // Server-only: Local file storage for RLHF
 export {

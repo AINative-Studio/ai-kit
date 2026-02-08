@@ -251,10 +251,12 @@ export function extractSpeakers(text: string): Array<{ speaker: string; text: st
   const speakerPattern = /(Speaker \d+|[A-Z][a-z]+ [A-Z][a-z]+):\s*([^.!?]+[.!?])/g
   const matches = [...text.matchAll(speakerPattern)]
 
-  return matches.map((match) => ({
-    speaker: match[1].trim(),
-    text: match[2].trim(),
-  }))
+  return matches
+    .filter((match) => match[1] && match[2])
+    .map((match) => ({
+      speaker: match[1]!.trim(),
+      text: match[2]!.trim(),
+    }))
 }
 
 /**

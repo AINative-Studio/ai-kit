@@ -40,8 +40,6 @@ export {
 } from './agents'
 export type {
   AgentConfig,
-  AgentContext,
-  AgentResult,
   ToolDefinition,
   ToolCall,
   ToolResult,
@@ -51,6 +49,9 @@ export type {
   StreamingExecutionResult,
   SwarmEvents,
 } from './agents'
+export type {
+  AgentContext,
+} from './types'
 
 // Store - export only memory-based stores (no Redis)
 export { ConversationStore } from './store/ConversationStore'
@@ -102,8 +103,9 @@ export type * from './session/types'
 
 // Authentication - browser-safe auth (uses localStorage or sessionStorage)
 export { AINativeAuthProvider } from './auth/AINativeAuthProvider'
-export { AuthError, AuthErrorType } from './auth/errors'
 export {
+  AuthError,
+  AuthErrorType,
   AuthMethod,
   AuthStatus,
   StorageStrategy,
@@ -113,7 +115,7 @@ export type * from './auth/types'
 
 // ZeroDB - cloud-based database client (browser-safe)
 export { ZeroDBClient } from './zerodb/ZeroDBClient'
-export { ZeroDBQueryBuilder } from './zerodb/QueryBuilder'
+export { QueryBuilder as ZeroDBQueryBuilder } from './zerodb/QueryBuilder'
 export type * from './zerodb/types'
 
 // RLHF - export only memory storage (no local file storage)
