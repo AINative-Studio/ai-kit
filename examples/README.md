@@ -498,7 +498,7 @@ See our [Contributing Guide](../CONTRIBUTING.md) for details.
 ## Support
 
 - **Documentation**: [https://docs.ainative.ai](https://docs.ainative.ai)
-- **Discord**: [Join our community](https://discord.gg/ainative)
+- **Discord**: [Join our community](https://discord.com/invite/paipalooza)
 - **GitHub Issues**: [Report bugs](https://github.com/ainative/ai-kit/issues)
 - **Email**: support@ainative.studio
 
@@ -512,7 +512,7 @@ After exploring these examples:
 
 1. Read the [Getting Started Guide](../docs/guides/getting-started.md)
 2. Check the [API Reference](../docs/api/README.md)
-3. Join our [Discord Community](https://discord.gg/ainative)
+3. Join our [Discord Community](https://discord.com/invite/paipalooza)
 4. Build your own application!
 
 ## Changelog

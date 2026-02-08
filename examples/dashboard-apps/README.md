@@ -395,7 +395,7 @@ MIT License - see LICENSE file for details
 
 - Documentation: https://docs.ai-kit.dev
 - GitHub Issues: https://github.com/ainative/ai-kit/issues
-- Discord: https://discord.gg/ai-kit
+- Discord: https://discord.com/invite/paipalooza
 - Email: support@ai-kit.dev
 
 ## Screenshots

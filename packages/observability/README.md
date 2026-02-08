@@ -548,7 +548,7 @@ MIT License - see [LICENSE](../../LICENSE) for details.
 
 - Documentation: https://ainative.studio/ai-kit
 - Issues: https://github.com/AINative-Studio/ai-kit/issues
-- Discord: https://discord.gg/ainative-studio
+- Discord: https://discord.com/invite/paipalooza-studio
 
 ---
 

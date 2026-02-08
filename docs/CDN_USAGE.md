@@ -610,7 +610,7 @@ const stream = new AIStream({ ... });
 - Documentation: https://ainative.studio/ai-kit
 - GitHub: https://github.com/AINative-Studio/ai-kit
 - Issues: https://github.com/AINative-Studio/ai-kit/issues
-- Discord: https://discord.gg/ainative
+- Discord: https://discord.com/invite/paipalooza
 
 ## Related Resources
 

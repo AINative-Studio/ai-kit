@@ -223,7 +223,7 @@ Found an issue or want to add an example?
 ## Support
 
 - Documentation: https://docs.ainative.studio
-- Discord: https://discord.gg/ainative
+- Discord: https://discord.com/invite/paipalooza
 - Email: support@ainative.studio
 - GitHub Issues: https://github.com/AINative-Studio/ai-kit/issues
 

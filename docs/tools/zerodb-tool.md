@@ -1132,7 +1132,7 @@ For issues and questions:
 
 - GitHub Issues: https://github.com/AINative-Studio/ai-kit/issues
 - Documentation: https://docs.ainative.studio/ai-kit/tools/zerodb
-- Discord: https://discord.gg/ainative-studio
+- Discord: https://discord.com/invite/paipalooza-studio
 
 ---
 

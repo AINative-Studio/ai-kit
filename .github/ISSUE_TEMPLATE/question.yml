@@ -10,7 +10,7 @@ body:
       value: |
         Thanks for your question! Please provide as much context as possible to help us give you the best answer.
 
-        **Note:** For general discussions, consider using [GitHub Discussions](https://github.com/AINative-Studio/ai-kit/discussions) or [Discord](https://discord.gg/ainative) instead.
+        **Note:** For general discussions, consider using [GitHub Discussions](https://github.com/AINative-Studio/ai-kit/discussions) or [Discord](https://discord.com/invite/paipalooza) instead.
 
   - type: dropdown
     id: question-type

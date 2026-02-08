@@ -1223,6 +1223,6 @@ Congratulations! You've built a production-ready chatbot. Here's what to explore
 
 ---
 
-**Need help?** Join our [Discord community](https://discord.gg/ainative) or email support@ainative.studio
+**Need help?** Join our [Discord community](https://discord.com/invite/paipalooza) or email support@ainative.studio
 
 **Want to contribute?** Check out our [Contributing Guide](../../CONTRIBUTING.md)

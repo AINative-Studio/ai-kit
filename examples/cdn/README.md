@@ -205,4 +205,4 @@ If you need a custom bundle configuration:
 For issues or questions:
 - GitHub Issues: https://github.com/AINative-Studio/ai-kit/issues
 - Documentation: https://ainative.studio/ai-kit
-- Discord: https://discord.gg/ainative
+- Discord: https://discord.com/invite/paipalooza

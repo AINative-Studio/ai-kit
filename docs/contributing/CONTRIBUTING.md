@@ -309,7 +309,7 @@ Releases are managed by maintainers using semantic versioning:
 ## Getting Help
 
 - Check the [documentation](https://github.com/AINative-Studio/ai-kit#readme)
-- Join our [Discord community](https://discord.gg/ainative)
+- Join our [Discord community](https://discord.com/invite/paipalooza)
 - Ask questions in [GitHub Discussions](https://github.com/AINative-Studio/ai-kit/discussions)
 - Report bugs using [issue templates](https://github.com/AINative-Studio/ai-kit/issues/new/choose)
 

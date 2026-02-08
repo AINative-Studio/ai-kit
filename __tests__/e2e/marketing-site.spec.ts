@@ -68,7 +68,7 @@ test.describe('Marketing Site - Acceptance Criteria', () => {
 
     // Discord link in navigation
     const discordNavLink = page.locator('.nav-links a[href*="discord.gg"]');
-    await expect(discordNavLink).toHaveAttribute('href', 'https://discord.gg/ainative');
+    await expect(discordNavLink).toHaveAttribute('href', 'https://discord.com/invite/paipalooza');
 
     // Check footer links
     const footer = page.locator('footer');

@@ -175,7 +175,7 @@ async function createProject(
     );
     console.log(
       chalk.dim('💬 Discord:'),
-      chalk.blue('https://discord.gg/ai-kit')
+      chalk.blue('https://discord.com/invite/paipalooza')
     );
 
   } catch (error: any) {

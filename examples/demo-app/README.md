@@ -292,7 +292,7 @@ MIT - See [LICENSE](../../LICENSE)
 ## Support
 
 - **Documentation**: [https://docs.ainative.ai](https://docs.ainative.ai)
-- **Discord**: [Join community](https://discord.gg/ainative)
+- **Discord**: [Join community](https://discord.com/invite/paipalooza)
 - **GitHub Issues**: [Report bugs](https://github.com/ainative/ai-kit/issues)
 
 ---

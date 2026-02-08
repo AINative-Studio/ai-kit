@@ -1674,7 +1674,7 @@ Yes, AI Kit CLI works on Windows, macOS, and Linux.
 
 - **Documentation**: https://ainative.studio/ai-kit
 - **GitHub**: https://github.com/AINative-Studio/ai-kit
-- **Discord**: https://discord.gg/ai-kit
+- **Discord**: https://discord.com/invite/paipalooza
 - **Examples**: https://github.com/AINative-Studio/ai-kit/tree/main/examples
 - **Blog**: https://ainative.studio/blog
 
@@ -1712,7 +1712,7 @@ MIT © [AI Native](https://ai-native.dev)
 
 - **Issues**: https://github.com/ai-native/ai-kit/issues
 - **Discussions**: https://github.com/ai-native/ai-kit/discussions
-- **Discord**: https://discord.gg/ai-kit
+- **Discord**: https://discord.com/invite/paipalooza
 - **Email**: support@ai-native.dev
 
 ## Acknowledgments

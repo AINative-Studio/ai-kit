@@ -14,7 +14,7 @@
 [![Coverage](https://img.shields.io/badge/Coverage-95%25+-success.svg?style=flat-square)](#-testing)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg?style=flat-square)](https://nodejs.org/)
 
-[Documentation](./docs/api/) • [Examples](./examples/) • [API Reference](./docs/api/) • [Discord](https://discord.gg/ainative) • [Website](https://ainative.studio/ai-kit)
+[Documentation](./docs/api/) • [Examples](./examples/) • [API Reference](./docs/api/) • [Discord](https://discord.com/invite/paipalooza) • [Website](https://ainative.studio/ai-kit)
 
 </div>
 
@@ -28,14 +28,18 @@ AI Kit gives you what you actually need in production:
 
 ### Core Capabilities
 
+- **Streaming Transports** - Production-ready SSE, WebSocket, and HTTP transports with automatic reconnection (v0.2.0)
 - **Agent Swarms** - Coordinate multiple AI agents with supervisor pattern (no competitor has this)
 - **Auto-RLHF** - Capture every interaction for model improvement without code changes
 - **Intelligent Memory** - Stores facts with contradiction detection and auto-consolidation
 - **Enterprise Safety** - Prompt injection detection, content moderation, PII handling (7 attack patterns blocked)
+- **Video Recording** - Built-in screen recording, camera access, and media processing primitives (v0.2.0)
+- **CDN Distribution** - Global edge delivery via jsDelivr & unpkg (~1KB gzipped core)
 - **Cost Tracking** - Real-time token counting and cost calculation across providers
 - **ZeroDB Native** - Encrypted database with vector search, built-in
 - **Framework Agnostic** - React, Vue, Svelte, vanilla JS - works everywhere
 - **Complete Tracing** - Every execution step traced with full context
+- **Mobile-First** - Comprehensive mobile device testing (292 tests, 7 device profiles)
 
 ## The Problem with Other SDKs
 
@@ -85,11 +89,19 @@ const result = await swarm.execute("Research AI safety and write a report")
 # Core package (framework-agnostic)
 npm install @ainative/ai-kit-core
 
-# React hooks & components
-npm install @ainative/ai-kit
+# Framework-specific packages
+npm install @ainative/ai-kit         # React hooks & components
+npm install @ainative/ai-kit-vue     # Vue 3 composables
+npm install @ainative/ai-kit-svelte  # Svelte stores & components
+npm install @ainative/ai-kit-nextjs  # Next.js 15/16 utilities
+
+# Optional packages
+npm install @ainative/ai-kit-safety  # Safety guardrails
+npm install @ainative/ai-kit-video   # Video recording (NEW in v0.2.0)
+npm install @ainative/ai-kit-tools   # Built-in tools
 
 # Or install everything
-npm install @ainative/ai-kit-core @ainative/ai-kit @ainative/ai-kit-safety @ainative/ai-kit-tools
+npm install @ainative/ai-kit-core @ainative/ai-kit @ainative/ai-kit-safety @ainative/ai-kit-tools @ainative/ai-kit-video
 ```
 
 ```bash
@@ -104,15 +116,16 @@ yarn add @ainative/ai-kit-core @ainative/ai-kit
 
 ## Quick Start
 
-### 1. Simple Streaming Chat
+### 1. Simple Streaming Chat (with SSE Transport)
 
 ```typescript
-import { AIStream } from '@ainative/ai-kit-core'
+import { AIStream, SSETransport } from '@ainative/ai-kit-core'
 
 const stream = new AIStream({
   endpoint: 'https://api.anthropic.com/v1/messages',
   model: 'claude-3-sonnet-20240229',
-  headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY }
+  headers: { 'x-api-key': process.env.ANTHROPIC_API_KEY },
+  transport: new SSETransport({ autoReconnect: true }) // NEW: v0.2.0
 })
 
 stream.on('token', (token) => process.stdout.write(token))
@@ -383,7 +396,7 @@ pnpm test:coverage     # With coverage report
 
 ### Get Help
 
-- **Discord** - [Join our community](https://discord.gg/ainative) for real-time help
+- **Discord** - [Join our community](https://discord.com/invite/paipalooza) for real-time help
 - **GitHub Discussions** - [Ask questions & share ideas](https://github.com/AINative-Studio/ai-kit/discussions)
 - **Stack Overflow** - Tag your questions with `ai-kit`
 - **Twitter/X** - Follow [@AINativeStudio](https://twitter.com/AINativeStudio) for updates
@@ -410,14 +423,20 @@ Contact us at [enterprise@ainative.studio](mailto:enterprise@ainative.studio)
 
 ### Roadmap
 
-See our [public roadmap](https://github.com/AINative-Studio/ai-kit/projects/1) for upcoming features.
+See our [public roadmap](./ROADMAP.md) for completed features and future plans.
 
-Upcoming highlights:
+**Current focus (Q1 2026):**
+- Hierarchical agent networks & swarms enhancement
+- GraphQL & gRPC streaming transports
+- Interactive playground & visual agent builder
+- Chrome DevTools extension for debugging
+
+**Coming soon (Q2-Q4 2026):**
 - Multi-modal support (images, audio, video)
-- Advanced function calling patterns
-- Enhanced observability & debugging tools
-- Additional LLM provider support
-- Performance optimizations
+- Advanced tool marketplace & auto-generation
+- Enterprise SSO, RBAC, and audit logging
+- RLHF & model fine-tuning workflows
+- Self-improving agents & agent templates
 
 ---
 
@@ -446,7 +465,7 @@ See [LICENSE](./LICENSE) for details.
 
 **Built with care by [AINative Studio](https://ainative.studio)**
 
-[Website](https://ainative.studio) • [Documentation](./docs/api/) • [Examples](./examples/) • [Discord](https://discord.gg/ainative) • [Twitter](https://twitter.com/AINativeStudio)
+[Website](https://ainative.studio) • [Documentation](./docs/api/) • [Examples](./examples/) • [Discord](https://discord.com/invite/paipalooza) • [Twitter](https://twitter.com/AINativeStudio)
 
 **Star the repo if you find it useful!**
 

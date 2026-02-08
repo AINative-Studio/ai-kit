@@ -1242,7 +1242,7 @@ console.log('Storage strategy:', authProvider.getConfig().storageStrategy);
 For additional support:
 - Documentation: https://docs.ainative.studio
 - GitHub Issues: https://github.com/AINative-Studio/ai-kit/issues
-- Discord Community: https://discord.gg/ainative
+- Discord Community: https://discord.com/invite/paipalooza
 - Email: support@ainative.studio
 
 ## License

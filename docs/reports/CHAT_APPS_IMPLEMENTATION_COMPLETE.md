@@ -466,7 +466,7 @@ railway up
 
 - **Documentation:** [AI Kit Docs](https://docs.ainative.ai)
 - **GitHub:** [AI Kit Repository](https://github.com/ainative/ai-kit)
-- **Discord:** [AINative Community](https://discord.gg/ainative)
+- **Discord:** [AINative Community](https://discord.com/invite/paipalooza)
 - **Issues:** [GitHub Issues](https://github.com/ainative/ai-kit/issues)
 
 ---

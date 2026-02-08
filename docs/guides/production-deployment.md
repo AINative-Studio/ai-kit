@@ -1002,7 +1002,7 @@ async function getChatResponse(messages) {
 
 ---
 
-**Need help deploying?** Contact support@ainative.studio or join our [Discord community](https://discord.gg/ainative)
+**Need help deploying?** Contact support@ainative.studio or join our [Discord community](https://discord.com/invite/paipalooza)
 
 **Next guides:**
 - [Getting Started](./getting-started.md)

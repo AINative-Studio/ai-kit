@@ -184,7 +184,7 @@ Open `website/index.fixed.html` in any browser. No build step required.
 
 - **Issues**: https://github.com/AINative-Studio/ai-kit/issues/141
 - **Discussions**: https://github.com/AINative-Studio/ai-kit/discussions
-- **Discord**: https://discord.gg/ainative
+- **Discord**: https://discord.com/invite/paipalooza
 
 ## Security (Issue #136)
 

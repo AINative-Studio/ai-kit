@@ -477,7 +477,7 @@ MIT - See [LICENSE](../../LICENSE) for details.
 
 - [Documentation](https://docs.ainative.studio/ai-kit)
 - [GitHub Issues](https://github.com/AINative-Studio/ai-kit/issues)
-- [Discord Community](https://discord.gg/ainative)
+- [Discord Community](https://discord.com/invite/paipalooza)
 - [Email Support](mailto:support@ainative.studio)
 
 ---

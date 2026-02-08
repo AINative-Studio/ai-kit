@@ -1190,4 +1190,4 @@ export const sqlQueryTool: Tool = {
 - [Getting Started Guide](./getting-started.md)
 - [AI Kit API Reference](../api/core.md)
 
-**Need help?** support@ainative.studio | [Discord](https://discord.gg/ainative)
+**Need help?** support@ainative.studio | [Discord](https://discord.com/invite/paipalooza)

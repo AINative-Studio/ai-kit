@@ -506,5 +506,5 @@ When adding new integration tests:
 For questions or issues:
 
 - GitHub Issues: [ai-kit/issues](https://github.com/AINative-Studio/ai-kit/issues)
-- Discord: [AINative Community](https://discord.gg/ainative)
+- Discord: [AINative Community](https://discord.com/invite/paipalooza)
 - Docs: [ainative.studio/ai-kit](https://ainative.studio/ai-kit)

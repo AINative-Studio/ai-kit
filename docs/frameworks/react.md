@@ -2586,7 +2586,7 @@ const mockStream = {
 
 - **Documentation**: https://docs.ainative.studio
 - **GitHub Issues**: https://github.com/AINative-Studio/ai-kit/issues
-- **Discord**: https://discord.gg/ainative
+- **Discord**: https://discord.com/invite/paipalooza
 - **Email**: support@ainative.studio
 
 ---

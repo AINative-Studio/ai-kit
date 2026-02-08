@@ -470,5 +470,5 @@ import { createAgent } from '@ainative/ai-kit-core';
 
 For issues or questions:
 - [GitHub Issues](https://github.com/AINative-Studio/ai-kit/issues)
-- [Discord Community](https://discord.gg/ainative)
+- [Discord Community](https://discord.com/invite/paipalooza)
 - [Documentation](https://ainative.studio/ai-kit)

@@ -2232,7 +2232,7 @@ Check out these complete example applications:
 
 ### Community Resources
 
-- **Discord**: Join our community at [discord.gg/ainative](https://discord.gg/ainative)
+- **Discord**: Join our community at [discord.com/invite/paipalooza](https://discord.com/invite/paipalooza)
 - **GitHub Discussions**: Ask questions at [github.com/AINative-Studio/ai-kit/discussions](https://github.com/AINative-Studio/ai-kit/discussions)
 - **Twitter**: Follow [@AINativeStudio](https://twitter.com/AINativeStudio) for updates
 - **Blog**: Read tutorials at [blog.ainative.studio](https://blog.ainative.studio)
@@ -2260,7 +2260,7 @@ If you run into issues:
 
 1. Check the [FAQ](../faq.md)
 2. Search [GitHub Issues](https://github.com/AINative-Studio/ai-kit/issues)
-3. Ask in [Discord](https://discord.gg/ainative)
+3. Ask in [Discord](https://discord.com/invite/paipalooza)
 4. Email support@ainative.studio
 
 ### Contributing

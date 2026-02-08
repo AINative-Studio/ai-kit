@@ -805,7 +805,7 @@ export default function RootLayout({ children }) {
 | AI Kit GitHub | https://github.com/AINativeOrg/ai-kit |
 | ZeroDB Console | https://console.zerodb.ai |
 | Workshop Repo | https://github.com/AINativeOrg/ai-kit-react-workshop |
-| Discord Community | https://discord.gg/ainative |
+| Discord Community | https://discord.com/invite/paipalooza |
 
 ### Feedback Form
 
