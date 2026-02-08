@@ -1,0 +1,155 @@
+name: Bug Report
+description: Report a bug or issue with AI Kit
+title: "[Bug]: "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to report this issue! Please fill out the information below to help us resolve it quickly.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is.
+      placeholder: Describe the issue you're experiencing...
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to Reproduce
+      description: Steps to reproduce the behavior
+      placeholder: |
+        1. Initialize AI Kit with '...'
+        2. Call function '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What did you expect to happen?
+      placeholder: Describe what should have happened...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened?
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which AI Kit package is affected?
+      options:
+        - "@ainative/ai-kit-core"
+        - "@ainative/ai-kit-react"
+        - "@ainative/ai-kit-nextjs"
+        - "@ainative/ai-kit-tools"
+        - "@ainative/ai-kit-testing"
+        - "@ainative/ai-kit-vue"
+        - "@ainative/ai-kit-svelte"
+        - "@ainative/ai-kit-cli"
+        - "@ainative/ai-kit-video"
+        - "@ainative/ai-kit-community"
+        - "Other"
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: What version of the package are you using?
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: Where does this issue occur?
+      options:
+        - "Node.js"
+        - "Browser"
+        - "Next.js"
+        - "React"
+        - "Vue"
+        - "Svelte"
+        - "Other"
+      multiple: true
+    validations:
+      required: true
+
+  - type: input
+    id: node-version
+    attributes:
+      label: Node.js Version
+      description: What version of Node.js are you using? (Run `node --version`)
+      placeholder: "18.0.0"
+    validations:
+      required: false
+
+  - type: textarea
+    id: code-sample
+    attributes:
+      label: Code Sample
+      description: Please provide a minimal code sample that reproduces the issue
+      placeholder: |
+        ```typescript
+        import { createAgent } from '@ainative/ai-kit-core';
+
+        const agent = createAgent({
+          // your code here
+        });
+        ```
+      render: typescript
+    validations:
+      required: false
+
+  - type: textarea
+    id: error-message
+    attributes:
+      label: Error Message
+      description: If applicable, paste the full error message
+      placeholder: |
+        Error: ...
+        at ...
+      render: shell
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here (screenshots, logs, etc.)
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have provided all required information above
+          required: true
+        - label: I am using a supported version of Node.js (18+)
+          required: false
