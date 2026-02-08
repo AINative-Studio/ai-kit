@@ -144,3 +144,7 @@ coverage/
 
 # Workspace dependency resolution backups
 .workspace-backup/
+
+# Private development folders (not for public repos)
+.ainative/
+.claude/
