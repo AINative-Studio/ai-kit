@@ -1,0 +1,160 @@
+# Example GitHub Actions workflow for integration tests
+# Copy this to .github/workflows/integration-tests.yml in your repository
+
+name: Integration Tests
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/video/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'packages/video/**'
+
+jobs:
+  integration-tests:
+    name: Integration Tests
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 20
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        browser: [chromium, firefox, webkit]
+        exclude:
+          # WebKit on Linux uses xvfb which can be flaky
+          - os: ubuntu-latest
+            browser: webkit
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build package
+        run: |
+          cd packages/video
+          pnpm run build
+
+      - name: Install Playwright browsers
+        run: |
+          cd packages/video
+          npx playwright install --with-deps ${{ matrix.browser }}
+
+      - name: Run integration tests
+        run: |
+          cd packages/video
+          npx playwright test --project=${{ matrix.browser }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.os }}-${{ matrix.browser }}
+          path: packages/video/playwright-report/
+          retention-days: 7
+
+      - name: Upload test artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.os }}-${{ matrix.browser }}
+          path: packages/video/test-results/
+          retention-days: 7
+
+  integration-tests-mobile:
+    name: Mobile Integration Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [mobile-chrome, mobile-safari]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build package
+        run: |
+          cd packages/video
+          pnpm run build
+
+      - name: Install Playwright browsers
+        run: |
+          cd packages/video
+          npx playwright install --with-deps chromium webkit
+
+      - name: Run mobile integration tests
+        run: |
+          cd packages/video
+          npx playwright test --project=${{ matrix.device }}
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ matrix.device }}
+          path: packages/video/playwright-report/
+          retention-days: 7
+
+  integration-test-report:
+    name: Integration Test Report
+    runs-on: ubuntu-latest
+    needs: [integration-tests, integration-tests-mobile]
+    if: always()
+
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Merge test results
+        run: |
+          mkdir -p merged-reports
+          find artifacts -name "*.json" -exec cp {} merged-reports/ \;
+
+      - name: Generate summary
+        run: |
+          echo "# Integration Test Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Test artifacts have been collected from all browser configurations." >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload merged results
+        uses: actions/upload-artifact@v4
+        with:
+          name: merged-test-results
+          path: merged-reports/
+          retention-days: 30
