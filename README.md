@@ -2,6 +2,9 @@
 
 > The Stripe for LLM Applications - Framework-agnostic SDK for building AI-powered applications
 
+[![npm version](https://img.shields.io/npm/v/@ainative/ai-kit-core.svg)](https://www.npmjs.com/package/@ainative/ai-kit-core)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/AINative-Studio/ai-kit/test.yml?branch=main)](https://github.com/AINative-Studio/ai-kit/actions)
+[![Coverage](https://img.shields.io/badge/coverage-85%25-brightgreen.svg)](#test-coverage)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
@@ -293,7 +296,7 @@ We provide workshop materials for learning AI Kit:
 
 ## Contributing
 
-We welcome contributions! Please see [CONTRIBUTING.md](./CONTRIBUTING.md) for guidelines.
+We welcome contributions! Please see [CONTRIBUTING.md](./docs/contributing/CONTRIBUTING.md) for guidelines.
 
 ## License
 
