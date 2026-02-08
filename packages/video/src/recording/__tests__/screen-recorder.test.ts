@@ -367,6 +367,113 @@ describe('ScreenRecorder', () => {
     });
   });
 
+  describe('Memory Leak Prevention - Blob URL Revocation (Issue #133)', () => {
+    beforeEach(() => {
+      recorder = new ScreenRecorder();
+      vi.clearAllMocks();
+    });
+
+    it('does NOT revoke blob URL on stop (user must manage lifecycle)', async () => {
+      await recorder.startRecording();
+      const result = await recorder.stopRecording();
+
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(1);
+      expect(global.URL.revokeObjectURL).not.toHaveBeenCalled();
+      expect(result.url).toBe('blob:mock-url-12345');
+    });
+
+    it('provides revokeURL method to revoke blob URL', async () => {
+      await recorder.startRecording();
+      const result = await recorder.stopRecording();
+
+      recorder.revokeURL(result.url);
+
+      expect(global.URL.revokeObjectURL).toHaveBeenCalledTimes(1);
+      expect(global.URL.revokeObjectURL).toHaveBeenCalledWith('blob:mock-url-12345');
+    });
+
+    it('safely handles revokeURL with null or undefined', () => {
+      expect(() => recorder.revokeURL(null as any)).not.toThrow();
+      expect(() => recorder.revokeURL(undefined as any)).not.toThrow();
+      expect(global.URL.revokeObjectURL).not.toHaveBeenCalled();
+    });
+
+    it('safely handles revokeURL with empty string', () => {
+      expect(() => recorder.revokeURL('')).not.toThrow();
+      expect(global.URL.revokeObjectURL).not.toHaveBeenCalled();
+    });
+
+    it('allows multiple revocations without error', async () => {
+      await recorder.startRecording();
+      const result = await recorder.stopRecording();
+
+      recorder.revokeURL(result.url);
+      recorder.revokeURL(result.url);
+
+      expect(global.URL.revokeObjectURL).toHaveBeenCalledTimes(2);
+    });
+
+    it('tracks blob URLs from multiple recordings separately', async () => {
+      global.URL.createObjectURL = vi
+        .fn()
+        .mockReturnValueOnce('blob:url-1')
+        .mockReturnValueOnce('blob:url-2')
+        .mockReturnValueOnce('blob:url-3');
+
+      await recorder.startRecording();
+      const result1 = await recorder.stopRecording();
+
+      await recorder.startRecording();
+      const result2 = await recorder.stopRecording();
+
+      await recorder.startRecording();
+      const result3 = await recorder.stopRecording();
+
+      expect(result1.url).toBe('blob:url-1');
+      expect(result2.url).toBe('blob:url-2');
+      expect(result3.url).toBe('blob:url-3');
+      expect(global.URL.createObjectURL).toHaveBeenCalledTimes(3);
+    });
+
+    it('does not leak memory across 10 recording cycles', async () => {
+      const urls: string[] = [];
+
+      for (let i = 0; i < 10; i++) {
+        global.URL.createObjectURL = vi.fn(() => `blob:url-${i}`);
+
+        await recorder.startRecording();
+        const result = await recorder.stopRecording();
+        urls.push(result.url);
+      }
+
+      expect(urls.length).toBe(10);
+      urls.forEach((url, index) => {
+        expect(url).toBe(`blob:url-${index}`);
+      });
+    });
+
+    it('can revoke all URLs from multiple recordings', async () => {
+      const urls: string[] = [];
+
+      for (let i = 0; i < 3; i++) {
+        global.URL.createObjectURL = vi.fn(() => `blob:url-${i}`);
+
+        await recorder.startRecording();
+        const result = await recorder.stopRecording();
+        urls.push(result.url);
+      }
+
+      vi.clearAllMocks();
+
+      urls.forEach((url) => recorder.revokeURL(url));
+
+      expect(global.URL.revokeObjectURL).toHaveBeenCalledTimes(3);
+      expect(global.URL.revokeObjectURL).toHaveBeenNthCalledWith(1, 'blob:url-0');
+      expect(global.URL.revokeObjectURL).toHaveBeenNthCalledWith(2, 'blob:url-1');
+      expect(global.URL.revokeObjectURL).toHaveBeenNthCalledWith(3, 'blob:url-2');
+    });
+  });
+
   describe('Pause and Resume', () => {
     beforeEach(() => {
       recorder = new ScreenRecorder();
