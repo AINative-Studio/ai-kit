@@ -29,6 +29,7 @@
     "test:e2e:webkit": "playwright test --project=webkit",
     "test:e2e:mobile": "playwright test --project=mobile-chrome --project=mobile-safari",
     "test:e2e:report": "playwright show-report",
+    "test:github-templates": "tsx __tests__/github-templates/validate-templates.ts",
     "lint": "turbo run lint",
     "type-check": "turbo run type-check",
     "clean": "turbo run clean && rm -rf node_modules",
@@ -72,7 +73,8 @@
     "typedoc": "^0.28.14",
     "typedoc-plugin-markdown": "^4.9.0",
     "typescript": "^5.3.0",
-    "vitest": "^4.0.18"
+    "vitest": "^4.0.18",
+    "yaml": "^2.8.1"
   },
   "packageManager": "pnpm@8.12.0",
   "engines": {
