@@ -100,20 +100,138 @@ const handlers = [
     let result = 0;
     switch (operation) {
       case 'add':
+      case '+':
         result = a + b;
         break;
       case 'subtract':
+      case '-':
         result = a - b;
         break;
       case 'multiply':
+      case '*':
         result = a * b;
         break;
       case 'divide':
+      case '/':
         result = a / b;
         break;
     }
 
     return HttpResponse.json({ result });
+  }),
+
+  // Mock tool execute endpoint (generic)
+  http.post('https://api.example.com/tools/execute', async ({ request }) => {
+    const body = await request.json() as { tool: string; arguments: any };
+    const { tool, arguments: args } = body;
+
+    switch (tool) {
+      case 'calculator':
+        const calcResult = eval(`${args.a} ${args.operation} ${args.b}`);
+        return HttpResponse.json({ success: true, result: calcResult });
+
+      case 'search':
+        return HttpResponse.json({
+          success: true,
+          results: [
+            {
+              title: 'Search Result',
+              snippet: 'Relevant content',
+              url: 'https://example.com/result',
+            },
+          ],
+        });
+
+      case 'weather':
+        return HttpResponse.json({
+          success: true,
+          temperature: 72,
+          condition: 'sunny',
+          location: args.location || 'Unknown',
+        });
+
+      default:
+        return HttpResponse.json(
+          { success: false, error: 'Unknown tool' },
+          { status: 400 }
+        );
+    }
+  }),
+
+  // Mock auth endpoints
+  http.post('https://api.ainative.studio/v1/auth/login', async ({ request }) => {
+    const body = await request.json() as { apiKey?: string; email?: string };
+
+    if (body.apiKey && body.apiKey.startsWith('test-api-key')) {
+      return HttpResponse.json({
+        success: true,
+        token: 'mock-jwt-token',
+        refreshToken: 'mock-refresh-token',
+        expiresIn: 3600,
+        user: {
+          id: 'user-123',
+          email: body.email || 'test@example.com',
+          name: 'Test User',
+        },
+      });
+    }
+
+    return HttpResponse.json(
+      { success: false, error: 'Invalid credentials' },
+      { status: 401 }
+    );
+  }),
+
+  http.post('https://api.ainative.studio/v1/auth/refresh', () => {
+    return HttpResponse.json({
+      success: true,
+      token: 'new-mock-jwt-token',
+      expiresIn: 3600,
+    });
+  }),
+
+  http.post('https://api.ainative.studio/v1/auth/validate', ({ request }) => {
+    const authHeader = request.headers.get('Authorization');
+
+    if (authHeader?.includes('mock-jwt-token') || authHeader?.includes('new-mock-jwt-token')) {
+      return HttpResponse.json({
+        success: true,
+        valid: true,
+        user: {
+          id: 'user-123',
+          email: 'test@example.com',
+        },
+      });
+    }
+
+    return HttpResponse.json(
+      { success: false, valid: false, error: 'Invalid token' },
+      { status: 401 }
+    );
+  }),
+
+  http.post('https://api.ainative.studio/v1/auth/logout', () => {
+    return HttpResponse.json({ success: true });
+  }),
+
+  // Mock assistant creation
+  http.post('https://api.openai.com/v1/assistants', async ({ request }) => {
+    const body = await request.json() as {
+      name: string;
+      instructions: string;
+      tools?: any[];
+      model: string;
+    };
+
+    return HttpResponse.json({
+      id: `asst-${Date.now()}`,
+      object: 'assistant',
+      created_at: Date.now(),
+      name: body.name,
+      instructions: body.instructions,
+      tools: body.tools || [],
+      model: body.model,
+    });
   }),
 ];
 

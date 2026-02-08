@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Kit CDN Example - Vue</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chat-container {
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            min-height: 300px;
+            max-height: 500px;
+            overflow-y: auto;
+            background: #f7fafc;
+        }
+
+        .message {
+            margin-bottom: 1rem;
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .message.user {
+            background: #667eea;
+            color: white;
+            margin-left: 2rem;
+        }
+
+        .message.assistant {
+            background: white;
+            border: 1px solid #e2e8f0;
+            margin-right: 2rem;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 0.75rem 1.5rem;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+        }
+
+        .info {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #f7fafc;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+        }
+
+        .info h3 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+        }
+
+        .info code {
+            background: #edf2f7;
+            padding: 0.125rem 0.375rem;
+            border-radius: 3px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.875rem;
+        }
+
+        .loading {
+            color: #718096;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    <div id="app"></div>
+
+    <!-- Load Vue from CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+    <!-- Load AI Kit Core from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@ainative/ai-kit-core@latest/dist/cdn/core.min.js"
+            crossorigin="anonymous"></script>
+
+    <!-- Load AI Kit Vue from CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/@ainative/ai-kit-vue@latest/dist/cdn/vue.min.js"
+            crossorigin="anonymous"></script>
+
+    <script>
+        const { createApp, ref, computed, nextTick } = Vue;
+
+        createApp({
+            setup() {
+                const messages = ref([
+                    { text: 'Welcome to AI Kit Vue! This example uses CDN bundles without any build step.', isUser: false }
+                ]);
+                const input = ref('');
+                const isLoading = ref(false);
+                const chatContainer = ref(null);
+
+                const scrollToBottom = async () => {
+                    await nextTick();
+                    if (chatContainer.value) {
+                        chatContainer.value.scrollTop = chatContainer.value.scrollHeight;
+                    }
+                };
+
+                const sendMessage = async () => {
+                    const text = input.value.trim();
+                    if (!text) return;
+
+                    // Add user message
+                    messages.value.push({ text, isUser: true });
+                    input.value = '';
+                    isLoading.value = true;
+                    await scrollToBottom();
+
+                    try {
+                        // Simulate AI response
+                        await new Promise(resolve => setTimeout(resolve, 1000));
+
+                        // Add assistant response
+                        messages.value.push({
+                            text: `Echo: ${text}`,
+                            isUser: false
+                        });
+                        await scrollToBottom();
+                    } catch (error) {
+                        console.error('Error:', error);
+                        messages.value.push({
+                            text: 'Error: Failed to get response',
+                            isUser: false
+                        });
+                    } finally {
+                        isLoading.value = false;
+                    }
+                };
+
+                const handleKeyPress = (e) => {
+                    if (e.key === 'Enter') {
+                        sendMessage();
+                    }
+                };
+
+                return {
+                    messages,
+                    input,
+                    isLoading,
+                    chatContainer,
+                    sendMessage,
+                    handleKeyPress
+                };
+            },
+            template: `
+                <div class="container">
+                    <h1>AI Kit CDN Example</h1>
+                    <span class="badge">Vue 3 + CDN</span>
+
+                    <div class="chat-container" ref="chatContainer">
+                        <div
+                            v-for="(msg, idx) in messages"
+                            :key="idx"
+                            :class="['message', msg.isUser ? 'user' : 'assistant']"
+                        >
+                            {{ msg.text }}
+                        </div>
+                        <div v-if="isLoading" class="message assistant loading">
+                            Thinking...
+                        </div>
+                    </div>
+
+                    <div class="input-group">
+                        <input
+                            type="text"
+                            v-model="input"
+                            @keypress="handleKeyPress"
+                            placeholder="Type your message..."
+                            :disabled="isLoading"
+                        />
+                        <button @click="sendMessage" :disabled="isLoading">
+                            Send
+                        </button>
+                    </div>
+
+                    <div class="info">
+                        <h3>Using AI Kit Vue from CDN</h3>
+                        <p>This example loads Vue 3 and AI Kit from CDN without any build tools.</p>
+                        <p style="margin-top: 0.5rem;">
+                            <strong>Loaded:</strong>
+                            <code>Vue</code>,
+                            <code>AIKitCore</code>,
+                            <code>AIKitVue</code>
+                        </p>
+                    </div>
+                </div>
+            `
+        }).mount('#app');
+
+        console.log('AI Kit loaded:', {
+            Vue: typeof Vue !== 'undefined',
+            AIKitCore: typeof AIKitCore !== 'undefined',
+            AIKitVue: typeof AIKitVue !== 'undefined'
+        });
+    </script>
+</body>
+</html>

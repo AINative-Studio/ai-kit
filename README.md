@@ -1,17 +1,32 @@
-# AI Kit - Enterprise AI Development Platform
+<div align="center">
+
+# AI Kit
+
+### Enterprise AI Development Platform
 
 > **The only AI SDK you need.** Multi-agent orchestration, streaming execution, RLHF instrumentation, safety guardrails, and encrypted database - all in one framework-agnostic platform.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg)](https://nodejs.org/)
-[![Tests](https://img.shields.io/badge/Tests-2000%2B%20passing-brightgreen.svg)](#test-coverage)
+[![npm version](https://img.shields.io/npm/v/@ainative/ai-kit-core.svg?style=flat-square)](https://www.npmjs.com/package/@ainative/ai-kit-core)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/AINative-Studio/ai-kit/integration-tests.yml?style=flat-square)](https://github.com/AINative-Studio/ai-kit/actions)
+[![Tests](https://img.shields.io/badge/Tests-2000%2B%20passing-brightgreen.svg?style=flat-square)](#-testing)
+[![Coverage](https://img.shields.io/badge/Coverage-95%25+-success.svg?style=flat-square)](#-testing)
+[![Node.js](https://img.shields.io/badge/Node.js-18+-green.svg?style=flat-square)](https://nodejs.org/)
+
+[Documentation](./docs/api/) • [Examples](./examples/) • [API Reference](./docs/api/) • [Discord](https://discord.gg/ainative) • [Website](https://ainative.studio/ai-kit)
+
+</div>
+
+---
 
 ## Why AI Kit?
 
 Every other AI SDK gives you **streaming** and **function calling**. That's table stakes.
 
 AI Kit gives you what you actually need in production:
+
+### Core Capabilities
 
 - **Agent Swarms** - Coordinate multiple AI agents with supervisor pattern (no competitor has this)
 - **Auto-RLHF** - Capture every interaction for model improvement without code changes
@@ -64,11 +79,30 @@ const result = await swarm.execute("Research AI safety and write a report")
 
 ---
 
-## 🚀 Quick Start
+## Installation
 
 ```bash
-npm install @ainative/ai-kit-core @ainative/ai-kit
+# Core package (framework-agnostic)
+npm install @ainative/ai-kit-core
+
+# React hooks & components
+npm install @ainative/ai-kit
+
+# Or install everything
+npm install @ainative/ai-kit-core @ainative/ai-kit @ainative/ai-kit-safety @ainative/ai-kit-tools
 ```
+
+```bash
+# Using pnpm
+pnpm add @ainative/ai-kit-core @ainative/ai-kit
+
+# Using yarn
+yarn add @ainative/ai-kit-core @ainative/ai-kit
+```
+
+---
+
+## Quick Start
 
 ### 1. Simple Streaming Chat
 
@@ -265,16 +299,35 @@ console.log(piiResult.redactedText)
 
 ---
 
-## 📦 Packages
+## Packages
 
-| Package | Description |
-|---------|-------------|
-| `@ainative/ai-kit-core` | Framework-agnostic core (agents, streaming, memory, safety, RLHF, ZeroDB) |
-| `@ainative/ai-kit` | React hooks & components |
-| `@ainative/ai-kit-video` | Video recording primitives |
-| `@ainative/ai-kit-safety` | Safety guardrails |
-| `@ainative/ai-kit-tools` | Built-in tools |
-| `@ainative/ai-kit-cli` | CLI for scaffolding projects |
+AI Kit is organized into focused, composable packages. Install only what you need:
+
+| Package | Version | Description | Size |
+|---------|---------|-------------|------|
+| [`@ainative/ai-kit-core`](./packages/core) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-core?style=flat-square) | Framework-agnostic core: agents, streaming, memory, RLHF, ZeroDB | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-core?style=flat-square) |
+| [`@ainative/ai-kit`](./packages/react) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit?style=flat-square) | React hooks & components | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit?style=flat-square) |
+| [`@ainative/ai-kit-safety`](./packages/safety) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-safety?style=flat-square) | Safety guardrails: prompt injection, content moderation, PII | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-safety?style=flat-square) |
+| [`@ainative/ai-kit-tools`](./packages/tools) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-tools?style=flat-square) | Built-in tools: web search, calculator, filesystem, etc. | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-tools?style=flat-square) |
+| [`@ainative/ai-kit-zerodb`](./packages/zerodb) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-zerodb?style=flat-square) | Encrypted database with vector search | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-zerodb?style=flat-square) |
+| [`@ainative/ai-kit-rlhf`](./packages/rlhf) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-rlhf?style=flat-square) | RLHF instrumentation & feedback collection | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-rlhf?style=flat-square) |
+| [`@ainative/ai-kit-vue`](./packages/vue) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-vue?style=flat-square) | Vue 3 composables | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-vue?style=flat-square) |
+| [`@ainative/ai-kit-svelte`](./packages/svelte) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-svelte?style=flat-square) | Svelte stores & components | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-svelte?style=flat-square) |
+| [`@ainative/ai-kit-nextjs`](./packages/nextjs) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-nextjs?style=flat-square) | Next.js 15/16 utilities & server actions | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-nextjs?style=flat-square) |
+| [`@ainative/ai-kit-video`](./packages/video) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-video?style=flat-square) | Video recording & processing primitives | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-video?style=flat-square) |
+| [`@ainative/ai-kit-auth`](./packages/auth) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-auth?style=flat-square) | Authentication & session management | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-auth?style=flat-square) |
+| [`@ainative/ai-kit-observability`](./packages/observability) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-observability?style=flat-square) | Observability, tracing & analytics | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-observability?style=flat-square) |
+| [`@ainative/ai-kit-testing`](./packages/testing) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-testing?style=flat-square) | Testing utilities for AI applications | ![size](https://img.shields.io/bundlephobia/minzip/@ainative/ai-kit-testing?style=flat-square) |
+| [`@ainative/ai-kit-cli`](./packages/cli) | ![npm](https://img.shields.io/npm/v/@ainative/ai-kit-cli?style=flat-square) | CLI for scaffolding & project management | - |
+
+### Framework Support
+
+- **React** - Full support via `@ainative/ai-kit` (React 18 & 19)
+- **Vue** - Full support via `@ainative/ai-kit-vue` (Vue 3)
+- **Svelte** - Full support via `@ainative/ai-kit-svelte` (Svelte 4 & 5)
+- **Next.js** - Enhanced support via `@ainative/ai-kit-nextjs` (Next.js 15 & 16)
+- **Vanilla JS** - Use `@ainative/ai-kit-core` directly
+- **Node.js** - Full server-side support
 
 ---
 
@@ -296,18 +349,105 @@ pnpm test:coverage     # With coverage report
 
 ---
 
-## 📚 Documentation
+## Documentation
 
-- [API Reference](./docs/api/)
-- [How-to Guides](./docs/guides/)
-- [Examples](./examples/)
+### Core Documentation
+- [API Reference](./docs/api/) - Complete API documentation
+- [Getting Started Guide](./docs/guides/getting-started.md) - Step-by-step tutorial
+- [Architecture Overview](./docs/guides/architecture.md) - System design & patterns
+- [Migration Guide](./docs/guides/migration.md) - Migrating from other SDKs
+
+### Feature Guides
+- [Multi-Agent Swarms](./docs/guides/agent-swarms.md)
+- [Memory & Context Management](./docs/guides/memory.md)
+- [Safety & Moderation](./docs/guides/safety.md)
+- [RLHF Integration](./docs/guides/rlhf.md)
+- [ZeroDB Usage](./docs/guides/zerodb.md)
+- [Streaming & Real-time](./docs/guides/streaming.md)
+
+### Framework-Specific Guides
+- [React Integration](./packages/react/README.md)
+- [Next.js Integration](./packages/nextjs/README.md)
+- [Vue Integration](./packages/vue/README.md)
+- [Svelte Integration](./packages/svelte/README.md)
+
+### Examples
+- [Basic Examples](./examples/basic/) - Simple use cases
+- [Advanced Examples](./examples/advanced/) - Production patterns
+- [Framework Examples](./examples/frameworks/) - React, Vue, Svelte, Next.js
+- [Full Applications](./examples/apps/) - Complete app templates
 
 ---
 
-## 📄 License
+## Community & Support
+
+### Get Help
+
+- **Discord** - [Join our community](https://discord.gg/ainative) for real-time help
+- **GitHub Discussions** - [Ask questions & share ideas](https://github.com/AINative-Studio/ai-kit/discussions)
+- **Stack Overflow** - Tag your questions with `ai-kit`
+- **Twitter/X** - Follow [@AINativeStudio](https://twitter.com/AINativeStudio) for updates
+
+### Contributing
+
+We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+
+- [Report a Bug](https://github.com/AINative-Studio/ai-kit/issues/new?template=bug_report.md)
+- [Request a Feature](https://github.com/AINative-Studio/ai-kit/issues/new?template=feature_request.md)
+- [Submit a Pull Request](./CONTRIBUTING.md#pull-requests)
+- [Improve Documentation](./docs/CONTRIBUTING.md)
+
+### Enterprise Support
+
+Need dedicated support, custom features, or consulting?
+
+- **Enterprise Support** - SLA-backed support with priority response
+- **Custom Development** - Tailored features for your use case
+- **Training & Consulting** - Team training and architecture consulting
+- **Private Hosting** - Self-hosted solutions with white-label options
+
+Contact us at [enterprise@ainative.studio](mailto:enterprise@ainative.studio)
+
+### Roadmap
+
+See our [public roadmap](https://github.com/AINative-Studio/ai-kit/projects/1) for upcoming features.
+
+Upcoming highlights:
+- Multi-modal support (images, audio, video)
+- Advanced function calling patterns
+- Enhanced observability & debugging tools
+- Additional LLM provider support
+- Performance optimizations
+
+---
+
+## Acknowledgments
+
+AI Kit is built with and inspired by excellent open-source projects:
+
+- [Anthropic](https://www.anthropic.com/) - Claude API & AI safety research
+- [OpenAI](https://openai.com/) - GPT models & API standards
+- [Vercel](https://vercel.com/) - Inspiration for developer experience
+- [LangChain](https://langchain.com/) - Pioneering AI orchestration patterns
+
+Special thanks to our [contributors](https://github.com/AINative-Studio/ai-kit/graphs/contributors) and the broader AI/ML community.
+
+---
+
+## License
 
 MIT © [AINative Studio](https://github.com/AINative-Studio)
 
+See [LICENSE](./LICENSE) for details.
+
 ---
 
-**Built by [AINative Studio](https://ainative.studio)**
+<div align="center">
+
+**Built with care by [AINative Studio](https://ainative.studio)**
+
+[Website](https://ainative.studio) • [Documentation](./docs/api/) • [Examples](./examples/) • [Discord](https://discord.gg/ainative) • [Twitter](https://twitter.com/AINativeStudio)
+
+**Star the repo if you find it useful!**
+
+</div>

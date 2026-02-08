@@ -1,0 +1,153 @@
+name: Question
+description: Ask a question about using AI Kit
+title: "[Question]: "
+labels: ["question", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for your question! Please provide as much context as possible to help us give you the best answer.
+
+        **Note:** For general discussions, consider using [GitHub Discussions](https://github.com/AINative-Studio/ai-kit/discussions) or [Discord](https://discord.gg/ainative) instead.
+
+  - type: dropdown
+    id: question-type
+    attributes:
+      label: Question Type
+      description: What type of question is this?
+      options:
+        - "How to implement/use a feature"
+        - "Best practices/recommendations"
+        - "Troubleshooting"
+        - "Architecture/design"
+        - "Performance optimization"
+        - "Integration with other tools"
+        - "Migration/upgrade"
+        - "Security"
+        - "Other"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which AI Kit package is your question about?
+      options:
+        - "@ainative/ai-kit-core"
+        - "@ainative/ai-kit-react"
+        - "@ainative/ai-kit-nextjs"
+        - "@ainative/ai-kit-tools"
+        - "@ainative/ai-kit-testing"
+        - "@ainative/ai-kit-vue"
+        - "@ainative/ai-kit-svelte"
+        - "@ainative/ai-kit-cli"
+        - "@ainative/ai-kit-video"
+        - "@ainative/ai-kit-community"
+        - "General"
+        - "Not sure"
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: Your Question
+      description: What would you like to know?
+      placeholder: "How do I..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Provide context about what you're trying to accomplish
+      placeholder: "I'm building an application that needs to..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: what-tried
+    attributes:
+      label: What Have You Tried?
+      description: What have you already tried or researched?
+      placeholder: |
+        - Checked the documentation at...
+        - Tried this code...
+        - Searched for similar issues...
+    validations:
+      required: false
+
+  - type: textarea
+    id: code-sample
+    attributes:
+      label: Code Sample
+      description: If relevant, provide a code sample showing what you're trying to do
+      placeholder: |
+        ```typescript
+        import { createAgent } from '@ainative/ai-kit-core';
+
+        // Your code here
+        ```
+      render: typescript
+    validations:
+      required: false
+
+  - type: input
+    id: version
+    attributes:
+      label: Package Version
+      description: What version of the package are you using?
+      placeholder: "1.0.0"
+    validations:
+      required: false
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: What environment are you working in?
+      options:
+        - "Node.js"
+        - "Browser"
+        - "Next.js"
+        - "React"
+        - "Vue"
+        - "Svelte"
+        - "Other"
+      multiple: true
+    validations:
+      required: false
+
+  - type: textarea
+    id: expected-outcome
+    attributes:
+      label: Expected Outcome
+      description: What are you hoping to achieve or learn?
+      placeholder: "I want to be able to..."
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Any other relevant information, error messages, or screenshots
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Checklist
+      description: Please confirm the following
+      options:
+        - label: I have searched the documentation and existing issues/discussions
+          required: true
+        - label: This is a specific question (not a general discussion topic)
+          required: true
+        - label: I have provided sufficient context about what I'm trying to accomplish
+          required: true

@@ -1,0 +1,31 @@
+{
+  "name": "@ainative/marketing-site",
+  "version": "1.0.0",
+  "description": "AI Kit Marketing Site - Memory Leak Free",
+  "type": "module",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "test:memory": "vitest run __tests__/memory-leak-browser.test.js",
+    "test:unit": "vitest run __tests__/memory-leak.test.js",
+    "test:coverage": "vitest run --coverage",
+    "lint": "eslint .",
+    "deploy": "cp index.fixed.html index.html && echo 'Deployed fixed version'",
+    "validate": "npm run test && npm run lint"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^1.0.4",
+    "eslint": "^8.56.0",
+    "jsdom": "^23.0.1",
+    "puppeteer": "^21.6.1",
+    "vitest": "^1.0.4"
+  },
+  "keywords": [
+    "ai",
+    "llm",
+    "marketing",
+    "memory-leak-free"
+  ],
+  "author": "AINative Studio",
+  "license": "MIT"
+}

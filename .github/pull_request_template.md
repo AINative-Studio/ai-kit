@@ -1,110 +1,101 @@
-## Summary
+## Description
 
-<!-- Provide a brief description of the changes in this PR -->
+<!-- Provide a clear and concise description of what this PR accomplishes -->
 
 ## Type of Change
 
-<!-- Mark the relevant option with an [x] -->
+<!-- Mark all that apply with an [x] -->
 
 - [ ] Bug fix (non-breaking change that fixes an issue)
 - [ ] New feature (non-breaking change that adds functionality)
-- [ ] Breaking change (fix or feature that would cause existing functionality to not work as expected)
+- [ ] Breaking change (fix or feature that would cause existing functionality to change)
 - [ ] Documentation update
 - [ ] Performance improvement
 - [ ] Code refactoring
-- [ ] Test improvements
-- [ ] CI/CD changes
-- [ ] Dependency updates
+- [ ] Dependency update
 
 ## Related Issues
 
-<!-- Link to related issues using "Closes #123" or "Fixes #123" -->
+<!-- Link related issues using keywords: "Closes #123", "Fixes #456", or "Relates to #789" -->
 
 Closes #
 
-## Changes Made
-
-<!-- List the key changes made in this PR -->
-
--
--
--
-
 ## Testing
 
-<!-- Describe the testing you've done -->
-
-### Test Coverage
+<!-- Describe the testing you've performed -->
 
 - [ ] Unit tests added/updated
 - [ ] Integration tests added/updated
 - [ ] E2E tests added/updated
+- [ ] All tests pass locally (`pnpm test`)
 - [ ] Manual testing completed
 
-### Test Results
-
-<!-- Paste relevant test output or screenshots -->
+<details>
+<summary>Test Results (optional)</summary>
 
 ```
-# Test results here
+# Paste test output, coverage reports, or benchmark results here
 ```
 
-## Breaking Changes
-
-<!-- If this is a breaking change, describe the impact and migration path -->
-
-- [ ] This PR includes breaking changes
-- [ ] Migration guide included in documentation
+</details>
 
 ## Documentation
 
-<!-- Check all that apply -->
+<!-- Ensure documentation reflects your changes -->
 
-- [ ] Code comments added/updated
-- [ ] API documentation added/updated
-- [ ] README updated
-- [ ] Changelog updated
-- [ ] Migration guide added (if breaking change)
+- [ ] Code comments added for complex logic
+- [ ] API documentation updated (if applicable)
+- [ ] README updated (if applicable)
+- [ ] TypeScript types/interfaces documented
+- [ ] Migration guide added (for breaking changes)
 
-## Screenshots/Videos
+## Breaking Changes
 
-<!-- If applicable, add screenshots or videos demonstrating the changes -->
+<!-- If this PR introduces breaking changes, describe them here -->
 
-## Performance Impact
+**Does this PR introduce breaking changes?**
+- [ ] Yes
+- [ ] No
 
-<!-- Describe any performance implications of this change -->
+<details>
+<summary>Breaking Changes Details (if applicable)</summary>
 
-- [ ] No performance impact
-- [ ] Performance improved
-- [ ] Performance benchmarks included
+<!--
+Describe:
+- What functionality breaks?
+- Why was this change necessary?
+- How should users migrate their code?
+- What's the deprecation timeline (if any)?
+-->
 
-## Security Considerations
+</details>
 
-<!-- Describe any security implications of this change -->
+## Screenshots / Videos
 
-- [ ] No security impact
-- [ ] Security review completed
-- [ ] Dependency vulnerabilities checked
+<!-- If your changes affect UI, behavior, or output, add visual documentation -->
+
+<details>
+<summary>Visual Changes (if applicable)</summary>
+
+<!--
+Add screenshots, videos, or GIFs here
+You can drag and drop images directly into this text area
+-->
+
+</details>
 
 ## Checklist
 
-<!-- Ensure all items are checked before requesting review -->
+<!-- Review these items before requesting review -->
 
-- [ ] I have read the [CONTRIBUTING.md](./docs/contributing/CONTRIBUTING.md) guidelines
-- [ ] My code follows the project's code style
+- [ ] My code follows the project's style guidelines
 - [ ] I have performed a self-review of my code
-- [ ] I have commented my code, particularly in hard-to-understand areas
-- [ ] I have made corresponding changes to the documentation
+- [ ] I have commented my code in hard-to-understand areas
 - [ ] My changes generate no new warnings or errors
-- [ ] I have added tests that prove my fix is effective or that my feature works
-- [ ] New and existing unit tests pass locally with my changes
-- [ ] Any dependent changes have been merged and published
-- [ ] I have checked my code and corrected any misspellings
-- [ ] All CI checks are passing
-
-## Additional Notes
-
-<!-- Add any additional notes for reviewers -->
+- [ ] I have added tests that prove my fix/feature works
+- [ ] New and existing tests pass locally
+- [ ] Any dependent changes have been merged
+- [ ] I have checked for typos and misspellings
 
 ---
 

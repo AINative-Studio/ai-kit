@@ -18,6 +18,20 @@ interface AIStreamConfig extends StreamConfig, Partial<StreamCallbacks> {
 }
 
 /**
+ * Event types emitted by AIStream
+ */
+export interface AIStreamEvents {
+  message: (message: Message) => void
+  'streaming-start': () => void
+  'streaming-end': () => void
+  error: (error: Error) => void
+  usage: (usage: Usage) => void
+  reset: () => void
+  token: (token: string) => void
+  retry: (info: { attempt: number; delay: number }) => void
+}
+
+/**
  * Core AI streaming client - framework-agnostic
  * Handles SSE and WebSocket transports with automatic reconnection
  */
@@ -39,6 +53,36 @@ export class AIStream extends EventEmitter {
     super()
     // Options configuration - reserved for future use
     // (WebSocket support, custom reconnection strategies, etc.)
+  }
+
+  // EventEmitter method declarations for proper type inference
+  override on<K extends keyof AIStreamEvents>(event: K, listener: AIStreamEvents[K]): this
+  override on(event: string | symbol, listener: (...args: any[]) => void): this {
+    return super.on(event, listener)
+  }
+
+  override emit<K extends keyof AIStreamEvents>(event: K, ...args: Parameters<AIStreamEvents[K]>): boolean
+  override emit(event: string | symbol, ...args: any[]): boolean {
+    return super.emit(event, ...args)
+  }
+
+  override once<K extends keyof AIStreamEvents>(event: K, listener: AIStreamEvents[K]): this
+  override once(event: string | symbol, listener: (...args: any[]) => void): this {
+    return super.once(event, listener)
+  }
+
+  override off<K extends keyof AIStreamEvents>(event: K, listener: AIStreamEvents[K]): this
+  override off(event: string | symbol, listener: (...args: any[]) => void): this {
+    return super.off(event, listener)
+  }
+
+  override removeListener<K extends keyof AIStreamEvents>(event: K, listener: AIStreamEvents[K]): this
+  override removeListener(event: string | symbol, listener: (...args: any[]) => void): this {
+    return super.removeListener(event, listener)
+  }
+
+  override removeAllListeners(event?: string | symbol): this {
+    return super.removeAllListeners(event)
   }
 
   /**

@@ -1,24 +1,6 @@
 import { ref, onMounted, onUnmounted, Ref } from 'vue'
 import { AIStream } from '@ainative/ai-kit-core'
-
-// Temporary type definitions until core DTS is fixed
-type Message = {
-  id: string
-  role: 'user' | 'assistant' | 'system'
-  content: string
-  timestamp: number
-}
-
-type Usage = {
-  promptTokens: number
-  completionTokens: number
-  totalTokens: number
-}
-
-type StreamConfig = {
-  endpoint: string
-  [key: string]: any
-}
+import type { Message, Usage, StreamConfig } from '@ainative/ai-kit-core'
 
 export interface UseAIStreamResult {
   messages: Ref<Message[]>

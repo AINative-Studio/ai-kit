@@ -3,9 +3,12 @@ contact_links:
   - name: Documentation
     url: https://github.com/AINative-Studio/ai-kit#readme
     about: Check the documentation for guides and API references
-  - name: Discussions
+  - name: GitHub Discussions
     url: https://github.com/AINative-Studio/ai-kit/discussions
     about: Ask questions and discuss ideas with the community
   - name: Discord Community
     url: https://discord.gg/ainative
     about: Join our Discord server for real-time help and community support
+  - name: Security Issues
+    url: https://github.com/AINative-Studio/ai-kit/security/advisories/new
+    about: Report security vulnerabilities privately
