@@ -60,7 +60,6 @@
     "@ainative/ai-kit-core": "workspace:*",
     "isolated-vm": "^5.0.0",
     "mathjs": "^15.1.0",
-    "vm2": "^3.10.0",
     "zod": "^3.22.4"
   },
   "devDependencies": {
