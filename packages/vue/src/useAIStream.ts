@@ -1,16 +1,16 @@
-import { ref, onMounted, onUnmounted, Ref } from 'vue'
+import { shallowRef, onMounted, onUnmounted, type ShallowRef } from 'vue'
 import { AIStream } from '@ainative/ai-kit-core'
 import type { Message, Usage, StreamConfig } from '@ainative/ai-kit-core'
 
 export interface UseAIStreamResult {
-  messages: Ref<Message[]>
-  isStreaming: Ref<boolean>
-  error: Ref<Error | null>
+  messages: ShallowRef<Message[]>
+  isStreaming: ShallowRef<boolean>
+  error: ShallowRef<Error | null>
   send: (content: string) => Promise<void>
   reset: () => void
   retry: () => Promise<void>
   stop: () => void
-  usage: Ref<Usage>
+  usage: ShallowRef<Usage>
 }
 
 /**
@@ -18,10 +18,10 @@ export interface UseAIStreamResult {
  * Manages messages state and streaming lifecycle automatically using Composition API
  */
 export function useAIStream(config: StreamConfig): UseAIStreamResult {
-  const messages = ref<Message[]>([])
-  const isStreaming = ref(false)
-  const error = ref<Error | null>(null)
-  const usage = ref<Usage>({
+  const messages = shallowRef<Message[]>([])
+  const isStreaming = shallowRef(false)
+  const error = shallowRef<Error | null>(null)
+  const usage = shallowRef<Usage>({
     promptTokens: 0,
     completionTokens: 0,
     totalTokens: 0,
@@ -35,13 +35,15 @@ export function useAIStream(config: StreamConfig): UseAIStreamResult {
 
     // Listen to events
     stream.on('message', (message: Message) => {
-      const existing = messages.value.find((m) => m.id === message.id)
-      if (existing) {
-        messages.value = messages.value.map((m) =>
-          m.id === message.id ? message : m
-        )
+      const currentMessages: Message[] = messages.value
+      const existingIndex = currentMessages.findIndex((m) => m.id === message.id)
+
+      if (existingIndex !== -1) {
+        const updatedMessages = [...currentMessages]
+        updatedMessages[existingIndex] = message
+        messages.value = updatedMessages
       } else {
-        messages.value = [...messages.value, message]
+        messages.value = [...currentMessages, message]
       }
     })
 
