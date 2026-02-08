@@ -12,3 +12,18 @@ coverage/
 # Private development folders (not for public repos)
 .ainative/
 .claude/
+
+# Temporary files and reports
+*.bak
+*.backup
+*-BACKUP-*
+AGENT-*.md
+ISSUE-*.md
+PR*_FIX_REPORT.md
+PRODUCTION-READINESS*.md
+PRODUCTION-READINESS*.txt
+SECURITY-FIX-REPORT.md
+TEST_VALIDATION_REPORT.md
+V1.0-RELEASE-APPROVAL.md
+edge-case-tests.txt
+**/manual-test-*.html
