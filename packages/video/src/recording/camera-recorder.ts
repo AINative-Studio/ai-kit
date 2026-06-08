@@ -37,6 +37,11 @@ export interface CameraRecorderOptions {
   facingMode?: FacingMode
 
   /**
+   * Specific device ID to use (from enumerateDevices)
+   */
+  deviceId?: string
+
+  /**
    * Custom video constraints (overrides resolution preset)
    */
   videoConstraints?: MediaTrackConstraints
@@ -101,7 +106,7 @@ export class CameraRecorder {
    * @private
    */
   private buildConstraints(): MediaStreamConstraints {
-    const { resolution, audio, frameRate, aspectRatio, facingMode, videoConstraints } = this.options
+    const { resolution, audio, frameRate, aspectRatio, facingMode, deviceId, videoConstraints } = this.options
 
     // Use custom constraints if provided
     if (videoConstraints) {
@@ -130,6 +135,10 @@ export class CameraRecorder {
 
     if (facingMode !== undefined) {
       videoOptions.facingMode = { ideal: facingMode }
+    }
+
+    if (deviceId !== undefined) {
+      videoOptions.deviceId = { exact: deviceId }
     }
 
     return {
@@ -185,6 +194,23 @@ export class CameraRecorder {
    */
   getCurrentStream(): MediaStream | null {
     return this.stream
+  }
+
+  /**
+   * Set the device ID for a specific camera
+   * Call stop() then getStream() to apply the change
+   * @param deviceId - The device ID from navigator.mediaDevices.enumerateDevices()
+   */
+  setDeviceId(deviceId: string): void {
+    this.options.deviceId = deviceId
+  }
+
+  /**
+   * Set the resolution
+   * Call stop() then getStream() to apply the change
+   */
+  setResolution(resolution: Resolution): void {
+    this.options.resolution = resolution
   }
 }
 

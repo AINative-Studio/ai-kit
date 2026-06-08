@@ -24,6 +24,7 @@ export class AudioRecorder {
       noiseCancellation = true,
       echoCancellation = true,
       sampleRate = 44100,
+      deviceId,
     } = options;
 
     // Build audio constraints
@@ -32,6 +33,10 @@ export class AudioRecorder {
       noiseSuppression: noiseCancellation,
       sampleRate,
     };
+
+    if (deviceId) {
+      audioConstraints.deviceId = { exact: deviceId };
+    }
 
     // Get user media stream
     this.stream = await navigator.mediaDevices.getUserMedia({

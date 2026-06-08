@@ -35,6 +35,8 @@ export interface AudioRecordingOptions {
   noiseCancellation?: boolean;
   echoCancellation?: boolean;
   sampleRate?: 44100 | 48000;
+  /** Specific microphone device ID (from enumerateDevices) */
+  deviceId?: string;
 }
 
 // Screen Recording Types
