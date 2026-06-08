@@ -400,4 +400,86 @@ describe('CameraRecorder', () => {
       await expect(recorder.getStream()).rejects.toThrow('Request was aborted')
     })
   })
+
+  describe('Device Selection (deviceId)', () => {
+    it('should pass deviceId as exact constraint to getUserMedia', async () => {
+      const recorder = new CameraRecorder({ deviceId: 'camera-device-123' })
+      await recorder.getStream()
+
+      expect(getUserMediaSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          video: expect.objectContaining({
+            deviceId: { exact: 'camera-device-123' },
+          }),
+        })
+      )
+    })
+
+    it('should not include deviceId when not provided', async () => {
+      const recorder = new CameraRecorder({ resolution: '720p' })
+      await recorder.getStream()
+
+      const call = getUserMediaSpy.mock.calls[0][0]
+      expect(call.video.deviceId).toBeUndefined()
+    })
+
+    it('should combine deviceId with resolution constraints', async () => {
+      const recorder = new CameraRecorder({
+        resolution: '1080p',
+        deviceId: 'specific-cam',
+      })
+      await recorder.getStream()
+
+      expect(getUserMediaSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          video: expect.objectContaining({
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+            deviceId: { exact: 'specific-cam' },
+          }),
+        })
+      )
+    })
+
+    it('should update deviceId via setDeviceId', async () => {
+      const recorder = new CameraRecorder()
+      recorder.setDeviceId('new-camera-456')
+
+      await recorder.getStream()
+
+      expect(getUserMediaSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          video: expect.objectContaining({
+            deviceId: { exact: 'new-camera-456' },
+          }),
+        })
+      )
+    })
+
+    it('should update resolution via setResolution', async () => {
+      const recorder = new CameraRecorder({ resolution: '720p' })
+      recorder.setResolution('4K')
+
+      await recorder.getStream()
+
+      expect(getUserMediaSpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          video: expect.objectContaining({
+            width: { ideal: 3840 },
+            height: { ideal: 2160 },
+          }),
+        })
+      )
+    })
+
+    it('should handle OverconstrainedError when deviceId is invalid', async () => {
+      const error = new Error('Could not satisfy mandatory constraints')
+      error.name = 'OverconstrainedError'
+      getUserMediaSpy.mockRejectedValueOnce(error)
+
+      const recorder = new CameraRecorder({ deviceId: 'nonexistent-device' })
+
+      await expect(recorder.getStream()).rejects.toThrow('Could not satisfy mandatory constraints')
+    })
+  })
 })

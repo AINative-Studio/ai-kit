@@ -169,4 +169,43 @@ describe('AudioRecorder', () => {
       expect(recorder.isNoiseCancellationEnabled()).toBe(false);
     });
   });
+
+  describe('Device Selection (deviceId)', () => {
+    it('should pass deviceId as exact constraint to getUserMedia', async () => {
+      const mockStream = new MediaStream();
+      const getUserMediaMock = vi.fn().mockResolvedValue(mockStream);
+      Object.defineProperty(global.navigator, 'mediaDevices', {
+        writable: true,
+        configurable: true,
+        value: { getUserMedia: getUserMediaMock, enumerateDevices: vi.fn() }
+      });
+
+      recorder = new AudioRecorder();
+      await recorder.startRecording({ deviceId: 'mic-device-789' });
+
+      expect(getUserMediaMock).toHaveBeenCalledWith(
+        expect.objectContaining({
+          audio: expect.objectContaining({
+            deviceId: { exact: 'mic-device-789' },
+          }),
+        })
+      );
+    });
+
+    it('should not include deviceId when not provided', async () => {
+      const mockStream = new MediaStream();
+      const getUserMediaMock = vi.fn().mockResolvedValue(mockStream);
+      Object.defineProperty(global.navigator, 'mediaDevices', {
+        writable: true,
+        configurable: true,
+        value: { getUserMedia: getUserMediaMock, enumerateDevices: vi.fn() }
+      });
+
+      recorder = new AudioRecorder();
+      await recorder.startRecording({});
+
+      const call = getUserMediaMock.mock.calls[0][0];
+      expect(call.audio.deviceId).toBeUndefined();
+    });
+  });
 });
