@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit-vue",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "AI Kit - Vue 3 composables for building AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
