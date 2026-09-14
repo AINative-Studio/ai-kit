@@ -1,6 +1,6 @@
 {
   "name": "@ainative/ai-kit",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "AI Kit - React hooks and components for building AI-powered applications",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
