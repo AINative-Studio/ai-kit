@@ -2,26 +2,37 @@
 /**
  * Prepare packages for publishing by resolving workspace:* dependencies
  * This script creates backups and can be reversed with restore-workspace-deps.ts
+ *
+ * IMPORTANT: backups MUST be taken of the ORIGINAL (workspace:*) files,
+ * before resolveWorkspaceDependencies() mutates them in place. A previous
+ * version of this script called resolveWorkspaceDependencies() first and
+ * only backed up afterward, which silently backed up the already-resolved
+ * (real-semver) package.json files instead of the originals. That made
+ * `restore-workspace-deps.ts` a no-op that appeared to work (it copied a
+ * file back over itself) while never actually restoring the workspace:*
+ * protocol — root cause contributor to insyteful issue #77 / the
+ * @ainative/ai-kit EUNSUPPORTEDPROTOCOL bug: the working tree could be left
+ * permanently pinned to real versions after a release with no working way
+ * back to workspace:* short of `git checkout`.
  */
 
-import { resolveWorkspaceDependencies } from './workspace-dependency-resolver';
-import { copyFileSync, existsSync, mkdirSync } from 'fs';
+import { findAllPackageJsonFiles, resolveWorkspaceDependencies } from './workspace-dependency-resolver';
+import { copyFileSync, existsSync, mkdirSync, readFileSync } from 'fs';
 import { join } from 'path';
 
 const BACKUP_DIR = join(process.cwd(), '.workspace-backup');
 
-function createBackups(details: any[]): void {
+function createBackupsOfOriginals(rootDir: string): void {
   if (!existsSync(BACKUP_DIR)) {
     mkdirSync(BACKUP_DIR, { recursive: true });
   }
 
-  console.log('\nCreating backups...');
-  for (const detail of details) {
-    if (detail.replacements.length > 0) {
-      const backupPath = join(BACKUP_DIR, detail.package.replace(/\//g, '-') + '.json');
-      copyFileSync(detail.path, backupPath);
-      console.log(`  Backed up: ${detail.package}`);
-    }
+  console.log('\nCreating backups of original package.json files...');
+  for (const file of findAllPackageJsonFiles(rootDir)) {
+    const pkg = JSON.parse(readFileSync(file, 'utf-8'));
+    const backupPath = join(BACKUP_DIR, pkg.name.replace(/\//g, '-') + '.json');
+    copyFileSync(file, backupPath);
+    console.log(`  Backed up: ${pkg.name}`);
   }
 }
 
@@ -32,14 +43,16 @@ function main(): void {
   console.log('   Preparing Packages for Publishing');
   console.log('==================================================\n');
 
+  // Back up every package.json BEFORE mutating any of them, so restoration
+  // always has the true original (workspace:*) state to fall back to.
+  createBackupsOfOriginals(rootDir);
+
   const result = resolveWorkspaceDependencies(rootDir);
 
   console.log(`\nPackages processed: ${result.packagesProcessed}`);
   console.log(`Total replacements: ${result.totalReplacements}`);
 
   if (result.totalReplacements > 0) {
-    createBackups(result.details);
-
     console.log('\nReplacements made:');
     for (const detail of result.details) {
       if (detail.replacements.length > 0) {
