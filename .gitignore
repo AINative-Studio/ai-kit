@@ -9,6 +9,10 @@ coverage/
 .vscode/
 .idea/
 
+# Publish-time workspace:* backup (created by scripts/prepare-publish.ts,
+# consumed by scripts/restore-workspace-deps.ts) — never commit this
+.workspace-backup/
+
 # Private development folders (not for public repos)
 .ainative/
 .claude/

@@ -4,8 +4,9 @@
  * Use this after publishing to revert to workspace protocol
  */
 
-import { readdirSync, copyFileSync, existsSync, rmSync } from 'fs';
+import { readdirSync, readFileSync, copyFileSync, existsSync, rmSync } from 'fs';
 import { join } from 'path';
+import { findAllPackageJsonFiles } from './workspace-dependency-resolver';
 
 const BACKUP_DIR = join(process.cwd(), '.workspace-backup');
 
@@ -28,28 +29,37 @@ function main(): void {
 
   console.log(`Found ${backupFiles.length} backup(s) to restore:\n`);
 
-  for (const backupFile of backupFiles) {
-    const packageName = backupFile.replace('.json', '').replace(/-/g, '/');
-    const backupPath = join(BACKUP_DIR, backupFile);
-
-    // Find the original package.json location
-    const possiblePaths = [
-      join(process.cwd(), 'packages', packageName.split('/').pop()!, 'package.json'),
-      join(process.cwd(), 'packages', packageName.replace('@ainative/ai-kit-', ''), 'package.json'),
-      join(process.cwd(), 'packages', packageName.replace('@ainative/', ''), 'package.json')
-    ];
-
-    let restored = false;
-    for (const targetPath of possiblePaths) {
-      if (existsSync(targetPath)) {
-        copyFileSync(backupPath, targetPath);
-        console.log(`  Restored: ${packageName}`);
-        restored = true;
-        break;
+  // Build a name -> path index of every real package.json in the workspace,
+  // so restoration doesn't depend on reverse-engineering the package name
+  // from its backup filename (previously `.replace(/-/g, '/')`, which is
+  // not a true inverse of `.replace(/\//g, '-')` for any package whose name
+  // contains a hyphen, e.g. "@ainative/ai-kit" or
+  // "@ainative/ai-kit-design-system" — those silently failed to restore).
+  const packageJsonFiles = findAllPackageJsonFiles(process.cwd());
+  const pathsByName = new Map<string, string>();
+  for (const file of packageJsonFiles) {
+    try {
+      const pkg = JSON.parse(readFileSync(file, 'utf-8'));
+      if (pkg.name) {
+        pathsByName.set(pkg.name, file);
       }
+    } catch {
+      // Skip malformed package.json files
+      continue;
     }
+  }
 
-    if (!restored) {
+  for (const backupFile of backupFiles) {
+    const backupPath = join(BACKUP_DIR, backupFile);
+    const backedUpPkg = JSON.parse(readFileSync(backupPath, 'utf-8'));
+    const packageName = backedUpPkg.name;
+
+    const targetPath = pathsByName.get(packageName);
+
+    if (targetPath && existsSync(targetPath)) {
+      copyFileSync(backupPath, targetPath);
+      console.log(`  Restored: ${packageName}`);
+    } else {
       console.warn(`  Warning: Could not find target for ${packageName}`);
     }
   }

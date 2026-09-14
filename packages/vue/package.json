@@ -25,7 +25,8 @@
     "test:coverage": "vitest --coverage",
     "type-check": "tsc --noEmit",
     "lint": "eslint src",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "prepublishOnly": "tsx ../../scripts/check-no-workspace-protocol.ts"
   },
   "keywords": [
     "ainative",
