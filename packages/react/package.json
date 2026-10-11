@@ -31,7 +31,7 @@
     "type-check": "tsc --noEmit",
     "lint": "eslint src",
     "clean": "rm -rf dist",
-    "prepublishOnly": "tsx ../../scripts/check-no-workspace-protocol.ts"
+    "prepublishOnly": "tsx ../../scripts/check-no-workspace-protocol.ts && tsx ../../scripts/check-dist-has-types.ts"
   },
   "keywords": [
     "ainative",
