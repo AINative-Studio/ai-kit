@@ -33,7 +33,7 @@ export abstract class BaseTransport extends EventEmitter implements Transport {
   protected state: TransportState = 'idle'
   protected config: TransportConfig
   protected reconnectAttempt = 0
-  protected reconnectTimeout?: NodeJS.Timeout
+  protected reconnectTimeout?: ReturnType<typeof setTimeout>
   protected intentionallyClosed = false
   protected messageBuffer: MessageBuffer
   protected paused = false

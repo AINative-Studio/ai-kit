@@ -40,7 +40,7 @@ export class SessionManager {
   private maxSessionsPerUser: number
   private enableLocking: boolean
   private lockTimeout: number
-  private cleanupInterval?: NodeJS.Timeout
+  private cleanupInterval?: ReturnType<typeof setTimeout>
   private eventListeners: Map<SessionEvent, Set<SessionEventListener>>
 
   constructor(config: SessionConfig) {

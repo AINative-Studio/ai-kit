@@ -30,7 +30,7 @@ export class StreamingResponse {
   private response: ResponseLike;
   private options: StreamingOptions;
   private isActive: boolean = false;
-  private heartbeatTimer?: NodeJS.Timeout;
+  private heartbeatTimer?: ReturnType<typeof setTimeout>;
   private messageCount: number = 0;
 
   /**

@@ -239,9 +239,14 @@ export class AuthError extends Error {
     this.originalError = originalError;
     this.details = details;
 
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
-    if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, AuthError);
+    // Maintains proper stack trace for where our error was thrown (only
+    // available on V8). Cast through unknown: captureStackTrace is a V8
+    // extension not declared on ErrorConstructor in lib.dom.d.ts, so this
+    // needs the cast to type-check under a browser-platform build even
+    // though the runtime check below is already environment-safe.
+    const errorCtor = Error as unknown as { captureStackTrace?: (target: object, ctor: unknown) => void };
+    if (errorCtor.captureStackTrace) {
+      errorCtor.captureStackTrace(this, AuthError);
     }
   }
 }

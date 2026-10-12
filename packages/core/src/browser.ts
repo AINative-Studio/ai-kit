@@ -57,7 +57,7 @@ export type {
 export { ConversationStore } from './store/ConversationStore'
 export { MemoryStore as ConvMemoryStore } from './store/MemoryStore'
 export { ZeroDBStore } from './store/ZeroDBStore'
-export { createStore, isMemoryStore, isZeroDBStore } from './store/createStore'
+export { createBrowserStore as createStore, isMemoryStore, isZeroDBStore } from './store/createBrowserStore'
 // Export store types explicitly to avoid MemoryStoreConfig conflict with memory/types
 export type {
   Conversation,
@@ -117,8 +117,14 @@ export type {
   UpdateMemoryOptions,
 } from './memory/types'
 
-// Session - export only in-memory and ZeroDB stores (no Redis)
-export { SessionManager } from './session/SessionManager'
+// Session - export only in-memory and ZeroDB stores (no Redis).
+// SessionManager itself is NOT exported here: its private createStore()
+// statically imports RedisSessionStore (ioredis) regardless of which
+// backend a caller actually selects, and its optional AES encryption
+// (createCipheriv/createDecipheriv) has no browser equivalent either -
+// see Refs #206. Available from '@ainative/ai-kit-core/server'. Tracked
+// for a real fix (dependency injection for both the store backend and the
+// encryption provider) in a follow-up issue.
 export { InMemorySessionStore } from './session/InMemorySessionStore'
 export { ZeroDBSessionStore } from './session/ZeroDBSessionStore'
 // Export session types explicitly to avoid StorageBackend conflict
@@ -166,8 +172,14 @@ export type {
   TransactionOptions,
 } from './zerodb/types'
 
-// RLHF - export only memory storage (no local file storage)
-export { RLHFLogger } from './rlhf/RLHFLogger'
+// RLHF - export only memory storage (no local file storage).
+// RLHFLogger itself is NOT exported here: its createStorageBackend()
+// statically imports LocalStorage (fs/path/zlib/stream-promises) regardless
+// of which backend a caller actually selects, so it cannot be bundled into
+// a browser build at all today - see Refs #206. Available from
+// '@ainative/ai-kit-core/server'. Tracked for a real fix (dependency
+// injection so the Node-only storage backend isn't a static import) in
+// a follow-up issue.
 export { RLHFInstrumentation } from './rlhf/RLHFInstrumentation'
 export { MemoryStorage as RLHFMemoryStorage } from './rlhf/storage/MemoryStorage'
 export { ZeroDBStorage as RLHFZeroDBStorage } from './rlhf/storage/ZeroDBStorage'
