@@ -27,6 +27,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.4] - 2025-12-12
+
+### Fixed
+- Made `tiktoken` an optional dependency so packages build in browser environments without a native Node tokenizer available (Issue #98)
+- Completed the Vue CLI template with a proper Vite setup
+- Completed the Svelte CLI template with proper TypeScript config and component structure (Issue #78)
+- Added `tsup.config.ts` and real library code to the TypeScript-library CLI template (Issue #76)
+- Completed Zod schema conversion for OpenAI function calling
+- Normalized `repository` URLs to `git+` format across every package's `package.json`
+- Fixed flaky tests in the Vue and tools packages, and a flaky `QueryMonitor` test (switched to fake timers)
+
+### Added
+- React 19 peer dependency support
+
+### Changed
+- Reorganized documentation structure and updated the README
+
+---
+
 ## [0.2.0] - 2026-02-08
 
 ### Added
