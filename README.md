@@ -83,6 +83,12 @@ const result = await swarm.execute("Research AI safety and write a report")
 
 ---
 
+## Prerequisites
+
+- **Node.js** >= 18.0.0
+- **pnpm** >= 8.0.0 (required to work on this repo itself; not required for consumers just installing published packages via npm/pnpm/yarn)
+- A TypeScript project is recommended but not required — all packages ship both ESM and CJS builds with type declarations for TypeScript consumers, and plain JS usage works too.
+
 ## Installation
 
 ```bash
