@@ -54,7 +54,7 @@ export class AINativeAuthProvider {
   private config: Required<AuthConfig>;
   private session: AuthSession;
   private eventListeners: Map<AuthEventType, Set<AuthEventListener>>;
-  private refreshTimer?: NodeJS.Timeout;
+  private refreshTimer?: ReturnType<typeof setTimeout>;
   private refreshPromise?: Promise<void>;
   private storageAdapter?: StorageAdapter;
   private customHeaders: Record<string, string>;

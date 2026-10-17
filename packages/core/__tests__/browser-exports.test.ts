@@ -64,15 +64,20 @@ describe('Browser Entry Point Exports', () => {
   })
 
   describe('Session exports', () => {
-    it('should export session manager and stores', async () => {
-      const { SessionManager, InMemorySessionStore, ZeroDBSessionStore } = await import('../src/browser')
+    it('should export in-memory and ZeroDB session stores, but not SessionManager', async () => {
+      // SessionManager itself is intentionally NOT exported from the browser
+      // entry: its private createStore() statically imports
+      // RedisSessionStore (pulls in ioredis), and its optional AES
+      // encryption has no browser equivalent either. Available from
+      // '@ainative/ai-kit-core/server' instead - Refs #206.
+      const browserModule = await import('../src/browser')
+      const { InMemorySessionStore, ZeroDBSessionStore } = browserModule
 
-      expect(SessionManager).toBeDefined()
-      expect(typeof SessionManager).toBe('function')
       expect(InMemorySessionStore).toBeDefined()
       expect(typeof InMemorySessionStore).toBe('function')
       expect(ZeroDBSessionStore).toBeDefined()
       expect(typeof ZeroDBSessionStore).toBe('function')
+      expect(browserModule).not.toHaveProperty('SessionManager')
     })
   })
 
@@ -108,13 +113,18 @@ describe('Browser Entry Point Exports', () => {
   })
 
   describe('RLHF exports', () => {
-    it('should export RLHF logger and instrumentation', async () => {
-      const { RLHFLogger, RLHFInstrumentation } = await import('../src/browser')
+    it('should export RLHF instrumentation, but not RLHFLogger', async () => {
+      // RLHFLogger itself is intentionally NOT exported from the browser
+      // entry: its private createStorageBackend() statically imports
+      // LocalStorage (fs/path/zlib/stream-promises) regardless of which
+      // backend a caller actually selects. Available from
+      // '@ainative/ai-kit-core/server' instead - Refs #206.
+      const browserModule = await import('../src/browser')
+      const { RLHFInstrumentation } = browserModule
 
-      expect(RLHFLogger).toBeDefined()
-      expect(typeof RLHFLogger).toBe('function')
       expect(RLHFInstrumentation).toBeDefined()
       expect(typeof RLHFInstrumentation).toBe('function')
+      expect(browserModule).not.toHaveProperty('RLHFLogger')
     })
 
     it('should export RLHF storage classes', async () => {

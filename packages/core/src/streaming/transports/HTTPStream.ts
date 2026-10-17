@@ -20,7 +20,7 @@ export class HTTPStreamTransport extends BaseTransport {
 
   private abortController?: AbortController
   private reader?: ReadableStreamDefaultReader<Uint8Array>
-  private longPollingTimeout?: NodeJS.Timeout
+  private longPollingTimeout?: ReturnType<typeof setTimeout>
 
   constructor(config: TransportConfig) {
     super({

@@ -43,8 +43,8 @@ export interface TransportPoolConfig {
 export class TransportManager extends EventEmitter {
   private transports: Map<string, Transport> = new Map()
   private config: Required<TransportPoolConfig>
-  private healthCheckInterval?: NodeJS.Timeout
-  private cleanupInterval?: NodeJS.Timeout
+  private healthCheckInterval?: ReturnType<typeof setTimeout>
+  private cleanupInterval?: ReturnType<typeof setTimeout>
 
   constructor(config: TransportPoolConfig = {}) {
     super()

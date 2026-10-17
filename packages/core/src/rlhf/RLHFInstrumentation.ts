@@ -54,7 +54,7 @@ export class RLHFInstrumentation extends EventEmitter {
   private metrics: InstrumentationMetrics
   private customInstrumentors: CustomInstrumentor[] = []
   private middleware: InstrumentationMiddleware[] = []
-  private flushTimer?: NodeJS.Timeout
+  private flushTimer?: ReturnType<typeof setTimeout>
   private activeInteractions: Map<string, {
     prompt: Message
     startTime: number

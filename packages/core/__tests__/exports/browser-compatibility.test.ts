@@ -58,22 +58,17 @@ describe('Browser-compatible exports', () => {
       expect(exports).not.toHaveProperty('RLHFLocalStorage')
     })
 
-    it('should export session manager with in-memory store only', async () => {
-      const { SessionManager, InMemorySessionStore } = await import('../../src/browser')
+    it('should export the in-memory session store, but not SessionManager', async () => {
+      // SessionManager is server-only (Refs #206) - construct
+      // InMemorySessionStore directly for a browser-safe equivalent.
+      const browserModule = await import('../../src/browser')
+      const { InMemorySessionStore } = browserModule
 
-      expect(SessionManager).toBeDefined()
       expect(InMemorySessionStore).toBeDefined()
+      expect(browserModule).not.toHaveProperty('SessionManager')
 
-      // Create session manager with in-memory store
-      const sessionManager = new SessionManager({
-        store: {
-          type: 'memory',
-          keyPrefix: 'test:session:'
-        },
-        ttl: 3600000
-      })
-
-      expect(sessionManager).toBeDefined()
+      const store = new InMemorySessionStore()
+      expect(store).toBeDefined()
     })
 
     it('should export context and summarization utilities', async () => {
@@ -108,10 +103,11 @@ describe('Browser-compatible exports', () => {
       expect(ZeroDBQueryBuilder).toBeDefined()
     })
 
-    it('should export RLHF with memory storage only', async () => {
-      const { RLHFLogger, RLHFInstrumentation, RLHFMemoryStorage } = await import('../../src/browser')
+    it('should export RLHF instrumentation and memory storage only, not RLHFLogger', async () => {
+      // RLHFLogger is server-only (its createStorageBackend() can select
+      // LocalStorage, which has no browser equivalent) - Refs #206.
+      const { RLHFInstrumentation, RLHFMemoryStorage } = await import('../../src/browser')
 
-      expect(RLHFLogger).toBeDefined()
       expect(RLHFInstrumentation).toBeDefined()
       expect(RLHFMemoryStorage).toBeDefined()
     })
@@ -163,7 +159,13 @@ describe('Browser-compatible exports', () => {
     it('should provide complete API for client-side AI applications', async () => {
       const browserExports = await import('../../src/browser')
 
-      // Core functionality that should be available
+      // Core functionality that should be available. SessionManager and
+      // RLHFLogger are deliberately excluded: both statically import a
+      // Node-only dependency (RedisSessionStore/ioredis,
+      // LocalStorage/fs) with no browser equivalent - Refs #206. Use
+      // InMemorySessionStore/ZeroDBSessionStore and RLHFInstrumentation/
+      // RLHFMemoryStorage/RLHFZeroDBStorage instead, or import
+      // SessionManager/RLHFLogger from '@ainative/ai-kit-core/server'.
       const requiredExports = [
         'AIStream',
         'Agent',
@@ -172,10 +174,8 @@ describe('Browser-compatible exports', () => {
         'MemoryStore',
         'ConversationStore',
         'ContextManager',
-        'SessionManager',
         'AINativeAuthProvider',
         'ZeroDBClient',
-        'RLHFLogger',
         'countTokens',
         'DesignConstraints'
       ]
@@ -183,6 +183,9 @@ describe('Browser-compatible exports', () => {
       for (const exportName of requiredExports) {
         expect(browserExports).toHaveProperty(exportName)
       }
+
+      expect(browserExports).not.toHaveProperty('SessionManager')
+      expect(browserExports).not.toHaveProperty('RLHFLogger')
     })
   })
 })

@@ -18,8 +18,8 @@ export class WebSocketTransport extends BaseTransport {
   public readonly type: TransportType = 'websocket'
 
   private ws?: WebSocket
-  private heartbeatInterval?: NodeJS.Timeout
-  private heartbeatTimeoutId?: NodeJS.Timeout
+  private heartbeatInterval?: ReturnType<typeof setTimeout>
+  private heartbeatTimeoutId?: ReturnType<typeof setTimeout>
   private lastPongReceived?: number
   private sendQueue: any[] = []
 

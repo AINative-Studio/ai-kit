@@ -39,9 +39,9 @@ export class RLHFLogger {
   private config: RLHFConfig;
   private storage: IStorageBackend;
   private batchQueue: BatchOperation[] = [];
-  private batchTimer?: NodeJS.Timeout;
+  private batchTimer?: ReturnType<typeof setTimeout>;
   private currentSession?: FeedbackSession;
-  private sessionTimer?: NodeJS.Timeout;
+  private sessionTimer?: ReturnType<typeof setTimeout>;
   private initialized = false;
 
   /**

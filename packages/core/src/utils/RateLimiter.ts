@@ -193,7 +193,7 @@ export class RateLimiter {
   private config: RateLimiterConfig;
   private keyPrefix: string;
   private stats: RateLimiterStats;
-  private cleanupInterval?: NodeJS.Timeout;
+  private cleanupInterval?: ReturnType<typeof setTimeout>;
 
   constructor(config: RateLimiterConfig) {
     this.config = config;
